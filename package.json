@@ -1,0 +1,39 @@
+{
+  "name": "19",
+  "version": "0.0.1",
+  "description": "19",
+  "homepage": "",
+  "author": "Yoshihito Fukuyama (https://ja.gravatar.com/yf37)",
+  "license": "MIT",
+  "keywords": [
+    "CoffeeScript",
+    "JavaScript",
+    "tmlib.js"
+  ],
+  "scripts": {
+    "preinstall": "npm install -g grunt-cli",
+    "test": "grunt test",
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "3.x",
+    "jade": "*"
+  },
+  "devDependencies": {
+    "coffee-script": "~1.7.1",
+    "grunt": "~0.4.4",
+    "grunt-contrib-coffee": "~0.10.1",
+    "grunt-contrib-uglify": "~0.4.0",
+    "grunt-contrib-concat": "~0.4.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-express-server": "~0.4.17",
+    "grunt-simple-mocha": "~0.4.0",
+    "grunt-coffeelint": "~0.0.10",
+    "grunt-jsdoc": "~0.5.4",
+    "grunt-execute": "~0.2.1",
+    "grunt-exec": "~0.4.5",
+    "chai": "~1.9.1"
+  }
+}
