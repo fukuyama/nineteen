@@ -14,3 +14,12 @@ tm.define 'nz.SpriteCharacter',
   init: (character) ->
     @superInit(character.spriteSheet)
     return
+
+  setMapPosition: (mapx,mapy) ->
+    {
+      width
+      height
+    } = nz.system.map.chip
+    @x = mapx * width + width * 0.5
+    @y = mapy * height + height * 0.5
+    @y += height * 0.5 if mapx % 2 == 0

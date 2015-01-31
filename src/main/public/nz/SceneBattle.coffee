@@ -14,11 +14,16 @@ tm.define 'nz.SceneBattle',
     console.log 'SceneBattle'
     @superInit()
 
-    @characters = []
+    @characters = [
+      {
+        spriteSheet: 'character_001'
+      }
+    ]
 
     @mapSprite = nz.SpriteBattleMap().addChildTo(@)
 
     @characterSprites = for character in @characters
       nz.SpriteCharacter(character).addChildTo(@mapSprite)
 
+    @characterSprites[0].setMapPosition(10,10)
     return
