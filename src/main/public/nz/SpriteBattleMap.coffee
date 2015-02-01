@@ -10,16 +10,8 @@ tm.define 'nz.SpriteBattleMap',
   * @classdesc 戦闘マップスプライト
   * @constructor nz.SpriteBattleMap
   ###
-  init: () ->
+  init: (@map) ->
     @superInit()
-    @map =
-      width: 15
-      height: 15
-      chip:
-        width: 32
-        height: 32
-      data: []
-
     for mapx in [0...@map.width]
       for mapy in [0...@map.height]
         @_createMapChip(mapx,mapy)
@@ -31,8 +23,7 @@ tm.define 'nz.SpriteBattleMap',
     {
       width
       height
-      data
-    } = @map.chip
+    } = nz.system.map.chip
 
     x = mapx * width + width * 0.5
     y = mapy * height + height * 0.5
