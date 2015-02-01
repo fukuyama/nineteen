@@ -34,6 +34,7 @@ tm.define 'nz.SceneTitleMenu',
     @superInit
       screenWidth: screen.width
       screenHeight: screen.height
+      background: 'black'
       menu: for menu in menus then menu.name
       menuDesctiptions: for menu in menus then menu.desctiption
 

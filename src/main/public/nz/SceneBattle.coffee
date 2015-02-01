@@ -21,6 +21,7 @@ tm.define 'nz.SceneBattle',
 
     @characters = [
       {
+        name: 'テストキャラクター'
         spriteSheet: 'character_001'
       }
     ]
@@ -29,8 +30,24 @@ tm.define 'nz.SceneBattle',
     @mapSprite.x += 32 * 5
 
     @characterSprites = for character in @characters
-      nz.SpriteCharacter(character).addChildTo(@mapSprite)
+      nz.SpriteCharacter(character)
+        .addChildTo(@mapSprite)
+        .on 'pointingend', (e) ->
+          e.app.currentScene._openCharacterMenu(@character)
 
     @characterSprites[0].setMapPosition(10,10)
 
     return
+
+  _openCharacterMenu: (character)->
+    console.log 'menu'
+    @app.pushScene tm.ui.MenuDialog
+      screenWidth: nz.system.screen.width
+      screenHeight: nz.system.screen.height
+      title: character.name
+      showExit: true
+      menu: [
+        '移動'
+        '攻撃'
+        '射撃'
+      ]

@@ -42,3 +42,4 @@ tm.define 'nz.SpriteBattleMap',
       .setPosition(x,y)
       .setFrameIndex(index)
       .addChildTo(@)
+

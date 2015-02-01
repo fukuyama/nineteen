@@ -11,8 +11,9 @@ tm.define 'nz.SpriteCharacter',
   * @constructor nz.SpriteCharacter
   * @param {nz.Character} character
   ###
-  init: (character) ->
-    @superInit(character.spriteSheet)
+  init: (@character) ->
+    @superInit(@character.spriteSheet)
+    @setInteractive true
     return
 
   setMapPosition: (mapx,mapy) ->
