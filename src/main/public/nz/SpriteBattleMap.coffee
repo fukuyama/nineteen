@@ -12,13 +12,11 @@ tm.define 'nz.SpriteBattleMap',
   ###
   init: (@map) ->
     @superInit()
-    @chips  = []
-    @blinks = []
+    @_chips  = []
+    @_blinks = []
     @width  = @map.width  * nz.system.map.chip.width
     @height = @map.height * nz.system.map.chip.height
     for mapx in [0...@map.width]
-      @chips[mapx] = []
-      @blinks[mapx] = []
       h = if mapx % 2 != 0 then @map.height else @map.width - 1
       for mapy in [0...h]
         @_createMapChip(mapx,mapy)
@@ -67,18 +65,22 @@ tm.define 'nz.SpriteBattleMap',
       .setPosition(x,y)
       .setInteractive(true)
       .setAlpha(0.0)
-      .on 'pointingover', (e) -> @_blickOn()
-      .on 'pointingout' , (e) -> @_blickOff()
-    blink._blickOn  = @_blickOn
-    blink._blickOff = @_blickOff
+    blink.blinkOn  = @_blinkOn
+    blink.blinkOff = @_blinkOff
 
-    @chips[mapx][mapy] = chip
-    @blinks[mapx][mapy] = blink
+    @_chips[mapx] = [] unless @_chips[mapx]?
+    @_chips[mapx][mapy] = chip
+    @_blinks[mapx] = [] unless @_blinks[mapx]?
+    @_blinks[mapx][mapy] = blink
 
-  _blickOn: (blink=@) ->
+  blink: (mapx,mapy) ->
+    @_blinks[mapx][mapy].blinkOn()
+    return
+
+  _blinkOn: (blink=@) ->
     blink.tweener.clear().fade(0.5,200)
     return
 
-  _blickOff: (blink=@) ->
+  _blinkOff: (blink=@) ->
     blink.tweener.clear().fadeOut(200)
     return

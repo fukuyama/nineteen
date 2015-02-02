@@ -50,7 +50,8 @@ tm.define 'nz.SceneBattle',
 
   _characterMenuSelected: (e) ->
     if e.selectIndex == 0 # 移動
-      @mapSprite.pointingover = (e) ->
-        console.log "over #{e.mapx} #{e.mapy}"
+      @mapSprite.pointingover = ((e) ->
+        @mapSprite.blink(e.mapx,e.mapy)
+      ).bind @
       @one 'pointingend', (e) ->
         @mapSprite.pointingover = null
