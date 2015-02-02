@@ -32,11 +32,13 @@ tm.define 'nz.SceneTitleMenu',
     ]
 
     @superInit
+      title: nz.system.title
       screenWidth: screen.width
       screenHeight: screen.height
-      background: 'black'
       menu: for menu in menus then menu.name
       menuDesctiptions: for menu in menus then menu.desctiption
+    @box.setStrokeStyle 'rgba(255,255,255, 0.8)'
+    @box.setFillStyle 'rgba(0,0,128, 0.8)'
 
     @index = 0
     @on 'menuselected', (e) -> @index = e.selectIndex

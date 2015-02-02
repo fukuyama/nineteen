@@ -21,7 +21,9 @@ tm.main ->
     height: screen.height
   ).on 'load', ->
     @app.pushScene nz.SceneTitleMenu()
-    @app.pushScene tm.scene.TitleScene()
+    @app.pushScene tm.scene.TitleScene(
+      title: nz.system.title
+    )
     return
 
   # 実行

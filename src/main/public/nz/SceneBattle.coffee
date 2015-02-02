@@ -40,14 +40,17 @@ tm.define 'nz.SceneBattle',
     return
 
   _openCharacterMenu: (character)->
-    console.log 'menu'
-    @app.pushScene tm.ui.MenuDialog
+    @app.pushScene tm.ui.MenuDialog(
       screenWidth: nz.system.screen.width
       screenHeight: nz.system.screen.height
       title: character.name
       showExit: true
-      menu: [
-        '移動'
-        '攻撃'
-        '射撃'
-      ]
+      menu: ['移動','攻撃','射撃']
+    ).on('menuselected', @_characterMenuSelected.bind(@))
+
+  _characterMenuSelected: (e) ->
+    if e.selectIndex == 0 # 移動
+      @mapSprite.pointingover = (e) ->
+        console.log "over #{e.mapx} #{e.mapy}"
+      @one 'pointingend', (e) ->
+        @mapSprite.pointingover = null

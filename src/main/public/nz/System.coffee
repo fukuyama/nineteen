@@ -11,6 +11,7 @@ tm.define 'nz.System',
   ###
   init: () ->
     @.$extend
+      title: 'Nineteen'
       map:
         chip:
           width: 32

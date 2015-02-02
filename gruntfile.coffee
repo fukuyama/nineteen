@@ -173,5 +173,5 @@ module.exports = (grunt) ->
   grunt.registerTask 'test', ['coffeelint','simplemocha:all']
   grunt.registerTask 'default', [
     'coffeelint','coffee', 'simplemocha:all'
-    'concat', 'uglify', 'copy', 'jsdoc'
+    'concat', 'uglify', 'copy'
   ]
