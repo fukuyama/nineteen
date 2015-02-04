@@ -44,6 +44,8 @@ module.exports = (grunt) ->
   src_test_dir = src_dir + test_path
   
   coffeelintConfig =
+    options:
+      configFile: 'coffeelint.json'
     all:
       files:
         src: [

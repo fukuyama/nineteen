@@ -17,7 +17,7 @@ tm.define 'nz.SceneBattle',
     @map =
       width: 15
       height: 15
-      data: []
+      data: '000000000000000'.split('') for i in [0 ... 15]
 
     @characters = [
       {
