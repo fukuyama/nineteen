@@ -4,7 +4,7 @@
 ###
 
 # node.js と ブラウザでの this.nz を同じインスタンスにする
-_g = window ? global ? @
+_g = window ? global
 nz = _g.nz = _g.nz ? {}
 _g = undefined
 

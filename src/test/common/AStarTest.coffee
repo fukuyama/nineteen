@@ -8,6 +8,7 @@ require('chai').should()
 } = require('../../main/express/public/lib/develop/astar.js')
 require('../../main/public/nz/Graph.coffee')
 require('../../main/public/nz/GridNode.coffee')
+global.astar = astar
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'AStarTest', () ->

@@ -4,7 +4,7 @@
 ###
 
 # node.js と ブラウザでの this.nz を同じインスタンスにする
-_g = window ? global ? @
+_g = window ? global
 nz = _g.nz = _g.nz ? {}
 _g = undefined
 
@@ -34,7 +34,7 @@ class nz.Graph
     @dirtyNodes = []
 
   cleanNode: (node) ->
-    nz.astar.cleanNode(node)
+    astar.cleanNode(node)
     node.clean()
 
   markDirty: (node) ->
@@ -79,4 +79,4 @@ nz.Graph.heuristic = (node1,node2) ->
   pos2 =
     x: node2.x
     y: node2.y + (node2.x % 2 == 0 ? 0.5 : 0)
-  nz.astar.heuristics.diagonal(pos1,pos2)
+  astar.heuristics.diagonal(pos1,pos2)
