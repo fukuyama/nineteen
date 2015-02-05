@@ -8,19 +8,67 @@ _g = window ? global ? @
 nz = _g.nz = _g.nz ? {}
 _g = undefined
 
-
 class nz.GridNode
 
-  constructor: (x, y, chipdata) ->
+  constructor: (x, y, chipdata={weight:0}) ->
     @x      = x
     @y      = y
     @weight = chipdata.weight
+    @clean()
+
+  clean: ->
+    @direction = 0
+    return
 
   toString: ->
     return "[#{@x},#{@y}]"
 
-  getCost: ->
-    return @weight
+  ###*
+  * 指定されたノードが、自分から見てどの方向にあるか
+  * @param node {GridNode} 調査対象ノード
+  ###
+  calcDirection: (node) ->
+    direction = 0
+    if @x == node.x
+      direction = 1 if @y > node.y
+      direction = 4 if @y < node.y
+    else if @x > node.x # 左側
+      if @y == node.y
+        direction = if @x % 2 == 0 then 6 else 5
+      else if @y > node.y
+        direction = 6
+      else if @y < node.y
+        direction = 5
+    else if @x < node.x # 右側
+      if @y == node.y
+        direction = if @x % 2 == 0 then 2 else 3
+      else if @y > node.y
+        direction = 2
+      else if @y < node.y
+        direction = 3
+    return direction
 
+  ###*
+  * 曲がる場合のコスト
+  * @param direction {number} 方向(1-6)
+  ###
+  getDirectionCost: (direction) ->
+    Math.abs(3 - Math.abs((direction - @direction - 3) % 6))
+
+  ###*
+  * 指定されたノードから、自分のノードに移動する（入る）場合のコスト
+  * @param node {GridNode} 調査対象ノード
+  ###
+  getCost: (node) ->
+    cost = @weight
+    # 移動元からの方向
+    @direction = node.calcDirection(@)
+    # 方向転換のコスト
+    cost += node.getDirectionCost(@direction)
+    return cost
+
+  ###*
+  * 壁判定
+  ###
   isWall: ->
     return @weight == 0

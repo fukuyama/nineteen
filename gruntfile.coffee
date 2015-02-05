@@ -20,6 +20,8 @@ module.exports = (grunt) ->
 
   # 公開用スクリプト
   public_sections = [
+    'nz/Graph'
+    'nz/GridNode'
     'nz/System'
     'nz/SceneTitleMenu'
     'nz/SceneBattle'
