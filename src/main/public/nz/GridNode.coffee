@@ -47,6 +47,8 @@ class nz.GridNode
       else if @y < node.y
         direction = 3
     return direction
+  calcDirectionTo: (node) -> @calcDirection(node)
+  calcDirectionBy: (node) -> node.calcDirection(@)
 
   ###*
   * 曲がる場合のコスト
@@ -56,15 +58,18 @@ class nz.GridNode
     Math.abs(3 - Math.abs((direction - @direction - 3) % 6))
 
   ###*
-  * 指定されたノードから、自分のノードに移動する（入る）場合のコスト
-  * @param node {GridNode} 調査対象ノード
+  * 自分のノードに、指定されたノードから移動する（入る）場合のコスト
+  * @param node {GridNode} 移動元ノード
   ###
   getCost: (node) ->
     cost = @weight
     # 移動元からの方向
-    @direction = node.calcDirection(@)
+    direction = node.calcDirection(@)
     # 方向転換のコスト
-    cost += node.getDirectionCost(@direction)
+    cost += node.getDirectionCost(direction)
+    # ここまでのコストが今までのコストより低い場合方向を更新
+    if not @visited or node.g + cost < @g
+      @direction = direction
     return cost
 
   ###*

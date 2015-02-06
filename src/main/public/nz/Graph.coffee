@@ -73,10 +73,11 @@ class nz.Graph
     return graphString.join("\n")
 
 nz.Graph.heuristic = (node1,node2) ->
-  pos1 =
-    x: node1.x
-    y: node1.y + (node1.x % 2 == 0 ? 0.5 : 0)
-  pos2 =
-    x: node2.x
-    y: node2.y + (node2.x % 2 == 0 ? 0.5 : 0)
-  astar.heuristics.diagonal(pos1,pos2)
+  hx = Math.abs(node1.x - node2.x)
+  hy = Math.abs(node1.y - node2.y) - Math.floor(hx / 2)
+  hd = 0
+  if node1.direction != 0
+    direction = node1.calcDirectionTo(node2)
+    hd = node1.getDirectionCost(direction)
+  # console.log "#{hx} #{hy} #{hd} #{direction}"
+  hx + hy + hd

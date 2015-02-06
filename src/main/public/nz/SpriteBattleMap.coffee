@@ -80,7 +80,11 @@ tm.define 'nz.SpriteBattleMap',
     return
 
   clearBlink: () ->
-    for blink in @_clearblinks
-      blink.tweener.clear().fadeOut(200)
+    #for blink in @_clearblinks
+      #blink.tweener.clear().fadeOut(200)
+    for blinks in @_blinks
+      for blink in blinks
+        blink.tweener.clear()
+        blink.setAlpha(0.0)
     @_clearblinks.clear()
     return

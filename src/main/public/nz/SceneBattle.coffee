@@ -72,9 +72,9 @@ tm.define 'nz.SceneBattle',
 
   searchRoute: (character,mapx,mapy) ->
     start = @_graph.grid[character.mapx][character.mapy]
+    start.direction = character.direction
     end = @_graph.grid[mapx][mapy]
     result = astar.search(@_graph, start, end, {heuristic: nz.Graph.heuristic})
     @mapSprite.clearBlink()
     for node in result
       @mapSprite.blink(node.x,node.y)
-

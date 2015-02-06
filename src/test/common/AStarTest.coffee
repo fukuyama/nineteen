@@ -12,6 +12,11 @@ global.astar = astar
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'AStarTest', () ->
+  chkxy = (node,x,y) ->
+    node.x.should.equals x,"x"
+    node.y.should.equals y,"y"
+    return
+
   nz.astar = astar
   options =
     heuristic: nz.Graph.heuristic
@@ -121,120 +126,185 @@ describe 'AStarTest', () ->
         s.calcDirection(new nz.GridNode(x-1,y  )).should.equals 5
         s.calcDirection(new nz.GridNode(x+1,y-1)).should.equals 2
         s.calcDirection(new nz.GridNode(x+1,y  )).should.equals 3
+
+    describe 'nz.GridNode', ->
+      it '指定ノードへのコスト計算1', ->
+        x = 2
+        y = 2
+        s = new nz.GridNode(x  ,y  ,weight:1)
+        e = new nz.GridNode(x  ,y-1,weight:1)
+        s.direction = 1
+        direction = s.calcDirection(e)
+        direction.should.equals 1,'direction'
+        s.getDirectionCost(direction).should.equals 0,'direction cost'
+        e.getCost(s).should.equals 1,'cost'
+
     describe 'nz.Graph', ->
-      ###
-      it 'サンプル', ->
-        chipdata = [
-          {
-            weight: 0
-          }
-          {
-            weight: 1
-          }
-        ]
-        mapdata =
-          width:  4 # マップの幅
-          height: 3 # マップの高さ
-          data: [
-            [1,1,1,1]
-            [0,1,1,0]
-            [0,0,1,1]
-          ]
-        graph = new nz.Graph(mapdata:mapdata,chipdata:chipdata)
-        start = graph.grid[0][0]
-        end = graph.grid[2][1]
-        result = astar.search(graph, start, end)
-        result.length.should.equals 3
-        result[0].x.should.equals 1
-        result[0].y.should.equals 0
-        result[1].x.should.equals 1
-        result[1].y.should.equals 1
-        result[2].x.should.equals 2
-        result[2].y.should.equals 1
-      ###
-      it '隣接ノード', ->
-        graph = new nz.Graph(testdata)
-        result = graph.neighbors graph.grid[0][0]
-        result.length.should.equals 3, 'length'
-      it '下', ->
-        graph = new nz.Graph(testdata)
-        start = graph.grid[0][0]
-        end = graph.grid[0][1]
-        start.direction = 4
-        result = astar.search(graph, start, end, options)
-        result.length.should.equals 1,'length'
-        result[0].x.should.equals 0
-        result[0].y.should.equals 1
-        end.g.should.equals 1
-        end.direction.should.equals 4,'direction'
+      describe 'ヒューリスティック関数', ->
+        it 'ヒューリスティック関数', ->
+          s = new nz.GridNode(1,1,weight:1)
+          s.direction = 1
+          e = new nz.GridNode(2,1,weight:1)
+          result = nz.Graph.heuristic(s,e)
+          result.should.equals 3
+        it 'ヒューリスティック関数', ->
+          s = new nz.GridNode(0,0,weight:1)
+          s.direction = 1
+          e = new nz.GridNode(0,1,weight:1)
+          result = nz.Graph.heuristic(s,e)
+          result.should.equals 4
 
-        end = graph.grid[0][2]
-        result = astar.search(graph, start, end, options)
-        result.length.should.equals 2,'length'
-        result[0].x.should.equals 0
-        result[0].y.should.equals 1
-        result[1].x.should.equals 0
-        result[1].y.should.equals 2
-        end.g.should.equals 2
-      it '右下', ->
-        graph = new nz.Graph(testdata)
-        start = graph.grid[0][0]
-        end = graph.grid[1][1]
-        start.direction = 4
-        result = astar.search(graph, start, end, options)
-        result.length.should.equals 1,'length'
-        result[0].x.should.equals 1
-        result[0].y.should.equals 1
-        end.direction.should.equals 3,'direction'
+      describe '隣接ノード', ->
+        it '角', ->
+          graph = new nz.Graph(testdata)
+          result = graph.neighbors graph.grid[0][0]
+          result.length.should.equals 3, 'length'
+      describe 'ルート検索', ->
+        route_search_test = (s,e,r) ->
+          graph = new nz.Graph(testdata)
+          start = graph.grid[s.x][s.y]
+          end = graph.grid[e.x][e.y]
+          start.direction = s.dir
+          result = astar.search(graph, start, end, options)
+          result.length.should.equals r.len,'length'
+          for pos,i in r.route
+            chkxy result[i],pos[0],pos[1]
+          end.g.should.equals r.cost
+          end.direction.should.equals r.dir,'direction'
 
-        end = graph.grid[1][2]
-        result = astar.search(graph, start, end, options)
-        result.length.should.equals 2,'length'
-        result[0].x.should.equals 0
-        result[0].y.should.equals 1
-        result[1].x.should.equals 1
-        result[1].y.should.equals 2
-        end.g.should.equals 3
+        it '上1', ->
+          route_search_test(
+            {x:10,y:10,dir:1}
+            {x:10,y:5}
+            {
+              len: 5
+              cost: 5
+              dir: 1
+              route: [
+                [10,9]
+                [10,8]
+                [10,7]
+                [10,6]
+                [10,5]
+              ]
+            }
+          )
+        it '上2', ->
+          route_search_test(
+            {x:10,y:10,dir:1}
+            {x:9,y:5}
+            {
+              len: 6
+              cost: 7
+              dir: 6
+              route: [
+                [10,9]
+                [10,8]
+                [10,7]
+                [10,6]
+                [10,5]
+                [9,5]
+              ]
+            }
+          )
+        it '上3', ->
+          route_search_test(
+            {x:10,y:10,dir:1}
+            {x:9,y:4}
+            {
+              len: 7
+              cost: 8
+              dir: 6
+              route: [
+                [10,9]
+                [10,8]
+                [10,7]
+                [10,6]
+                [10,5]
+                [10,4]
+                [9,4]
+              ]
+            }
+          )
+        it '下', ->
+          graph = new nz.Graph(testdata)
+          start = graph.grid[0][0]
+          end = graph.grid[0][1]
+          start.direction = 4
+          result = astar.search(graph, start, end, options)
+          result.length.should.equals 1,'length'
+          result[0].x.should.equals 0
+          result[0].y.should.equals 1
+          end.g.should.equals 1
+          end.direction.should.equals 4,'direction'
 
-        end = graph.grid[1][2]
-        start.direction = 3
-        result = astar.search(graph, start, end, options)
-        result.length.should.equals 2,'length'
-        result[0].x.should.equals 1
-        result[0].y.should.equals 1
-        result[1].x.should.equals 1
-        result[1].y.should.equals 2
+          end = graph.grid[0][2]
+          result = astar.search(graph, start, end, options)
+          result.length.should.equals 2,'length'
+          result[0].x.should.equals 0
+          result[0].y.should.equals 1
+          result[1].x.should.equals 0
+          result[1].y.should.equals 2
+          end.g.should.equals 2
+        it '右下', ->
+          graph = new nz.Graph(testdata)
+          start = graph.grid[0][0]
+          end = graph.grid[1][1]
+          start.direction = 4
+          result = astar.search(graph, start, end, options)
+          result.length.should.equals 1,'length'
+          result[0].x.should.equals 1
+          result[0].y.should.equals 1
+          end.direction.should.equals 3,'direction'
 
-        end = graph.grid[1][2]
-        start.direction = 2
-        result = astar.search(graph, start, end, options)
-        result.length.should.equals 2,'length'
-        result[0].x.should.equals 1
-        result[0].y.should.equals 1
-        result[1].x.should.equals 1
-        result[1].y.should.equals 2
+          end = graph.grid[1][2]
+          result = astar.search(graph, start, end, options)
+          result.length.should.equals 2,'length'
+          result[0].x.should.equals 0
+          result[0].y.should.equals 1
+          result[1].x.should.equals 1
+          result[1].y.should.equals 2
+          end.g.should.equals 3
 
-        start = graph.grid[1][0]
-        end = graph.grid[2][0]
-        start.direction = 4
-        result = astar.search(graph, start, end, options)
-        result.length.should.equals 1,'length'
-        result[0].x.should.equals 2
-        result[0].y.should.equals 0
+          end = graph.grid[1][2]
+          start.direction = 3
+          result = astar.search(graph, start, end, options)
+          result.length.should.equals 2,'length'
+          result[0].x.should.equals 1
+          result[0].y.should.equals 1
+          result[1].x.should.equals 1
+          result[1].y.should.equals 2
 
-        end = graph.grid[2][1]
-        result = astar.search(graph, start, end, options)
-        result.length.should.equals 2,'length'
-        result[0].x.should.equals 1
-        result[0].y.should.equals 1
-        result[1].x.should.equals 2
-        result[1].y.should.equals 1
+          end = graph.grid[1][2]
+          start.direction = 2
+          result = astar.search(graph, start, end, options)
+          result.length.should.equals 2,'length'
+          result[0].x.should.equals 1
+          result[0].y.should.equals 1
+          result[1].x.should.equals 1
+          result[1].y.should.equals 2
 
-        end = graph.grid[2][1]
-        start.direction = 3
-        result = astar.search(graph, start, end, options)
-        result.length.should.equals 2,'length'
-        result[0].x.should.equals 2
-        result[0].y.should.equals 0
-        result[1].x.should.equals 2
-        result[1].y.should.equals 1
+          start = graph.grid[1][0]
+          end = graph.grid[2][0]
+          start.direction = 4
+          result = astar.search(graph, start, end, options)
+          result.length.should.equals 1,'length'
+          result[0].x.should.equals 2
+          result[0].y.should.equals 0
+
+          end = graph.grid[2][1]
+          result = astar.search(graph, start, end, options)
+          result.length.should.equals 2,'length'
+          result[0].x.should.equals 1
+          result[0].y.should.equals 1
+          result[1].x.should.equals 2
+          result[1].y.should.equals 1
+
+          end = graph.grid[2][1]
+          start.direction = 3
+          result = astar.search(graph, start, end, options)
+          result.length.should.equals 2,'length'
+          result[0].x.should.equals 2
+          result[0].y.should.equals 0
+          result[1].x.should.equals 2
+          result[1].y.should.equals 1
