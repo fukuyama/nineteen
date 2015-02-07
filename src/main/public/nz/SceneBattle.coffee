@@ -6,16 +6,30 @@
 debugdata =
   chipdata: [
     {
+      name: 'null'
+      frame: 0
       weight: 0
     }
     {
+      name: '草原'
+      frame: 1
       weight: 1
+    }
+    {
+      name: '水辺'
+      frame: 4
+      weight: 0
     }
   ]
   mapdata:
     width:  15 # マップの幅
     height: 15 # マップの高さ
     data: for y in [0 ... 15] then for x in [0 ... 15] then 1
+
+debugdata.mapdata.data[5][5] = 2
+debugdata.mapdata.data[5][6] = 2
+debugdata.mapdata.data[6][5] = 2
+debugdata.mapdata.data[6][6] = 2
 
 tm.define 'nz.SceneBattle',
   superClass: tm.app.Scene
@@ -40,7 +54,7 @@ tm.define 'nz.SceneBattle',
       }
     ]
 
-    @_graph = new nz.Graph(mapdata:@map,chipdata:debugdata.chipdata)
+    @map.graph = new nz.Graph(mapdata:@map,chipdata:debugdata.chipdata)
     @mapSprite = nz.SpriteBattleMap(@map).addChildTo(@)
     @mapSprite.x += 32 * 5
 
@@ -71,10 +85,10 @@ tm.define 'nz.SceneBattle',
         @mapSprite.pointingover = null
 
   searchRoute: (character,mapx,mapy) ->
-    start = @_graph.grid[character.mapx][character.mapy]
+    start = @map.graph.grid[character.mapx][character.mapy]
     start.direction = character.direction
-    end = @_graph.grid[mapx][mapy]
-    result = astar.search(@_graph, start, end, {heuristic: nz.Graph.heuristic})
+    end = @map.graph.grid[mapx][mapy]
+    result = astar.search(@map.graph, start, end, {heuristic: nz.Graph.heuristic})
     @mapSprite.clearBlink()
     for node in result
       @mapSprite.blink(node.x,node.y)

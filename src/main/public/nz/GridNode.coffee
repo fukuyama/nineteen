@@ -10,10 +10,20 @@ _g = undefined
 
 class nz.GridNode
 
+  ###*
+  * @param {Object} chipdata
+  * @param {number} chipdata.weight
+  * @param {number} chipdata.frame
+  * @param {string} chipdata.name
+  ###
   constructor: (x, y, chipdata={weight:0}) ->
     @x      = x
     @y      = y
-    @weight = chipdata.weight
+    {
+      @weight
+      @frame
+      @name
+    } = chipdata
     @clean()
 
   clean: ->

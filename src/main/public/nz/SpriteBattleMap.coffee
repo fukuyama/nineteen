@@ -38,13 +38,13 @@ tm.define 'nz.SpriteBattleMap',
       y += height * 0.5
 
     # TODO: マップデータから座標位置のマップチップインデックスを取得する
-    index = 3 # data[mapx][mapy]
+    frameIndex = @map.graph.grid[mapx][mapy].frame
     mapSprite = @
 
     chip = tm.display.Sprite('map_chip',width,height)
       .addChildTo(@)
       .setPosition(x,y)
-      .setFrameIndex(index)
+      .setFrameIndex(frameIndex)
       .setInteractive(true)
       .setBoundingType('rect')
       .on 'pointingover', (e) ->
