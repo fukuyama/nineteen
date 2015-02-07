@@ -38,7 +38,8 @@ tm.define 'nz.SpriteBattleMap',
       y += height * 0.5
 
     # TODO: マップデータから座標位置のマップチップインデックスを取得する
-    frameIndex = @map.graph.grid[mapx][mapy].frame
+    node = @map.graph.grid[mapx][mapy]
+    frameIndex = node.frame
     mapSprite = @
 
     chip = tm.display.Sprite('map_chip',width,height)
@@ -55,6 +56,12 @@ tm.define 'nz.SpriteBattleMap',
         e.mapx = mapx
         e.mapy = mapy
         mapSprite.pointingout(e) if mapSprite.pointingout?
+
+    if node.object?
+      tm.display.Sprite('map_object',32,64)
+        .setOrigin(0.5,0.75)
+        .addChildTo(chip)
+        .setFrameIndex(node.object.frame)
 
     blink = tm.display.RectangleShape(
       width: width

@@ -23,6 +23,7 @@ class nz.GridNode
       @weight
       @frame
       @name
+      @object
     } = chipdata
     @clean()
 

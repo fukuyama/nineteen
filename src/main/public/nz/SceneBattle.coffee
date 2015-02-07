@@ -20,6 +20,13 @@ debugdata =
       frame: 4
       weight: 0
     }
+    {
+      name: '木'
+      frame: 1
+      weight: 0
+      object:
+        frame: 0
+    }
   ]
   mapdata:
     width:  15 # マップの幅
@@ -30,6 +37,7 @@ debugdata.mapdata.data[5][5] = 2
 debugdata.mapdata.data[5][6] = 2
 debugdata.mapdata.data[6][5] = 2
 debugdata.mapdata.data[6][6] = 2
+debugdata.mapdata.data[8][6] = 3
 
 tm.define 'nz.SceneBattle',
   superClass: tm.app.Scene

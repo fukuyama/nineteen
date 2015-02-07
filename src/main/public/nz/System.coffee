@@ -20,6 +20,7 @@ tm.define 'nz.System',
         width: 32*20
         height: 32*15
       assets:
+        map_object: 'img/map_object.png'
         map_chip: 'img/map_chip.png'
         character_001:
           type: 'tmss'
