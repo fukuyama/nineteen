@@ -169,6 +169,12 @@ module.exports = (grunt) ->
       call_sample:
         call: (grunt, op) ->
           grunt.log.writeln('Hello!')
+      test:
+        call: (grunt, op) ->
+          chipdata = require('./src/data/chip.coffee')
+          console.log chipdata
+          mapdata = require('./src/data/map001.coffee')
+          console.log mapdata
 
   for o of pkg.devDependencies
     grunt.loadNpmTasks o if /grunt-/.test o
