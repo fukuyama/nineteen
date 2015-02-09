@@ -4,30 +4,6 @@
 ###
 
 debugdata =
-  chipdata: [
-    {
-      name: 'null'
-      frame: 0
-      weight: 0
-    }
-    {
-      name: '草原'
-      frame: 1
-      weight: 1
-    }
-    {
-      name: '水辺'
-      frame: 4
-      weight: 0
-    }
-    {
-      name: '木'
-      frame: 1
-      weight: 0
-      object:
-        frame: 0
-    }
-  ]
   mapdata:
     width:  15 # マップの幅
     height: 15 # マップの高さ
@@ -46,11 +22,17 @@ tm.define 'nz.SceneBattle',
   * @classdesc 戦闘シーンクラス
   * @constructor nz.SceneBattle
   ###
-  init: () ->
+  init: (param) ->
     console.log 'SceneBattle'
+    {
+      @mapId
+    } = param
     @superInit()
+    @mapName = 'map_001'
 
-    @map = debugdata.mapdata
+  setup: () ->
+    @map = tm.asset.Manager.get(@mapName).data
+    chipdata = tm.asset.Manager.get('chipdata').data
 
     @characters = [
       {
@@ -62,7 +44,7 @@ tm.define 'nz.SceneBattle',
       }
     ]
 
-    @map.graph = new nz.Graph(mapdata:@map,chipdata:debugdata.chipdata)
+    @map.graph = new nz.Graph(mapdata:@map,chipdata:chipdata)
     @mapSprite = nz.SpriteBattleMap(@map).addChildTo(@)
     @mapSprite.x += 32 * 5
 
@@ -72,6 +54,20 @@ tm.define 'nz.SceneBattle',
         .on 'pointingend', (e) ->
           e.app.currentScene._openCharacterMenu(@character)
 
+  load: () ->
+    assets = {}
+    assets[@mapName] = "data/#{@mapName}.json"
+
+    scene = tm.scene.LoadingScene(
+      assets: assets
+      width: nz.system.screen.width
+      height: nz.system.screen.height
+      autopop: true
+    )
+
+    scene.on 'load', @setup.bind @
+
+    @app.pushScene scene
     return
 
   _openCharacterMenu: (character)->

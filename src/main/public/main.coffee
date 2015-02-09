@@ -15,13 +15,13 @@ tm.main ->
   app.background = 'gray'
   
   # 最初のシーンに切り替える
-  app.pushScene tm.scene.LoadingScene(
+  app.replaceScene tm.scene.LoadingScene(
     assets: assets
     width: screen.width
     height: screen.height
   ).on 'load', ->
-    @app.pushScene nz.SceneTitleMenu()
-    @app.pushScene tm.scene.TitleScene(
+    nz.app.replaceScene nz.SceneTitleMenu()
+    nz.app.pushScene tm.scene.TitleScene(
       title: nz.system.title
     )
     return

@@ -14,6 +14,12 @@ module.exports = (grunt) ->
 
   """
 
+  data_names = [
+    'chipdata'
+    'map_001'
+    'character_001'
+  ]
+
   # 共通系スクリプト(tmlib.js 非依存のつもり)
   common_sections = [
   ]
@@ -38,6 +44,7 @@ module.exports = (grunt) ->
   test_path = 'test/'
   common_path = 'common/'
   public_path = 'public/'
+  data_path = 'data/'
 
   target_gen_dir = target_dir + 'generate/'
   target_public_dir = target_dir + public_path
@@ -175,13 +182,21 @@ module.exports = (grunt) ->
           console.log chipdata
           mapdata = require('./src/data/map001.coffee')
           console.log mapdata
+      createdata:
+        call: (grunt, op) ->
+          fs = require 'fs'
+          for name in data_names
+            obj = require './' + src_main_dir + data_path + name + '.coffee'
+            out = target_public_dir + data_path + name + '.json'
+            fs.writeFile out, JSON.stringify(obj), (err) -> throw err if err?
 
   for o of pkg.devDependencies
     grunt.loadNpmTasks o if /grunt-/.test o
   
   grunt.registerTask 'server', ['express:dev', 'watch']
   grunt.registerTask 'test', ['coffeelint','simplemocha:all']
+  grunt.registerTask 'createdata', ['copy','execute:createdata']
   grunt.registerTask 'default', [
     'coffeelint','coffee', 'simplemocha:all'
-    'concat', 'uglify', 'copy'
+    'concat', 'uglify', 'copy', 'createdata'
   ]
