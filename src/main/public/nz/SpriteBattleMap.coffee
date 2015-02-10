@@ -56,6 +56,10 @@ tm.define 'nz.SpriteBattleMap',
         e.mapx = mapx
         e.mapy = mapy
         mapSprite.pointingout(e) if mapSprite.pointingout?
+      .on 'pointingend', (e) ->
+        e.mapx = mapx
+        e.mapy = mapy
+        mapSprite.pointingend(e) if mapSprite.pointingend?
 
     if node.object?
       tm.display.Sprite('map_object',32,64)

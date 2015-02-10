@@ -3,18 +3,6 @@
 * 戦闘シーン
 ###
 
-debugdata =
-  mapdata:
-    width:  15 # マップの幅
-    height: 15 # マップの高さ
-    data: for y in [0 ... 15] then for x in [0 ... 15] then 1
-
-debugdata.mapdata.data[5][5] = 2
-debugdata.mapdata.data[5][6] = 2
-debugdata.mapdata.data[6][5] = 2
-debugdata.mapdata.data[6][6] = 2
-debugdata.mapdata.data[8][6] = 3
-
 tm.define 'nz.SceneBattle',
   superClass: tm.app.Scene
 
@@ -28,7 +16,25 @@ tm.define 'nz.SceneBattle',
       @mapId
     } = param
     @superInit()
-    @mapName = 'map_001'
+    @mapName = 'map_' + "#{@mapId}".paddingLeft(3,'0')
+    @on 'enter', @load.bind @
+
+  load: () ->
+    console.log "battle map load #{@mapName}"
+    assets = {}
+    assets[@mapName] = "data/#{@mapName}.json"
+
+    scene = tm.scene.LoadingScene(
+      assets: assets
+      width: nz.system.screen.width
+      height: nz.system.screen.height
+      autopop: true
+    )
+
+    scene.on 'load', @setup.bind @
+
+    @app.pushScene scene
+    return
 
   setup: () ->
     @map = tm.asset.Manager.get(@mapName).data
@@ -48,51 +54,41 @@ tm.define 'nz.SceneBattle',
     @mapSprite = nz.SpriteBattleMap(@map).addChildTo(@)
     @mapSprite.x += 32 * 5
 
-    @characterSprites = for character in @characters
-      nz.SpriteCharacter(character)
+    @characterSprites = for character,i in @characters
+      nz.SpriteCharacter(i,character)
         .addChildTo(@mapSprite)
         .on 'pointingend', (e) ->
-          e.app.currentScene._openCharacterMenu(@character)
+          e.app.currentScene._openCharacterMenu(@num)
 
-  load: () ->
-    assets = {}
-    assets[@mapName] = "data/#{@mapName}.json"
-
-    scene = tm.scene.LoadingScene(
-      assets: assets
-      width: nz.system.screen.width
-      height: nz.system.screen.height
-      autopop: true
-    )
-
-    scene.on 'load', @setup.bind @
-
-    @app.pushScene scene
-    return
-
-  _openCharacterMenu: (character)->
-    @selectCharacter = character
+  _openCharacterMenu: (num)->
+    @selectCharacterIndex = num
     @app.pushScene tm.ui.MenuDialog(
       screenWidth: nz.system.screen.width
       screenHeight: nz.system.screen.height
-      title: character.name
+      title: @characters[@selectCharacterIndex].name
       showExit: true
       menu: ['移動','攻撃','射撃']
     ).on('menuselected', @_characterMenuSelected.bind(@))
 
   _characterMenuSelected: (e) ->
     if e.selectIndex == 0 # 移動
+      ###
       @mapSprite.pointingover = ((e) ->
-        @searchRoute(@selectCharacter,e.mapx,e.mapy)
+        @searchRoute(@selectCharacterIndex,e.mapx,e.mapy)
       ).bind @
-      @one 'pointingend', (e) ->
-        @mapSprite.pointingover = null
+      ###
+      @mapSprite.pointingend = @_menuMoveCommand.bind @
+
+  _menuMoveCommand: (e) ->
+    route = @searchRoute(@selectCharacterIndex,e.mapx,e.mapy)
+    @characterSprites[@selectCharacterIndex].mapMove route
+    @mapSprite.pointingend = null
+    console.log route
 
   searchRoute: (character,mapx,mapy) ->
+    if typeof character is 'number'
+      character = @characters[character]
     start = @map.graph.grid[character.mapx][character.mapy]
     start.direction = character.direction
     end = @map.graph.grid[mapx][mapy]
-    result = astar.search(@map.graph, start, end, {heuristic: nz.Graph.heuristic})
-    @mapSprite.clearBlink()
-    for node in result
-      @mapSprite.blink(node.x,node.y)
+    return astar.search(@map.graph, start, end, {heuristic: nz.Graph.heuristic})

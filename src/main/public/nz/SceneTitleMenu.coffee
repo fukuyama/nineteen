@@ -37,8 +37,8 @@ tm.define 'nz.SceneTitleMenu',
       screenHeight: screen.height
       menu: for menu in menus then menu.name
       menuDesctiptions: for menu in menus then menu.desctiption
-    @box.setStrokeStyle 'rgba(255,255,255, 0.8)'
-    @box.setFillStyle 'rgba(0,0,128, 0.8)'
+    @box.setStrokeStyle 'rgba(255,255,255,1.0)'
+    @box.setFillStyle   'rgba(  0,  0, 64,1.0)'
 
     @index = 0
     @on 'menuselected', (e) -> @index = e.selectIndex
@@ -50,9 +50,7 @@ tm.define 'nz.SceneTitleMenu',
   * @constructor nz.SceneTitleMenu#
   ###
   _new_game: ->
-    scene = nz.SceneBattle(mapId:1)
-    @app.replaceScene scene
-    scene.load()
+    @app.replaceScene nz.SceneBattle(mapId:0)
     return
 
   ###* ゲームをロード

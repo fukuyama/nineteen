@@ -16,6 +16,7 @@ module.exports = (grunt) ->
 
   data_names = [
     'chipdata'
+    'map_000'
     'map_001'
     'character_001'
   ]

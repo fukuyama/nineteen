@@ -3,7 +3,7 @@ chipdata = [
   {
     name: 'null'
     frame: 0
-    weight: 0
+    weight: 1
   }
   {
     name: '草原'

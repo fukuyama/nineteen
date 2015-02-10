@@ -17,8 +17,8 @@ class nz.GridNode
   * @param {string} chipdata.name
   ###
   constructor: (x, y, chipdata={weight:0}) ->
-    @x      = x
-    @y      = y
+    @x = x
+    @y = y
     {
       @weight
       @frame

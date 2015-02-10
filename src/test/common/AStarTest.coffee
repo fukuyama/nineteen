@@ -141,18 +141,30 @@ describe 'AStarTest', () ->
 
     describe 'nz.Graph', ->
       describe 'ヒューリスティック関数', ->
-        it 'ヒューリスティック関数', ->
+        it 'ヒューリスティック関数1', ->
           s = new nz.GridNode(1,1,weight:1)
           s.direction = 1
           e = new nz.GridNode(2,1,weight:1)
           result = nz.Graph.heuristic(s,e)
           result.should.equals 3
-        it 'ヒューリスティック関数', ->
+        it 'ヒューリスティック関数2', ->
           s = new nz.GridNode(0,0,weight:1)
           s.direction = 1
           e = new nz.GridNode(0,1,weight:1)
           result = nz.Graph.heuristic(s,e)
           result.should.equals 4
+        it 'ヒューリスティック関数3', ->
+          s = new nz.GridNode(10,10,weight:1)
+          s.direction = 6
+          e = new nz.GridNode(9,10,weight:1)
+          result = nz.Graph.heuristic(s,e)
+          result.should.equals 1
+        it 'ヒューリスティック関数4', ->
+          s = new nz.GridNode(10,10,weight:1)
+          s.direction = 6
+          e = new nz.GridNode(4,7,weight:1)
+          result = nz.Graph.heuristic(s,e)
+          result.should.equals 6
 
       describe '隣接ノード', ->
         it '角', ->
