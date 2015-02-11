@@ -72,22 +72,20 @@ tm.define 'nz.SceneBattle',
 
   _characterMenuSelected: (e) ->
     if e.selectIndex == 0 # 移動
-      ###
-      @mapSprite.pointingover = ((e) ->
-        @searchRoute(@selectCharacterIndex,e.mapx,e.mapy)
-      ).bind @
-      ###
       @mapSprite.pointingend = @_menuMoveCommand.bind @
+    if e.selectIndex == 1 # 攻撃
+      @characterSprites[@selectCharacterIndex].gotoAndPlay('down')
+
 
   _menuMoveCommand: (e) ->
     route = @searchRoute(@selectCharacterIndex,e.mapx,e.mapy)
     @characterSprites[@selectCharacterIndex].mapMove route
     @mapSprite.pointingend = null
-    console.log route
 
   searchRoute: (character,mapx,mapy) ->
     if typeof character is 'number'
       character = @characters[character]
+    @map.graph.init()
     start = @map.graph.grid[character.mapx][character.mapy]
     start.direction = character.direction
     end = @map.graph.grid[mapx][mapy]

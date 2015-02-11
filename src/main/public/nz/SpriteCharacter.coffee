@@ -37,10 +37,17 @@ tm.define 'nz.SpriteCharacter',
       {
         x
         y
+        direction
       } = node
       @character.mapx = x
       @character.mapy = y
+      if @character.direction != direction
+        @tweener.call @directionAnimation,@,[direction]
+        @character.direction = direction
       x = x * width  + width  * 0.5
       y = y * height + height * 0.5
       y += height * 0.5 if node.x % 2 == 0
       @tweener.move(x,y,180)
+
+  directionAnimation: (direction) ->
+    @gotoAndPlay(nz.system.character.directions[direction])

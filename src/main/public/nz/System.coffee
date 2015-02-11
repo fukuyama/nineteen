@@ -12,6 +12,16 @@ tm.define 'nz.System',
   init: () ->
     @.$extend
       title: 'Nineteen'
+      character:
+        directions: [
+          'default'
+          'up'
+          'up_right'
+          'down_right'
+          'down'
+          'down_left'
+          'up_left'
+        ]
       map:
         chip:
           width: 32

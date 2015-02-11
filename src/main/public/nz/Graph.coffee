@@ -34,8 +34,8 @@ class nz.Graph
     @dirtyNodes = []
 
   cleanNode: (node) ->
-    astar.cleanNode(node)
     node.clean()
+    astar.cleanNode(node)
 
   markDirty: (node) ->
     @dirtyNodes.push node
