@@ -20,11 +20,11 @@ tm.define 'nz.SpriteBattleMap',
     for mapx in [0...@map.width]
       h = if mapx % 2 != 0 then @map.height else @map.width - 1
       for mapy in [0...h]
-        @_createMapChip(mapx,mapy)
+        @_initMapChip(mapx,mapy)
     return
 
   # 座標位置のマップチップを作成
-  _createMapChip: (mapx,mapy) ->
+  _initMapChip: (mapx,mapy) ->
     {
       width
       height
@@ -33,11 +33,10 @@ tm.define 'nz.SpriteBattleMap',
     x = mapx * width  + width  * 0.5
     y = mapy * height + height * 0.5
 
-    # 疑似ヘックス表示にするために奇数の座標は半分ずらす
-    if mapx % 2 == 0
-      y += height * 0.5
+    # 疑似ヘックス表示にするために偶数の座標は半分ずらす
+    y += height * 0.5 if mapx % 2 == 0
 
-    # TODO: マップデータから座標位置のマップチップインデックスを取得する
+    # マップデータから座標位置のマップチップを取得する
     node = @map.graph.grid[mapx][mapy]
     frameIndex = node.frame
     mapSprite = @

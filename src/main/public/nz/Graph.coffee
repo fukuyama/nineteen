@@ -19,26 +19,23 @@ class nz.Graph
     @grid[x] = [] for x in [0...mapdata.width]
     for y in [0...mapdata.height]
       for x in [0...mapdata.width]
-        chipid = mapdata.data[y][x]
-        node = new nz.GridNode(x,y,chipdata[chipid])
-        @grid[x][y] = node
-        @nodes.push(node)
+        unless y == mapdata.height - 1 and x % 2 == 0
+          chipid = mapdata.data[y][x]
+          node = new nz.GridNode(x,y,chipdata[chipid])
+          @grid[x][y] = node
+          @nodes.push(node)
     @init()
 
   init: ->
-    @dirtyNodes = []
     @cleanNode(node) for node in @nodes
 
   cleanDirty: ->
-    @cleanNode(node) for node in @dirtyNodes
-    @dirtyNodes = []
 
   cleanNode: (node) ->
     node.clean()
     astar.cleanNode(node)
 
   markDirty: (node) ->
-    @dirtyNodes.push node
 
   neighbors: (node) ->
     ret = []

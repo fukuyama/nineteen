@@ -251,6 +251,8 @@ describe 'AStarTest', () ->
           end.direction.should.equals 4,'direction'
 
           end = graph.grid[0][2]
+          graph.init()
+          start.direction = 4
           result = astar.search(graph, start, end, options)
           result.length.should.equals 2,'length'
           result[0].x.should.equals 0
@@ -270,6 +272,8 @@ describe 'AStarTest', () ->
           end.direction.should.equals 3,'direction'
 
           end = graph.grid[1][2]
+          graph.init()
+          start.direction = 4
           result = astar.search(graph, start, end, options)
           result.length.should.equals 2,'length'
           result[0].x.should.equals 0
@@ -279,6 +283,7 @@ describe 'AStarTest', () ->
           end.g.should.equals 3
 
           end = graph.grid[1][2]
+          graph.init()
           start.direction = 3
           result = astar.search(graph, start, end, options)
           result.length.should.equals 2,'length'
@@ -288,6 +293,7 @@ describe 'AStarTest', () ->
           result[1].y.should.equals 2
 
           end = graph.grid[1][2]
+          graph.init()
           start.direction = 2
           result = astar.search(graph, start, end, options)
           result.length.should.equals 2,'length'
@@ -298,6 +304,7 @@ describe 'AStarTest', () ->
 
           start = graph.grid[1][0]
           end = graph.grid[2][0]
+          graph.init()
           start.direction = 4
           result = astar.search(graph, start, end, options)
           result.length.should.equals 1,'length'
@@ -305,6 +312,8 @@ describe 'AStarTest', () ->
           result[0].y.should.equals 0
 
           end = graph.grid[2][1]
+          graph.init()
+          start.direction = 4
           result = astar.search(graph, start, end, options)
           result.length.should.equals 2,'length'
           result[0].x.should.equals 1
@@ -313,6 +322,7 @@ describe 'AStarTest', () ->
           result[1].y.should.equals 1
 
           end = graph.grid[2][1]
+          graph.init()
           start.direction = 3
           result = astar.search(graph, start, end, options)
           result.length.should.equals 2,'length'
