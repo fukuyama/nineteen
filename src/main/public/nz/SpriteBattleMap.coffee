@@ -23,6 +23,15 @@ tm.define 'nz.SpriteBattleMap',
         @_initMapChip(mapx,mapy)
     return
 
+  # MapChip用イベントハンドラ
+  _dispatchMapChipEvent: (_e) ->
+    e = tm.event.Event('map.' + _e.type)
+    e.app = _e.app
+    e.mapx = @mapx
+    e.mapy = @mapy
+    e.app.currentScene.dispatchEvent e
+    return
+
   # 座標位置のマップチップを作成
   _initMapChip: (mapx,mapy) ->
     {
@@ -39,7 +48,6 @@ tm.define 'nz.SpriteBattleMap',
     # マップデータから座標位置のマップチップを取得する
     node = @map.graph.grid[mapx][mapy]
     frameIndex = node.frame
-    mapSprite = @
 
     chip = tm.display.Sprite('map_chip',width,height)
       .addChildTo(@)
@@ -47,18 +55,11 @@ tm.define 'nz.SpriteBattleMap',
       .setFrameIndex(frameIndex)
       .setInteractive(true)
       .setBoundingType('rect')
-      .on 'pointingover', (e) ->
-        e.mapx = mapx
-        e.mapy = mapy
-        mapSprite.pointingover(e) if mapSprite.pointingover?
-      .on 'pointingout', (e) ->
-        e.mapx = mapx
-        e.mapy = mapy
-        mapSprite.pointingout(e) if mapSprite.pointingout?
-      .on 'pointingend', (e) ->
-        e.mapx = mapx
-        e.mapy = mapy
-        mapSprite.pointingend(e) if mapSprite.pointingend?
+      .on 'pointingover', @_dispatchMapChipEvent
+      .on 'pointingout', @_dispatchMapChipEvent
+      .on 'pointingend', @_dispatchMapChipEvent
+    chip.mapx = mapx
+    chip.mapy = mapy
 
     if node.object?
       tm.display.Sprite('map_object',32,64)

@@ -17,6 +17,8 @@ tm.define 'nz.SceneBattle',
     } = param
     @superInit()
     @mapName = 'map_' + "#{@mapId}".paddingLeft(3,'0')
+    @selectCharacterIndex = 0
+
     @on 'enter', @load.bind @
 
   load: () ->
@@ -37,56 +39,81 @@ tm.define 'nz.SceneBattle',
     return
 
   setup: () ->
+    # ゲームデータ
     @map = tm.asset.Manager.get(@mapName).data
-    chipdata = tm.asset.Manager.get('chipdata').data
+    unless @map.graph?
+      @map.graph = new nz.Graph
+        mapdata: @map
+        chipdata: tm.asset.Manager.get('chipdata').data
 
     @characters = [
-      {
-        name: 'テストキャラクター'
-        spriteSheet: 'character_001'
-        mapx: 10
-        mapy: 10
-        direction: 1
-      }
+      nz.Character(name:'キャラクター１',mapx:7,mapy:14)
+      nz.Character(name:'キャラクター２',mapx:7,mapy:0,direction:4)
     ]
 
-    @map.graph = new nz.Graph(mapdata:@map,chipdata:chipdata)
+    # スプライト
     @mapSprite = nz.SpriteBattleMap(@map).addChildTo(@)
     @mapSprite.x += 32 * 5
 
     @characterSprites = for character,i in @characters
-      nz.SpriteCharacter(i,character)
-        .addChildTo(@mapSprite)
-        .on 'pointingend', (e) ->
-          e.app.currentScene._openCharacterMenu(@num)
+      nz.SpriteCharacter(i,character).addChildTo(@mapSprite)
 
-  _openCharacterMenu: (num)->
-    @selectCharacterIndex = num
+    # イベント
+    @on 'character.pointingend', @_openCharacterMenu
+
+  _openCharacterMenu: (e)->
+    @selectCharacterIndex = e.characterIndex
+    menuFunc = [
+      @_menuMoveCommandStart.bind @
+      @_menuAttackCommandStart.bind @
+      @_menuShootingCommandStart.bind @
+    ]
     @app.pushScene tm.ui.MenuDialog(
       screenWidth: nz.system.screen.width
       screenHeight: nz.system.screen.height
       title: @characters[@selectCharacterIndex].name
       showExit: true
       menu: ['移動','攻撃','射撃']
-    ).on('menuselected', @_characterMenuSelected.bind(@))
+    ).on 'menuselected', (e) -> menuFunc[e.selectIndex]?.call(null)
 
-  _characterMenuSelected: (e) ->
-    if e.selectIndex == 0 # 移動
-      @mapSprite.pointingend = @_menuMoveCommand.bind @
-    if e.selectIndex == 1 # 攻撃
-      @characterSprites[@selectCharacterIndex].gotoAndPlay('down')
+  # 移動コマンド操作開始
+  _menuMoveCommandStart: ->
+    @one 'map.pointingend', @_menuMoveCommandEnd
 
+  # 移動コマンド操作終了
+  _menuMoveCommandEnd: (e) ->
+    character = @characterSprites[@selectCharacterIndex]
+    character.mapMove @searchRoute(character.character, e.mapx, e.mapy)
 
-  _menuMoveCommand: (e) ->
-    route = @searchRoute(@selectCharacterIndex,e.mapx,e.mapy)
-    @characterSprites[@selectCharacterIndex].mapMove route
-    @mapSprite.pointingend = null
+  # 射撃コマンド操作開始
+  _menuShootingCommandStart: ->
+
+  # 射撃コマンド操作終了
+  _menuShootingCommandEnd: ->
+
+  # 攻撃コマンド操作開始
+  _menuAttackCommandStart: ->
+    character = @characterSprites[@selectCharacterIndex]
+    character.attackAnimationStart()
+
+  # 攻撃コマンド操作終了
+  _menuAttackCommandEnd: ->
 
   searchRoute: (character,mapx,mapy) ->
     if typeof character is 'number'
       character = @characters[character]
-    @map.graph.init()
-    start = @map.graph.grid[character.mapx][character.mapy]
+    graph = @map.graph
+    start = graph.grid[character.mapx][character.mapy]
+    end   = graph.grid[mapx][mapy]
+
     start.direction = character.direction
-    end = @map.graph.grid[mapx][mapy]
-    return astar.search(@map.graph, start, end, {heuristic: nz.Graph.heuristic})
+    result = astar.search(graph, start, end, {heuristic: nz.Graph.heuristic})
+    route = []
+    for node in result
+      route.push {
+        x: node.x
+        y: node.y
+        direction: node.direction
+      }
+    graph.clear()
+    return route

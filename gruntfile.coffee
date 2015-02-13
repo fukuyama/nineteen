@@ -29,6 +29,7 @@ module.exports = (grunt) ->
   public_sections = [
     'nz/Graph'
     'nz/GridNode'
+    'nz/Character'
     'nz/System'
     'nz/SceneTitleMenu'
     'nz/SceneBattle'

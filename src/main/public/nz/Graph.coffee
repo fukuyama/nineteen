@@ -24,16 +24,14 @@ class nz.Graph
           node = new nz.GridNode(x,y,chipdata[chipid])
           @grid[x][y] = node
           @nodes.push(node)
-    @init()
+    @clear()
 
-  init: ->
-    @cleanNode(node) for node in @nodes
+  clear: ->
+    for node in @nodes
+      node.clean()
+      astar.cleanNode(node)
 
   cleanDirty: ->
-
-  cleanNode: (node) ->
-    node.clean()
-    astar.cleanNode(node)
 
   markDirty: (node) ->
 

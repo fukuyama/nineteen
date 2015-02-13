@@ -14,13 +14,13 @@ tm.define 'nz.System',
       title: 'Nineteen'
       character:
         directions: [
-          'default'
-          'up'
-          'up_right'
-          'down_right'
-          'down'
-          'down_left'
-          'up_left'
+          {name:'default'   , rotation:    0}
+          {name:'up'        , rotation:    0}
+          {name:'up_right'  , rotation:   60}
+          {name:'down_right', rotation:  120}
+          {name:'down'      , rotation:  180}
+          {name:'down_left' , rotation: -120}
+          {name:'up_left'   , rotation:  -60}
         ]
       map:
         chip:

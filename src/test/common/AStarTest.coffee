@@ -50,6 +50,7 @@ describe 'AStarTest', () ->
       result[1].y.should.equals 1
       result[2].x.should.equals 1
       result[2].y.should.equals 2
+
   describe '１９', ->
     describe 'nz.GridNode', ->
       it '方向転換のコスト計算1', ->
@@ -183,6 +184,7 @@ describe 'AStarTest', () ->
             chkxy result[i],pos[0],pos[1]
           end.g.should.equals r.cost
           end.direction.should.equals r.dir,'direction'
+          graph.clear()
 
         it '上1', ->
           route_search_test(
@@ -249,9 +251,9 @@ describe 'AStarTest', () ->
           result[0].y.should.equals 1
           end.g.should.equals 1
           end.direction.should.equals 4,'direction'
+          graph.clear()
 
           end = graph.grid[0][2]
-          graph.init()
           start.direction = 4
           result = astar.search(graph, start, end, options)
           result.length.should.equals 2,'length'
@@ -260,6 +262,7 @@ describe 'AStarTest', () ->
           result[1].x.should.equals 0
           result[1].y.should.equals 2
           end.g.should.equals 2
+          graph.clear()
         it '右下', ->
           graph = new nz.Graph(testdata)
           start = graph.grid[0][0]
@@ -270,9 +273,10 @@ describe 'AStarTest', () ->
           result[0].x.should.equals 1
           result[0].y.should.equals 1
           end.direction.should.equals 3,'direction'
+          graph.clear()
 
           end = graph.grid[1][2]
-          graph.init()
+
           start.direction = 4
           result = astar.search(graph, start, end, options)
           result.length.should.equals 2,'length'
@@ -281,9 +285,10 @@ describe 'AStarTest', () ->
           result[1].x.should.equals 1
           result[1].y.should.equals 2
           end.g.should.equals 3
+          graph.clear()
 
           end = graph.grid[1][2]
-          graph.init()
+
           start.direction = 3
           result = astar.search(graph, start, end, options)
           result.length.should.equals 2,'length'
@@ -291,9 +296,10 @@ describe 'AStarTest', () ->
           result[0].y.should.equals 1
           result[1].x.should.equals 1
           result[1].y.should.equals 2
+          graph.clear()
 
           end = graph.grid[1][2]
-          graph.init()
+
           start.direction = 2
           result = astar.search(graph, start, end, options)
           result.length.should.equals 2,'length'
@@ -301,18 +307,20 @@ describe 'AStarTest', () ->
           result[0].y.should.equals 1
           result[1].x.should.equals 1
           result[1].y.should.equals 2
+          graph.clear()
 
           start = graph.grid[1][0]
           end = graph.grid[2][0]
-          graph.init()
+
           start.direction = 4
           result = astar.search(graph, start, end, options)
           result.length.should.equals 1,'length'
           result[0].x.should.equals 2
           result[0].y.should.equals 0
+          graph.clear()
 
           end = graph.grid[2][1]
-          graph.init()
+
           start.direction = 4
           result = astar.search(graph, start, end, options)
           result.length.should.equals 2,'length'
@@ -320,9 +328,10 @@ describe 'AStarTest', () ->
           result[0].y.should.equals 1
           result[1].x.should.equals 2
           result[1].y.should.equals 1
+          graph.clear()
 
           end = graph.grid[2][1]
-          graph.init()
+
           start.direction = 3
           result = astar.search(graph, start, end, options)
           result.length.should.equals 2,'length'
@@ -330,3 +339,4 @@ describe 'AStarTest', () ->
           result[0].y.should.equals 0
           result[1].x.should.equals 2
           result[1].y.should.equals 1
+          graph.clear()
