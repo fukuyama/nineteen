@@ -186,7 +186,7 @@ describe 'AStarTest', () ->
           end.direction.should.equals r.dir,'direction'
           graph.clear()
         it.skip 'ほぼ真横の移動', ->
-          # まだうまく行かない 0215/02/14
+          # まだうまく行かない 2015/02/14
           route_search_test(
             {x:13,y:8,dir:6}
             {x:7,y:7}
