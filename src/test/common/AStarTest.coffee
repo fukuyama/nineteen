@@ -12,9 +12,9 @@ global.astar = astar
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'AStarTest', () ->
-  chkxy = (node,x,y) ->
-    node.x.should.equals x,"x"
-    node.y.should.equals y,"y"
+  chkxy = (node,x,y,i) ->
+    node.x.should.equals x,"x #{i}"
+    node.y.should.equals y,"y #{i}"
     return
 
   nz.astar = astar
@@ -181,11 +181,29 @@ describe 'AStarTest', () ->
           result = astar.search(graph, start, end, options)
           result.length.should.equals r.len,'length'
           for pos,i in r.route
-            chkxy result[i],pos[0],pos[1]
-          end.g.should.equals r.cost
+            chkxy result[i],pos[0],pos[1],i
+          end.g.should.equals r.cost,'cost'
           end.direction.should.equals r.dir,'direction'
           graph.clear()
-
+        it.skip 'ほぼ真横の移動', ->
+          # まだうまく行かない 0215/02/14
+          route_search_test(
+            {x:13,y:8,dir:6}
+            {x:7,y:7}
+            {
+              len: 6
+              cost: 7
+              dir: 5
+              route: [
+                [12,7]
+                [11,7]
+                [10,6]
+                [9,6]
+                [8,7]
+                [7,7]
+              ]
+            }
+          )
         it '上1', ->
           route_search_test(
             {x:10,y:10,dir:1}
