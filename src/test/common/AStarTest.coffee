@@ -166,6 +166,32 @@ describe 'AStarTest', () ->
           e = new nz.GridNode(4,7,weight:1)
           result = nz.Graph.heuristic(s,e)
           result.should.equals 6
+        it 'ヒューリスティック関数5', ->
+          s = new nz.GridNode(10,6,weight:1)
+          s.direction = 6
+          e = new nz.GridNode(7,7,weight:1)
+          result = nz.Graph.heuristic(s,e)
+          result.should.equals 4
+        it 'ヒューリスティック関数5-1', ->
+          s = new nz.GridNode(9,6,weight:1)
+          s.direction = 6
+          e = new nz.GridNode(7,7,weight:1)
+          result = nz.Graph.heuristic(s,e)
+          result.should.equals 3
+        it 'ヒューリスティック関数5-2', ->
+          s = new nz.GridNode(9,7,weight:1)
+          s.direction = 6
+          e = new nz.GridNode(7,7,weight:1)
+          result = s.calcDirection(e)
+          result.should.equals 5,'calcDirection'
+          result = nz.Graph.heuristic(s,e)
+          result.should.equals 3,'heuristic'
+        it 'ヒューリスティック関数6', ->
+          s = new nz.GridNode(13,8,weight:1)
+          s.direction = 6
+          e = new nz.GridNode(7,7,weight:1)
+          result = nz.Graph.heuristic(s,e)
+          result.should.equals 7
 
       describe '隣接ノード', ->
         it '角', ->
@@ -173,8 +199,8 @@ describe 'AStarTest', () ->
           result = graph.neighbors graph.grid[0][0]
           result.length.should.equals 3, 'length'
       describe 'ルート検索', ->
-        route_search_test = (s,e,r) ->
-          graph = new nz.Graph(testdata)
+        route_search_test = (s,e,r,graph) ->
+          graph = new nz.Graph(testdata) unless graph?
           start = graph.grid[s.x][s.y]
           end = graph.grid[e.x][e.y]
           start.direction = s.dir
@@ -185,7 +211,8 @@ describe 'AStarTest', () ->
           end.g.should.equals r.cost,'cost'
           end.direction.should.equals r.dir,'direction'
           graph.clear()
-        it.skip 'ほぼ真横の移動', ->
+          return graph
+        it 'ほぼ真横の移動', ->
           # まだうまく行かない 2015/02/14
           route_search_test(
             {x:13,y:8,dir:6}
@@ -199,7 +226,23 @@ describe 'AStarTest', () ->
                 [11,7]
                 [10,6]
                 [9,6]
-                [8,7]
+                [8,6]
+                [7,7]
+              ]
+            }
+          )
+        it 'ほぼ真横の移動切り出し', ->
+          # まだうまく行かない 2015/02/14
+          route_search_test(
+            {x:10,y:6,dir:6}
+            {x:7,y:7}
+            {
+              len: 3
+              cost: 4
+              dir: 5
+              route: [
+                [9,6]
+                [8,6]
                 [7,7]
               ]
             }
@@ -258,103 +301,139 @@ describe 'AStarTest', () ->
               ]
             }
           )
-        it '下', ->
-          graph = new nz.Graph(testdata)
-          start = graph.grid[0][0]
-          end = graph.grid[0][1]
-          start.direction = 4
-          result = astar.search(graph, start, end, options)
-          result.length.should.equals 1,'length'
-          result[0].x.should.equals 0
-          result[0].y.should.equals 1
-          end.g.should.equals 1
-          end.direction.should.equals 4,'direction'
-          graph.clear()
-
-          end = graph.grid[0][2]
-          start.direction = 4
-          result = astar.search(graph, start, end, options)
-          result.length.should.equals 2,'length'
-          result[0].x.should.equals 0
-          result[0].y.should.equals 1
-          result[1].x.should.equals 0
-          result[1].y.should.equals 2
-          end.g.should.equals 2
-          graph.clear()
+        it '下 reuse', ->
+          graph = route_search_test(
+            {x:0,y:0,dir:4}
+            {x:0,y:1}
+            {
+              len: 1
+              cost: 1
+              dir: 4
+              route: [
+                [0,1]
+              ]
+            }
+          )
+          route_search_test(
+            {x:0,y:0,dir:4}
+            {x:0,y:2}
+            {
+              len: 2
+              cost: 2
+              dir: 4
+              route: [
+                [0,1]
+                [0,2]
+              ]
+            }
+            graph
+          )
         it '右下', ->
-          graph = new nz.Graph(testdata)
-          start = graph.grid[0][0]
-          end = graph.grid[1][1]
-          start.direction = 4
-          result = astar.search(graph, start, end, options)
-          result.length.should.equals 1,'length'
-          result[0].x.should.equals 1
-          result[0].y.should.equals 1
-          end.direction.should.equals 3,'direction'
-          graph.clear()
-
-          end = graph.grid[1][2]
-
-          start.direction = 4
-          result = astar.search(graph, start, end, options)
-          result.length.should.equals 2,'length'
-          result[0].x.should.equals 0
-          result[0].y.should.equals 1
-          result[1].x.should.equals 1
-          result[1].y.should.equals 2
-          end.g.should.equals 3
-          graph.clear()
-
-          end = graph.grid[1][2]
-
-          start.direction = 3
-          result = astar.search(graph, start, end, options)
-          result.length.should.equals 2,'length'
-          result[0].x.should.equals 1
-          result[0].y.should.equals 1
-          result[1].x.should.equals 1
-          result[1].y.should.equals 2
-          graph.clear()
-
-          end = graph.grid[1][2]
-
-          start.direction = 2
-          result = astar.search(graph, start, end, options)
-          result.length.should.equals 2,'length'
-          result[0].x.should.equals 1
-          result[0].y.should.equals 1
-          result[1].x.should.equals 1
-          result[1].y.should.equals 2
-          graph.clear()
-
-          start = graph.grid[1][0]
-          end = graph.grid[2][0]
-
-          start.direction = 4
-          result = astar.search(graph, start, end, options)
-          result.length.should.equals 1,'length'
-          result[0].x.should.equals 2
-          result[0].y.should.equals 0
-          graph.clear()
-
-          end = graph.grid[2][1]
-
-          start.direction = 4
-          result = astar.search(graph, start, end, options)
-          result.length.should.equals 2,'length'
-          result[0].x.should.equals 1
-          result[0].y.should.equals 1
-          result[1].x.should.equals 2
-          result[1].y.should.equals 1
-          graph.clear()
-
-          end = graph.grid[2][1]
-
-          start.direction = 3
-          result = astar.search(graph, start, end, options)
-          result.length.should.equals 2,'length'
-          result[0].x.should.equals 2
-          result[0].y.should.equals 0
-          result[1].x.should.equals 2
-          result[1].y.should.equals 1
-          graph.clear()
+          graph = route_search_test(
+            {x:0,y:0,dir:4}
+            {x:1,y:1}
+            {
+              len: 1
+              cost: 2
+              dir: 3
+              route: [
+                [1,1]
+              ]
+            }
+          )
+          route_search_test(
+            {x:0,y:0,dir:4}
+            {x:1,y:2}
+            {
+              len: 2
+              cost: 3
+              dir: 3
+              route: [
+                [0,1]
+                [1,2]
+              ]
+            }
+            graph
+          )
+          route_search_test(
+            {x:0,y:0,dir:3}
+            {x:1,y:2}
+            {
+              len: 2
+              cost: 3
+              dir: 4
+              route: [
+                [1,1]
+                [1,2]
+              ]
+            }
+            graph
+          )
+          route_search_test(
+            {x:0,y:0,dir:3}
+            {x:1,y:2}
+            {
+              len: 2
+              cost: 3
+              dir: 4
+              route: [
+                [1,1]
+                [1,2]
+              ]
+            }
+            graph
+          )
+          route_search_test(
+            {x:1,y:0,dir:3}
+            {x:2,y:0}
+            {
+              len: 1
+              cost: 1
+              dir: 3
+              route: [
+                [2,0]
+              ]
+            }
+            graph
+          )
+          route_search_test(
+            {x:1,y:0,dir:4}
+            {x:2,y:0}
+            {
+              len: 1
+              cost: 2
+              dir: 3
+              route: [
+                [2,0]
+              ]
+            }
+            graph
+          )
+          route_search_test(
+            {x:1,y:0,dir:4}
+            {x:2,y:1}
+            {
+              len: 2
+              cost: 3
+              dir: 3
+              route: [
+                [1,1]
+                [2,1]
+              ]
+            }
+            graph
+          )
+          route_search_test(
+            {x:1,y:0,dir:3}
+            {x:2,y:1}
+            {
+              len: 2
+              cost: 3
+              dir: 4
+              route: [
+                [2,0]
+                [2,1]
+              ]
+            }
+            graph
+          )

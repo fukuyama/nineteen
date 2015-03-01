@@ -15,18 +15,44 @@ tm.define 'nz.SpriteBattleMap',
     @_chips  = []
     @_blinks = []
     @_clearblinks = []
+
     @width  = @map.width  * nz.system.map.chip.width
     @height = @map.height * nz.system.map.chip.height
     for mapx in [0...@map.width]
       h = if mapx % 2 != 0 then @map.height else @map.width - 1
       for mapy in [0...h]
         @_initMapChip(mapx,mapy)
+
+    @cursor = @_createCursor().addChildTo(@)
+
+    for line in @_chips
+      for chip in line
+        chip.on 'pointingover', ->
+          @parent.cursor.x = @x
+          @parent.cursor.y = @y
+
+    #@setInteractive(true)
+    #@on 'pointingover', -> @cursor.show()
+    #@on 'pointingout', -> @cursor.hide()
+
     return
+
+  _createCursor: ->
+    cursor = tm.display.Shape(
+      width: nz.system.map.chip.width
+      height: nz.system.map.chip.height
+      strokeStyle: 'red'
+      lineWidth: 3
+    )
+    cursor._render = -> @canvas.strokeRect(0, 0, @width, @height)
+    cursor.render()
+    return cursor
 
   # MapChip用イベントハンドラ
   _dispatchMapChipEvent: (_e) ->
     e = tm.event.Event('map.' + _e.type)
     e.app = _e.app
+    e.pointing = _e.pointing
     e.mapx = @mapx
     e.mapy = @mapy
     e.app.currentScene.dispatchEvent e
@@ -55,6 +81,7 @@ tm.define 'nz.SpriteBattleMap',
       .setFrameIndex(frameIndex)
       .setInteractive(true)
       .setBoundingType('rect')
+      .on 'pointingstart', @_dispatchMapChipEvent
       .on 'pointingover', @_dispatchMapChipEvent
       .on 'pointingout', @_dispatchMapChipEvent
       .on 'pointingend', @_dispatchMapChipEvent
@@ -72,8 +99,7 @@ tm.define 'nz.SpriteBattleMap',
       height: width
       strokeStyle: 'white'
       fillStyle: 'white'
-    )
-      .addChildTo(@)
+    ).addChildTo(@)
       .setPosition(x,y)
       .setInteractive(true)
       .setAlpha(0.0)
@@ -82,6 +108,7 @@ tm.define 'nz.SpriteBattleMap',
     @_chips[mapx][mapy] = chip
     @_blinks[mapx] = [] unless @_blinks[mapx]?
     @_blinks[mapx][mapy] = blink
+    return
 
   blink: (mapx,mapy) ->
     blink = @_blinks[mapx][mapy]

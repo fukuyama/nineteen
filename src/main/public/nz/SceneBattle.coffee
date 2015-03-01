@@ -19,10 +19,12 @@ tm.define 'nz.SceneBattle',
     @mapName = 'map_' + "#{@mapId}".paddingLeft(3,'0')
     @selectCharacterIndex = 0
 
+    @turn = 0 # 戦闘ターン数
+    @command = null
+
     @on 'enter', @load.bind @
 
   load: () ->
-    console.log "battle map load #{@mapName}"
     assets = {}
     assets[@mapName] = "data/#{@mapName}.json"
 
@@ -46,74 +48,220 @@ tm.define 'nz.SceneBattle',
         mapdata: @map
         chipdata: tm.asset.Manager.get('chipdata').data
 
-    @characters = [
+    characters = [
       nz.Character(name:'キャラクター１',mapx:7,mapy:14)
       nz.Character(name:'キャラクター２',mapx:7,mapy:0,direction:4)
     ]
+
+    #
+    tm.display.Label('Information')
+      .addChildTo(@)
+      .setAlign('left')
+      .setBaseline('top')
+      .setPosition(0,0)
 
     # スプライト
     @mapSprite = nz.SpriteBattleMap(@map).addChildTo(@)
     @mapSprite.x += 32 * 5
 
-    @characterSprites = for character,i in @characters
+    @characterSprites = for character,i in characters
       nz.SpriteCharacter(i,character).addChildTo(@mapSprite)
 
-    # イベント
-    @on 'character.pointingend', @_openCharacterMenu
+    # 基本操作
+    @on 'character.pointingend', (e) ->
+      @selectCharacterIndex = e.characterIndex
+      @_openCharacterMenu()
+    @on 'map.pointingend', (e) ->
+      unless @findCharacter(e.mapx,e.mapy)?
+        @_openMainMenu()
 
-  _openCharacterMenu: (e)->
-    @selectCharacterIndex = e.characterIndex
-    menuFunc = [
-      @_menuMoveCommandStart.bind @
-      @_menuAttackCommandStart.bind @
-      @_menuShootingCommandStart.bind @
-    ]
-    @app.pushScene tm.ui.MenuDialog(
+  # 指定された座標のキャラクターを探す
+  findCharacter: (mapx,mapy) ->
+    for sprite in @characterSprites
+      if sprite.character.mapx == mapx and sprite.character.mapy == mapy
+        return sprite
+    return null
+
+  _createMenuDialog: (_param) ->
+    param = {
       screenWidth: nz.system.screen.width
       screenHeight: nz.system.screen.height
-      title: @characters[@selectCharacterIndex].name
-      showExit: true
-      menu: ['移動','攻撃','射撃']
-    ).on 'menuselected', (e) -> menuFunc[e.selectIndex]?.call(null)
+    }.$extend _param
+    menuFunc = param.menuFunc
+    menuDialog = tm.ui.MenuDialog(param)
+    menuDialog.on 'menuclosed', (e) -> menuFunc[e.selectIndex]?.call(null)
+    menuDialog.box.setStrokeStyle nz.system.dialog.strokeStyle
+    menuDialog.box.setFillStyle   nz.system.dialog.fillStyle
+    return menuDialog
 
-  # 移動コマンド操作開始
-  _menuMoveCommandStart: ->
-    @one 'map.pointingend', @_menuMoveCommandEnd
+  _openMainMenu: ->
+    @app.pushScene @_createMenuDialog(
+      title: 'Command?'
+      menu: ['ターンエンド','オプション','ゲームエンド','閉じる']
+      menuFunc: [
+        @_menuTurnEnd.bind @
+        -> return
+        (e) -> e.app.replaceScene nz.SceneTitleMenu()
+      ]
+    )
 
-  # 移動コマンド操作終了
-  _menuMoveCommandEnd: (e) ->
-    character = @characterSprites[@selectCharacterIndex]
-    character.mapMove @searchRoute(character.character, e.mapx, e.mapy)
+  _openCharacterMenu: ->
+    self = @
+    @app.pushScene @_createMenuDialog(
+      title: @selectCharacter.name
+      menu: ['移動','攻撃','射撃','リセット','閉じる']
+      menuFunc: [
+        -> self._commandScene nz.SceneBattleMoveCommand
+        -> self._commandScene nz.SceneBattleAttackCommand
+        -> self._commandScene nz.SceneBattleShotCommand
+        -> self.selectCharacter.clearAction()
+      ]
+    )
 
-  # 射撃コマンド操作開始
-  _menuShootingCommandStart: ->
+  _menuTurnEnd: ->
+    @app.pushScene @_createMenuDialog(
+      title: 'ターンエンド？'
+      menu: ['Yes','No']
+      menuFunc: [
+        @_turnEnd.bind @
+      ]
+    )
 
-  # 射撃コマンド操作終了
-  _menuShootingCommandEnd: ->
+  _turnEnd: ->
+    for character in @characterSprites
+      character.startAction(@turn)
+    @turn += 1
+    return
 
-  # 攻撃コマンド操作開始
-  _menuAttackCommandStart: ->
-    character = @characterSprites[@selectCharacterIndex]
-    character.attackAnimationStart()
+  _commandScene: (klass) ->
+    scene = klass(
+      turn: @turn
+      target: @selectCharacterSprite
+      map: @map
+      mapSprite: @mapSprite
+    )
+    @one 'pause', -> @mapSprite.addChildTo scene
+    @one 'resume', -> @mapSprite.addChildTo @
+    @app.pushScene scene
+    return
 
-  # 攻撃コマンド操作終了
-  _menuAttackCommandEnd: ->
+nz.SceneBattle.prototype.getter 'selectCharacterSprite', -> @characterSprites[@selectCharacterIndex]
+nz.SceneBattle.prototype.getter 'selectCharacter', -> @characterSprites[@selectCharacterIndex].character
 
-  searchRoute: (character,mapx,mapy) ->
-    if typeof character is 'number'
-      character = @characters[character]
-    graph = @map.graph
-    start = graph.grid[character.mapx][character.mapy]
-    end   = graph.grid[mapx][mapy]
 
-    start.direction = character.direction
-    result = astar.search(graph, start, end, {heuristic: nz.Graph.heuristic})
-    route = []
-    for node in result
-      route.push {
-        x: node.x
-        y: node.y
-        direction: node.direction
-      }
-    graph.clear()
-    return route
+
+
+
+tm.define 'nz.SceneBattleMoveCommand',
+  superClass: tm.app.Scene
+
+  init: (param) ->
+    @superInit()
+    {
+      @turn
+      @target
+      @map
+      @mapSprite
+    } = param
+
+    @on 'map.pointingend', @_pointEnd
+
+  _pointEnd: (e) ->
+    {direction,mapx,mapy} = @target.character
+    route = @map.graph.searchRoute(direction, mapx, mapy, e.mapx, e.mapy)
+    @target.character.addRoute @turn, route
+    if route.length > 0
+      @target.createGhost(route[route.length-1].direction,e.mapx,e.mapy).addChildTo @mapSprite
+    @app.popScene()
+    return
+
+tm.define 'nz.SceneBattleAttackCommand',
+  superClass: tm.app.Scene
+
+  init: (param) ->
+    @superInit()
+    {
+      @turn
+      @target
+      @map
+    } = param
+
+    @on 'map.pointingend', @_pointEnd
+
+  _pointEnd: (e) ->
+    {direction,mapx,mapy} = @target.character
+    route = @map.graph.searchRoute(direction, mapx, mapy, e.mapx, e.mapy)
+    @target.character.setAttack @turn
+    @target.character.addRoute @turn, route
+    @app.popScene()
+    return
+
+tm.define 'nz.SceneBattleShotCommand',
+  superClass: tm.app.Scene
+
+  init: (param) ->
+    @superInit()
+    {
+      @turn
+      @target
+      @map
+    } = param
+
+    @on 'map.pointingstart', @_pointStart
+    @on 'pointingmove', @_pointMove
+    @on 'map.pointingend', @_pointEnd
+
+  _pointStart: (e) ->
+    @_removePointer()
+    @_createPointer()
+    @_movePointer(e.pointing)
+    return
+
+  _pointMove: (e) ->
+    @_movePointer(e.pointing)
+    return
+
+  _pointEnd: (e) ->
+    @_setupCommand()
+    @_removePointer()
+    @_endScene()
+    return
+
+  _setupCommand: ->
+    if @pointer?
+      @target.character.addShot @turn, @pointer.rotation
+    return
+
+  _endScene: ->
+    @app.popScene()
+    return
+
+  _createPointer: ->
+    @pointer = tm.display.Shape(
+      width: 50
+      height: 10
+    ).addChildTo @target
+      .setOrigin(0.0,0.5)
+    tm.display.CircleShape(
+      x: 50
+      width: 10
+      height: 10
+      fillStyle: 'blue'
+    ).addChildTo @pointer
+    return
+
+  _removePointer: ->
+    if @pointer?
+      @pointer.remove()
+      @pointer = null
+    return
+
+  _movePointer: (pointing) ->
+    if @pointer?
+      t = @target.body.localToGlobal tm.geom.Vector2(0,0)
+      x = pointing.x - t.x
+      y = pointing.y - t.y
+      v = tm.geom.Vector2 x,y
+      r = Math.radToDeg v.toAngle()
+      @pointer.rotation = r
+    return

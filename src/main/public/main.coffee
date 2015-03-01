@@ -3,7 +3,7 @@ tm.main ->
   screen = nz.system.screen
   assets = nz.system.assets
 
-  nz.app = app = tm.display.CanvasApp '#world'
+  app = tm.display.CanvasApp '#world'
 
   # リサイズ
   app.resize screen.width, screen.height
@@ -20,8 +20,7 @@ tm.main ->
     width: screen.width
     height: screen.height
   ).on 'load', ->
-    nz.app.replaceScene nz.SceneTitleMenu()
-    nz.app.pushScene tm.scene.TitleScene(title:nz.system.title)
+    @app.replaceScene nz.SceneTitleMenu()
     return
 
   # 実行

@@ -67,9 +67,32 @@ class nz.Graph
       graphString.push(rowDebug.join(" "))
     return graphString.join("\n")
 
+  searchRoute: (sd,sx,sy,ex,ey) ->
+    route = []
+    start = @grid[sx][sy]
+    end   = @grid[ex][ey]
+
+    start.direction = sd
+    result = astar.search(@, start, end, {heuristic: nz.Graph.heuristic})
+    for node in result
+      route.push {
+        x: node.x
+        y: node.y
+        direction: node.direction
+      }
+    @clear()
+    return route
+
 nz.Graph.heuristic = (node1,node2) ->
   hx = Math.abs(node1.x - node2.x)
-  hy = Math.abs(node1.y - node2.y) - Math.floor(hx / 2)
+  hy = Math.abs(node1.y - node2.y)
+  hr = Math.floor(hx / 2)
+  if hy == hr
+    hy = 0
+  else if hy < hr
+    hy = 1 if hy != 0
+  else
+    hy -= hr
   hd = 0
   if node1.direction != 0
     direction = node1.calcDirectionTo(node2)

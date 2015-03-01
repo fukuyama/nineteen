@@ -197,7 +197,7 @@ module.exports = (grunt) ->
   
   grunt.registerTask 'server', ['express:dev', 'watch']
   grunt.registerTask 'test', ['coffeelint','simplemocha:all']
-  grunt.registerTask 'createdata', ['copy','execute:createdata']
+  grunt.registerTask 'createdata', ['execute:createdata']
   grunt.registerTask 'default', [
     'coffeelint','coffee', 'simplemocha:all'
     'concat', 'uglify', 'copy', 'createdata'
