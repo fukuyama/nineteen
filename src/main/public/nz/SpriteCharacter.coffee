@@ -21,18 +21,18 @@ tm.define 'nz.SpriteCharacter',
     ).addChildTo @
 
     @weapon = tm.display.RectangleShape(
-      width: @character.weapon.width
-      height: @character.weapon.height
+      width: @character.weapon.height
+      height: @character.weapon.width
       strokeStyle: 'black'
-      fillStyle: 'gray'
+      fillStyle: 'red'
     ).addChildTo @body
-      .setOrigin(0.5,1.0)
+      .setOrigin(0.0,0.5)
       .setVisible(false)
 
-    @gotoAndStop(nz.system.character.directions[@character.direction].name)
+    @setMapPosition @character.mapx, @character.mapy
+    @setDirection @character.direction
 
     @setInteractive true
-    @setMapPosition @character.mapx, @character.mapy
     @on 'pointingover', @_dispatchCharacterEvent
     @on 'pointingout', @_dispatchCharacterEvent
     @on 'pointingend', @_dispatchCharacterEvent
@@ -42,40 +42,83 @@ tm.define 'nz.SpriteCharacter',
     e = tm.event.Event('character.' + _e.type)
     e.app = _e.app
     e.characterIndex = @index
+    e.mapx = @mapx
+    e.mapy = @mapy
+    e.ghost = false
+    if @mapx != @character.mapx or @mapy != @character.mapy
+      e.ghost = true
     e.app.currentScene.dispatchEvent e
     return
 
   createGhost: (direction,mapx,mapy) ->
-    @ghost.remove() if @ghost?
+    @clearGhost()
     @ghost = nz.SpriteCharacter(@index,@character)
+      .setAlpha 0.5
       .setMapPosition(mapx, mapy)
-      .gotoAndStop(nz.system.character.directions[direction].name)
+      .setDirection(direction)
     return @ghost
+
+  clearGhost: ->
+    @ghost.remove() if @ghost?
+    return
+
+  isGhost: -> @mapx != @character.mapx or @mapy != @character.mapy
+
+  setMapPosition: (@mapx,@mapy) ->
+    {
+      width
+      height
+    } = nz.system.map.chip
+    @x = mapx * width  + width  * 0.5
+    @y = mapy * height + height * 0.5
+    @y += height * 0.5 if mapx % 2 == 0
+    return @
+
+  setDirection: (@direction) ->
+    d = nz.system.character.directions[@direction]
+    @body.rotation = d.rotation
+    @gotoAndPlay(d.name)
+    return @
+
+  updateAttack: (enemy) ->
+    return unless @attack
+    cw = @character.weapon
+    distance = enemy.position.distance @position
+    if distance < (cw.height + @body.width / 2)
+      v = tm.geom.Vector2 enemy.x - @x, enemy.y - @y
+      r = Math.radToDeg(v.toAngle()) - @body.rotation
+      if cw.rotation.start <= r and r <= cw.rotation.end
+        @attackAnimation()
+        @attack = false
+    return
 
   startAction: (turn) ->
     @tweener.clear()
+    @action    = true
     @mapx      = @character.mapx
     @mapy      = @character.mapy
     @direction = @character.direction
     command = @character.commands[turn]
     if command?
-      @attack    = command.attack
+      @attack = command.attack
       for action in command.actions
         @_setShotAction(action) if action.shot?
         @_setMoveAction(action) if action.x? and action.y?
-    @tweener.call @endAction,@,[turn]
+    @tweener.call @_endAction,@,[turn]
     return
 
-  endAction: (turn) ->
+  _endAction: (turn) ->
     @character.mapx      = @mapx
     @character.mapy      = @mapy
     @character.direction = @direction
     @attack              = false
+    @action              = false
     return
 
   _setShotAction: (action) ->
     @tweener.call @shotAnimation,@,[action.shot]
     return
+
   _setMoveAction: (action) ->
     {
       x
@@ -98,54 +141,16 @@ tm.define 'nz.SpriteCharacter',
     @tweener.move(x,y,speed)
     return
 
-  attackCommand: (param) ->
-    @attackAnimationStart()
-
-  setMapPosition: (mapx,mapy) ->
-    {
-      width
-      height
-    } = nz.system.map.chip
-    @x = mapx * width  + width  * 0.5
-    @y = mapy * height + height * 0.5
-    @y += height * 0.5 if mapx % 2 == 0
-    return @
-
-  updateDirection: ->
-    @body.rotation = nz.system.character.directions[@character.direction].rotation
-
-  mapMove: (route) ->
-    {
-      width
-      height
-    } = nz.system.map.chip
-    @tweener.clear()
-    for node in route
-      {
-        x
-        y
-        direction
-      } = node
-      @character.mapx = x
-      @character.mapy = y
-      if @character.direction != direction
-        @tweener.call @directionAnimation,@,[direction]
-        @character.direction = direction
-      x = x * width  + width  * 0.5
-      y = y * height + height * 0.5
-      y += height * 0.5 if node.x % 2 == 0
-      @tweener.move(x,y,180)
-
   directionAnimation: (direction) ->
-    @gotoAndPlay(nz.system.character.directions[direction].name)
+    @setDirection direction
 
-  attackAnimationStart: ->
-    @updateDirection()
+  attackAnimation: ->
+    cw = @character.weapon
     @weapon.visible = true
-    @weapon.rotation = @character.weapon.rotation.start
+    @weapon.rotation = cw.rotation.start
     @weapon.tweener
         .clear()
-        .rotate(@character.weapon.rotation.end,@character.weapon.speed)
+        .rotate(cw.rotation.end,cw.speed)
         .call @_attackAnimationEnd,@,[]
 
   _attackAnimationEnd: ->
@@ -158,14 +163,14 @@ tm.define 'nz.SpriteCharacter',
       distance
       speed
     } = param
-    b = @body.localToGlobal(tm.geom.Vector2(0,0))
+    bv = @body.localToGlobal(tm.geom.Vector2(0,0))
     ballet = tm.display.CircleShape(
-      x: b.x
-      y: b.y
+      x: bv.x
+      y: bv.y
       width: 10
       height: 10
     ).addChildTo @getRoot()
     angle = Math.degToRad(rotation)
-    vx = distance * Math.cos(angle) + b.x
-    vy = distance * Math.sin(angle) + b.y
+    vx = distance * Math.cos(angle) + bv.x
+    vy = distance * Math.sin(angle) + bv.y
     ballet.tweener.move(vx,vy,speed).call(-> ballet.remove())

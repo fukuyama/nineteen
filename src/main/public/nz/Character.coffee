@@ -13,6 +13,8 @@ tm.define 'nz.Character',
     @.$extend {
       name: 'テストキャラクター'
       spriteSheet: 'character_001'
+      hp: 10
+      ap: 6
       mapx: 0
       mapy: 0
       direction: 1

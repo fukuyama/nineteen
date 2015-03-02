@@ -208,6 +208,7 @@ describe 'AStarTest', () ->
           result.length.should.equals r.len,'length'
           for pos,i in r.route
             chkxy result[i],pos[0],pos[1],i
+            result[i].g.should.equals r.costs[i],'costs' if r.costs?[i]?
           end.g.should.equals r.cost,'cost'
           end.direction.should.equals r.dir,'direction'
           graph.clear()
@@ -254,6 +255,7 @@ describe 'AStarTest', () ->
             {
               len: 5
               cost: 5
+              costs: [1,2,3,4,5]
               dir: 1
               route: [
                 [10,9]
@@ -271,6 +273,7 @@ describe 'AStarTest', () ->
             {
               len: 6
               cost: 7
+              costs: [1,2,3,4,5,7]
               dir: 6
               route: [
                 [10,9]
