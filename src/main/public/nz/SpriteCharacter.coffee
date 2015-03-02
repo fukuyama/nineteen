@@ -60,6 +60,7 @@ tm.define 'nz.SpriteCharacter',
 
   clearGhost: ->
     @ghost.remove() if @ghost?
+    @ghost = null
     return
 
   isGhost: -> @mapx != @character.mapx or @mapy != @character.mapy
