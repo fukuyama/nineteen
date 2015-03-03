@@ -45,8 +45,9 @@ tm.define 'nz.SpriteCharacter',
     e.mapx = @mapx
     e.mapy = @mapy
     e.ghost = false
-    if @mapx != @character.mapx or @mapy != @character.mapy
-      e.ghost = true
+    e.ghost = true if @mapx != @character.mapx or @mapy != @character.mapy
+    e.ghost = true if @ghost?.mapx == e.mapx and @ghost?.mapy == e.mapy
+    console.log e.ghost
     e.app.currentScene.dispatchEvent e
     return
 

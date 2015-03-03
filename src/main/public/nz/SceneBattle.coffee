@@ -64,8 +64,8 @@ tm.define 'nz.SceneBattle',
     @mapSprite = nz.SpriteBattleMap(@map).addChildTo(@)
     @mapSprite.x += 32 * 5
 
-    @characterSprites = for character,i in characters
-      nz.SpriteCharacter(i,character).addChildTo(@mapSprite)
+    for character,i in characters
+      @characterSprites.push nz.SpriteCharacter(i,character).addChildTo(@mapSprite)
 
     # 基本操作
     @on 'character.pointingend', (e) ->
@@ -73,23 +73,19 @@ tm.define 'nz.SceneBattle',
       @_selectGhost          = e.ghost
       @_openCharacterMenu()
     @on 'map.pointingend', (e) ->
-      unless @findCharacter(e.mapx,e.mapy)?
+      unless @mapSprite.findCharacter(e.mapx,e.mapy)?
         @_openMainMenu()
 
-  # 指定された座標のキャラクターを探す
-  findCharacter: (mapx,mapy) ->
-    for character in @characterSprites
-      if character.mapx == mapx and character.mapy == mapy
-        return character
-      if character.ghost?.mapx == mapx and character.ghost?.mapy == mapy
-        return character
-    return null
-
-  _commandScene: (klass) ->
+  _commandScene: (klass,callback) ->
+    target = @selectCharacterSprite
+    if @_selectGhost
+      target = @selectCharacterSprite.ghost
+    else
+      @selectCharacter.clearAction(@turn)
     scene = klass(
       turn: @turn
-      target: @selectCharacterSprite
-      ghost: @_selectGhost
+      target: target
+      callback: callback
       map: @map
       mapSprite: @mapSprite
     )
@@ -126,12 +122,12 @@ tm.define 'nz.SceneBattle',
     self = @
     @app.pushScene @_createMenuDialog(
       title: @selectCharacter.name
-      menu: ['Move','Attack','Shot','Reset Action','Close Menu']
+      menu: ['Move','Direction','Attack','Shot','Close Menu']
       menuFunc: [
-        -> self._commandScene nz.SceneBattleMoveCommand
-        -> self._commandScene nz.SceneBattleAttackCommand
-        -> self._commandScene nz.SceneBattleShotCommand
-        -> self.selectCharacter.clearAction()
+        -> self._commandScene nz.SceneBattleMoveCommand, self._addMoveCommand.bind self
+        -> self._commandScene nz.SceneBattleDirectionCommand, self._addDirectionCommand.bind self
+        -> self._commandScene nz.SceneBattleMoveCommand, self._addAttackCommand.bind self
+        -> self._commandScene nz.SceneBattleShotCommand, self._addShotCommand.bind self
       ]
     )
 
@@ -140,11 +136,11 @@ tm.define 'nz.SceneBattle',
       title: 'Start Next Turn?'
       menu: ['Yes','No']
       menuFunc: [
-        @nextTurnStart.bind @
+        @_startTurn.bind @
       ]
     )
 
-  nextTurnStart: ->
+  _startTurn: ->
     console.log 'turn start'
     for character in @characterSprites
       character.clearGhost()
@@ -157,15 +153,41 @@ tm.define 'nz.SceneBattle',
     for character in @characterSprites
       @_updateAttack(character)
       endflag |= character.action
-    unless endflag
-      @turn += 1
-      @update = null
-      console.log 'turn end'
+    @_endTurn() unless endflag
+
+  _endTurn: ->
+    @turn += 1
+    @update = null
+    console.log 'turn end'
 
   _updateAttack: (character) ->
     for target,i in @characterSprites when character.index != i
       character.updateAttack(target)
 
+  _addMoveCommand: (route) ->
+    @selectCharacter.addRoute @turn, route
+    if route.length > 0
+      p = route[route.length-1]
+      @selectCharacterSprite.createGhost(p.direction,p.x,p.y).addChildTo @mapSprite
+    return
+
+  _addAttackCommand: (route) ->
+    @selectCharacter.setAttack @turn
+    @_addMoveCommand(route)
+    return
+
+  _addShotCommand: (rotation) ->
+    @selectCharacter.addShot @turn, rotation
+    unless @selectCharacterSprite.ghost?
+      s = @selectCharacterSprite
+      s.createGhost(s.direction,s.mapx,s.mapy).addChildTo @mapSprite
+    return
+
+  _addDirectionCommand: (rotation) ->
+    return
+
+
+nz.SceneBattle.prototype.getter 'characterSprites', -> @mapSprite.characterSprites
 nz.SceneBattle.prototype.getter 'selectCharacterSprite', -> @characterSprites[@_selectCharacterIndex]
 nz.SceneBattle.prototype.getter 'selectCharacter', -> @selectCharacterSprite.character
 
@@ -177,7 +199,7 @@ tm.define 'nz.SceneBattleMoveCommand',
     {
       @turn
       @target
-      @ghost
+      @callback
       @map
       @mapSprite
     } = param
@@ -185,45 +207,11 @@ tm.define 'nz.SceneBattleMoveCommand',
     @on 'map.pointingend', @_pointEnd
 
   _pointEnd: (e) ->
+    console.log 'move command end'
     {direction,mapx,mapy} = @target
-    if @ghost
-      {direction,mapx,mapy} = @target.ghost
-    else
-      @target.character.clearAction()
     route = @map.graph.searchRoute(direction, mapx, mapy, e.mapx, e.mapy)
-    @target.character.addRoute @turn, route
-    if route.length > 0
-      @target.createGhost(route[route.length-1].direction,e.mapx,e.mapy).addChildTo @mapSprite
-    @app.popScene()
-    return
-
-tm.define 'nz.SceneBattleAttackCommand',
-  superClass: tm.app.Scene
-
-  init: (param) ->
-    @superInit()
-    {
-      @turn
-      @target
-      @ghost
-      @map
-      @mapSprite
-    } = param
-
-    @on 'map.pointingend', @_pointEnd
-
-  _pointEnd: (e) ->
-    {direction,mapx,mapy} = @target
-    if @ghost
-      {direction,mapx,mapy} = @target.ghost
-    else
-      @target.character.clearAction()
-    route = @map.graph.searchRoute(direction, mapx, mapy, e.mapx, e.mapy)
-    @target.character.setAttack @turn
-    @target.character.addRoute @turn, route
-    if route.length > 0
-      @target.createGhost(route[route.length-1].direction,e.mapx,e.mapy).addChildTo @mapSprite
-    @app.popScene()
+    @callback(route)
+    @one 'enterframe', -> @app.popScene()
     return
 
 tm.define 'nz.SceneBattleShotCommand',
@@ -234,7 +222,7 @@ tm.define 'nz.SceneBattleShotCommand',
     {
       @turn
       @target
-      @ghost
+      @callback
       @map
     } = param
 
@@ -260,21 +248,18 @@ tm.define 'nz.SceneBattleShotCommand',
 
   _setupCommand: ->
     if @pointer?
-      @target.character.clearAction() unless @ghost
-      @target.character.addShot @turn, @pointer.rotation
+      @callback(@pointer.rotation)
     return
 
   _endScene: ->
-    @app.popScene()
+    @one 'enterframe', -> @app.popScene()
     return
 
   _createPointer: ->
-    target = @target
-    target = @target.ghost if @ghost
     @pointer = tm.display.Shape(
       width: 50
       height: 10
-    ).addChildTo target
+    ).addChildTo @target
       .setOrigin(0.0,0.5)
     tm.display.CircleShape(
       x: 50
@@ -292,12 +277,38 @@ tm.define 'nz.SceneBattleShotCommand',
 
   _movePointer: (pointing) ->
     if @pointer?
-      target = @target
-      target = @target.ghost if @ghost
-      t = target.body.localToGlobal tm.geom.Vector2(0,0)
+      t = @target.body.localToGlobal tm.geom.Vector2(0,0)
       x = pointing.x - t.x
       y = pointing.y - t.y
       v = tm.geom.Vector2 x,y
       r = Math.radToDeg v.toAngle()
       @pointer.rotation = r
+    return
+
+tm.define 'nz.SceneBattleDirectionCommand',
+  superClass: nz.SceneBattleShotCommand
+
+  init: (param) ->
+    @superInit(param)
+
+    @_direction = null
+
+  _setupCommand: ->
+    #@target.character.clearAction() unless @ghost
+    #@target.character.addShot @turn, @pointer._rotation
+    return
+
+  _movePointer: (pointing) ->
+    return unless @pointer?
+    t = @target.body.localToGlobal tm.geom.Vector2(0,0)
+    x = pointing.x - t.x
+    y = pointing.y - t.y
+    v = tm.geom.Vector2 x,y
+    rotation = Math.radToDeg v.toAngle()
+    for d,i in nz.system.character.directions when i > 0
+      if d.rotation - 30 < rotation and rotation < d.rotation + 30
+        if @_direction != d
+          @_direction = d
+          @pointer.rotation = d.rotation
+          return
     return

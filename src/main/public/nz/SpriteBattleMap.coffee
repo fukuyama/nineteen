@@ -15,6 +15,7 @@ tm.define 'nz.SpriteBattleMap',
     @_chips  = []
     @_blinks = []
     @_clearblinks = []
+    @characterSprites = []
 
     @width  = @map.width  * nz.system.map.chip.width
     @height = @map.height * nz.system.map.chip.height
@@ -36,6 +37,15 @@ tm.define 'nz.SpriteBattleMap',
     #@on 'pointingout', -> @cursor.hide()
 
     return
+
+  # 指定された座標のキャラクターを探す
+  findCharacter: (mapx,mapy) ->
+    for character in @characterSprites
+      if character.mapx == mapx and character.mapy == mapy
+        return character
+      if character.ghost?.mapx == mapx and character.ghost?.mapy == mapy
+        return character
+    return null
 
   _createCursor: ->
     cursor = tm.display.Shape(
