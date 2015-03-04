@@ -50,7 +50,7 @@ tm.define 'nz.SceneBattle',
 
     characters = [
       nz.Character(name:'キャラクター１',mapx:7,mapy:14)
-      nz.Character(name:'キャラクター２',mapx:7,mapy:0,direction:4)
+      nz.Character(name:'キャラクター２',mapx:7,mapy:0,direction:3)
     ]
 
     # TODO: 情報を表示する場所
@@ -168,7 +168,7 @@ tm.define 'nz.SceneBattle',
     @selectCharacter.addRoute @turn, route
     if route.length > 0
       p = route[route.length-1]
-      @selectCharacterSprite.createGhost(p.direction,p.x,p.y).addChildTo @mapSprite
+      @selectCharacterSprite.createGhost(p.direction,p.mapx,p.mapy).addChildTo @mapSprite
     return
 
   _addAttackCommand: (route) ->
@@ -207,10 +207,8 @@ tm.define 'nz.SceneBattleMoveCommand',
     @on 'map.pointingend', @_pointEnd
 
   _pointEnd: (e) ->
-    console.log 'move command end'
     {direction,mapx,mapy} = @target
-    route = @map.graph.searchRoute(direction, mapx, mapy, e.mapx, e.mapy)
-    @callback(route)
+    @callback @map.graph.searchRoute(direction, mapx, mapy, e.mapx, e.mapy)
     @one 'enterframe', -> @app.popScene()
     return
 
@@ -257,12 +255,12 @@ tm.define 'nz.SceneBattleShotCommand',
 
   _createPointer: ->
     @pointer = tm.display.Shape(
-      width: 50
+      width: 40
       height: 10
     ).addChildTo @target
       .setOrigin(0.0,0.5)
     tm.display.CircleShape(
-      x: 50
+      x: 40
       width: 10
       height: 10
       fillStyle: 'blue'

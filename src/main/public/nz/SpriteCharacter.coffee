@@ -47,7 +47,6 @@ tm.define 'nz.SpriteCharacter',
     e.ghost = false
     e.ghost = true if @mapx != @character.mapx or @mapy != @character.mapy
     e.ghost = true if @ghost?.mapx == e.mapx and @ghost?.mapy == e.mapy
-    console.log e.ghost
     e.app.currentScene.dispatchEvent e
     return
 
@@ -71,9 +70,9 @@ tm.define 'nz.SpriteCharacter',
       width
       height
     } = nz.system.map.chip
-    @x = mapx * width  + width  * 0.5
-    @y = mapy * height + height * 0.5
-    @y += height * 0.5 if mapx % 2 == 0
+    @x = @mapx * width  + width  * @originX
+    @y = @mapy * height + height * @originY
+    @y += height * 0.5 if @mapx % 2 == 0
     return @
 
   setDirection: (@direction) ->
@@ -100,12 +99,14 @@ tm.define 'nz.SpriteCharacter',
     @mapx      = @character.mapx
     @mapy      = @character.mapy
     @direction = @character.direction
+
     command = @character.commands[turn]
     if command?
       @attack = command.attack
       for action in command.actions
-        @_setShotAction(action) if action.shot?
-        @_setMoveAction(action) if action.x? and action.y?
+        @_setShotAction(action.shot) if action.shot?
+        @_setMoveAction(action.move) if action.move?
+        @_setDirectionAction(action.direction) if action.direction?
     @tweener.call @_endAction,@,[turn]
     return
 
@@ -117,36 +118,39 @@ tm.define 'nz.SpriteCharacter',
     @action              = false
     return
 
-  _setShotAction: (action) ->
-    @tweener.call @shotAnimation,@,[action.shot]
+  _setShotAction: (param) ->
+    @tweener.call @shotAnimation,@,[param]
     return
 
-  _setMoveAction: (action) ->
+  _setMoveAction: (param) ->
     {
-      x
-      y
-      direction
+      @mapx
+      @mapy
       speed
-    } = action
+    } = param
     {
       width
       height
     } = nz.system.map.chip
-    @mapx = x
-    @mapy = y
-    if @direction != direction
-      @tweener.call @directionAnimation,@,[direction]
-      @direction = direction
-    x = x * width  + width  * 0.5
-    y = y * height + height * 0.5
+    x = @mapx * width  + width  * @originX
+    y = @mapy * height + height * @originY
     y += height * 0.5 if @mapx % 2 == 0
     @tweener.move(x,y,speed)
     return
+
+  _setDirectionAction: (param) ->
+    {
+      direction
+      speed
+    } = param
+    @tweener.wait speed
+    @tweener.call @directionAnimation,@,[direction]
 
   directionAnimation: (direction) ->
     @setDirection direction
 
   attackAnimation: ->
+    @tweener.pause()
     cw = @character.weapon
     @weapon.visible = true
     @weapon.rotation = cw.rotation.start
@@ -158,6 +162,7 @@ tm.define 'nz.SpriteCharacter',
   _attackAnimationEnd: ->
     @weapon.visible = false
     @weapon.rotation = 0
+    @tweener.play()
 
   shotAnimation: (param) ->
     {
@@ -175,4 +180,5 @@ tm.define 'nz.SpriteCharacter',
     angle = Math.degToRad(rotation)
     vx = distance * Math.cos(angle) + bv.x
     vy = distance * Math.sin(angle) + bv.y
+    speed = speed * distance / 32
     ballet.tweener.move(vx,vy,speed).call(-> ballet.remove())

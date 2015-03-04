@@ -76,8 +76,8 @@ class nz.Graph
     result = astar.search(@, start, end, {heuristic: nz.Graph.heuristic})
     for node in result
       route.push {
-        x: node.x
-        y: node.y
+        mapx: node.x
+        mapy: node.y
         direction: node.direction
       }
     @clear()
@@ -94,8 +94,7 @@ nz.Graph.heuristic = (node1,node2) ->
   else
     hy -= hr
   hd = 0
-  if node1.direction != 0
-    direction = node1.calcDirectionTo(node2)
-    hd = node1.getDirectionCost(direction)
+  direction = node1.calcDirectionTo(node2)
+  hd = node1.getDirectionCost(direction)
   # console.log "#{hx} #{hy} #{hd} #{direction}"
   hx + hy + hd

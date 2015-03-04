@@ -41,22 +41,22 @@ class nz.GridNode
   calcDirection: (node) ->
     direction = 0
     if @x == node.x
-      direction = 1 if @y > node.y
-      direction = 4 if @y < node.y
+      direction = 0 if @y > node.y
+      direction = 3 if @y < node.y
     else if @x > node.x # 左側
       if @y == node.y
-        direction = if @x % 2 == 0 then 6 else 5
+        direction = if @x % 2 == 0 then 5 else 4
       else if @y > node.y
-        direction = 6
-      else if @y < node.y
         direction = 5
+      else if @y < node.y
+        direction = 4
     else if @x < node.x # 右側
       if @y == node.y
-        direction = if @x % 2 == 0 then 2 else 3
+        direction = if @x % 2 == 0 then 1 else 2
       else if @y > node.y
-        direction = 2
+        direction = 1
       else if @y < node.y
-        direction = 3
+        direction = 2
     return direction
   calcDirectionTo: (node) -> @calcDirection(node)
   calcDirectionBy: (node) -> node.calcDirection(@)
