@@ -3,6 +3,9 @@
 * 戦闘マップスプライト
 ###
 
+MAP_CHIP_W = nz.system.map.chip.width
+MAP_CHIP_H = nz.system.map.chip.height
+
 tm.define 'nz.SpriteBattleMap',
   superClass: tm.display.CanvasElement
 
@@ -17,8 +20,8 @@ tm.define 'nz.SpriteBattleMap',
     @_clearblinks = []
     @characterSprites = []
 
-    @width  = @map.width  * nz.system.map.chip.width
-    @height = @map.height * nz.system.map.chip.height
+    @width  = @map.width  * MAP_CHIP_W
+    @height = @map.height * MAP_CHIP_H
     for mapx in [0...@map.width]
       h = if mapx % 2 != 0 then @map.height else @map.width - 1
       for mapy in [0...h]
@@ -31,10 +34,6 @@ tm.define 'nz.SpriteBattleMap',
         chip.on 'pointingover', ->
           @parent.cursor.x = @x
           @parent.cursor.y = @y
-
-    #@setInteractive(true)
-    #@on 'pointingover', -> @cursor.show()
-    #@on 'pointingout', -> @cursor.hide()
 
     return
 
@@ -49,8 +48,8 @@ tm.define 'nz.SpriteBattleMap',
 
   _createCursor: ->
     cursor = tm.display.Shape(
-      width: nz.system.map.chip.width
-      height: nz.system.map.chip.height
+      width: MAP_CHIP_W
+      height: MAP_CHIP_H
       strokeStyle: 'red'
       lineWidth: 3
     )
@@ -70,22 +69,19 @@ tm.define 'nz.SpriteBattleMap',
 
   # 座標位置のマップチップを作成
   _initMapChip: (mapx,mapy) ->
-    {
-      width
-      height
-    } = nz.system.map.chip
-
-    x = mapx * width  + width  * 0.5
-    y = mapy * height + height * 0.5
+    w = MAP_CHIP_W
+    h = MAP_CHIP_H
+    x = mapx * w + w * 0.5
+    y = mapy * h + h * 0.5
 
     # 疑似ヘックス表示にするために偶数の座標は半分ずらす
-    y += height * 0.5 if mapx % 2 == 0
+    y += h * 0.5 if mapx % 2 == 0
 
     # マップデータから座標位置のマップチップを取得する
     node = @map.graph.grid[mapx][mapy]
     frameIndex = node.frame
 
-    chip = tm.display.Sprite('map_chip',width,height)
+    chip = tm.display.Sprite('map_chip',w,h)
       .addChildTo(@)
       .setPosition(x,y)
       .setFrameIndex(frameIndex)
@@ -105,8 +101,8 @@ tm.define 'nz.SpriteBattleMap',
         .setFrameIndex(node.object.frame)
 
     blink = tm.display.RectangleShape(
-      width: width
-      height: width
+      width: w
+      height: h
       strokeStyle: 'white'
       fillStyle: 'white'
     ).addChildTo(@)
@@ -136,3 +132,5 @@ tm.define 'nz.SpriteBattleMap',
         blink.setAlpha(0.0)
     @_clearblinks.clear()
     return
+
+  getMapChip: (mapx,mapy) -> @_chips[mapx][mapy]

@@ -3,6 +3,10 @@
 * キャラクタースプライト
 ###
 
+MAP_CHIP_W = nz.system.map.chip.width
+MAP_CHIP_H = nz.system.map.chip.height
+DIRECTIONS = nz.system.character.directions
+
 tm.define 'nz.SpriteCharacter',
   superClass: tm.display.AnimationSprite
 
@@ -66,17 +70,15 @@ tm.define 'nz.SpriteCharacter',
   isGhost: -> @mapx != @character.mapx or @mapy != @character.mapy
 
   setMapPosition: (@mapx,@mapy) ->
-    {
-      width
-      height
-    } = nz.system.map.chip
-    @x = @mapx * width  + width  * @originX
-    @y = @mapy * height + height * @originY
-    @y += height * 0.5 if @mapx % 2 == 0
+    w  = MAP_CHIP_W
+    h  = MAP_CHIP_H
+    @x = @mapx * w + w * @originX
+    @y = @mapy * h + h * @originY
+    @y += h * 0.5 if @mapx % 2 == 0
     return @
 
   setDirection: (@direction) ->
-    d = nz.system.character.directions[@direction]
+    d = DIRECTIONS[@direction]
     @body.rotation = d.rotation
     @gotoAndPlay(d.name)
     return @
@@ -106,7 +108,7 @@ tm.define 'nz.SpriteCharacter',
       for action in command.actions
         @_setShotAction(action.shot) if action.shot?
         @_setMoveAction(action.move) if action.move?
-        @_setDirectionAction(action.direction) if action.direction?
+        @_setRotateAction(action.rotate) if action.rotate?
     @tweener.call @_endAction,@,[turn]
     return
 
@@ -128,17 +130,15 @@ tm.define 'nz.SpriteCharacter',
       @mapy
       speed
     } = param
-    {
-      width
-      height
-    } = nz.system.map.chip
-    x = @mapx * width  + width  * @originX
-    y = @mapy * height + height * @originY
-    y += height * 0.5 if @mapx % 2 == 0
+    w = MAP_CHIP_W
+    h = MAP_CHIP_H
+    x = @mapx * w + w * @originX
+    y = @mapy * h + h * @originY
+    y += h * 0.5 if @mapx % 2 == 0
     @tweener.move(x,y,speed)
     return
 
-  _setDirectionAction: (param) ->
+  _setRotateAction: (param) ->
     {
       direction
       speed
@@ -172,9 +172,9 @@ tm.define 'nz.SpriteCharacter',
     } = param
     bv = @body.localToGlobal(tm.geom.Vector2(0,0))
     ballet = tm.display.CircleShape(
-      x: bv.x
-      y: bv.y
-      width: 10
+      x:      bv.x
+      y:      bv.y
+      width:  10
       height: 10
     ).addChildTo @getRoot()
     angle = Math.degToRad(rotation)
