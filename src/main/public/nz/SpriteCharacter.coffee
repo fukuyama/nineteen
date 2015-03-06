@@ -44,13 +44,11 @@ tm.define 'nz.SpriteCharacter',
 
   _dispatchCharacterEvent: (_e) ->
     e = tm.event.Event('character.' + _e.type)
-    e.app = _e.app
+    e.app   = _e.app
+    e.mapx  = @mapx
+    e.mapy  = @mapy
+    e.ghost = @isGhost() or (@ghost?.mapx == @mapx and @ghost?.mapy == @mapy)
     e.characterIndex = @index
-    e.mapx = @mapx
-    e.mapy = @mapy
-    e.ghost = false
-    e.ghost = true if @mapx != @character.mapx or @mapy != @character.mapy
-    e.ghost = true if @ghost?.mapx == e.mapx and @ghost?.mapy == e.mapy
     e.app.currentScene.dispatchEvent e
     return
 
@@ -63,8 +61,9 @@ tm.define 'nz.SpriteCharacter',
     return @ghost
 
   clearGhost: ->
-    @ghost.remove() if @ghost?
-    @ghost = null
+    if @ghost?
+      @ghost.remove()
+      @ghost = null
     return
 
   isGhost: -> @mapx != @character.mapx or @mapy != @character.mapy

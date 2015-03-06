@@ -119,17 +119,13 @@ tm.define 'nz.SpriteBattleMap',
   blink: (mapx,mapy) ->
     blink = @_blinks[mapx][mapy]
     if blink?
-      blink.tweener.clear().fade(0.5,200)
+      blink.setAlpha(0.5)
       @_clearblinks.push blink
     return
 
   clearBlink: () ->
-    #for blink in @_clearblinks
-      #blink.tweener.clear().fadeOut(200)
-    for blinks in @_blinks
-      for blink in blinks
-        blink.tweener.clear()
-        blink.setAlpha(0.0)
+    for blink in @_clearblinks
+      blink.setAlpha(0.0)
     @_clearblinks.clear()
     return
 

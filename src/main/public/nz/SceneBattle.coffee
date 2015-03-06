@@ -6,6 +6,7 @@
 SCREEN_W   = nz.system.screen.width
 SCREEN_H   = nz.system.screen.height
 DIRECTIONS = nz.system.character.directions
+ACTION_COST = nz.system.character.action_cost
 
 tm.define 'nz.SceneBattle',
   superClass: tm.app.Scene
@@ -214,13 +215,38 @@ tm.define 'nz.SceneBattleMoveCommand',
       @mapSprite
     } = param
 
-    @on 'map.pointingend', @_pointEnd
+    @on 'map.pointingover', @_over
+    @on 'map.pointingend', @_end
 
-  _pointEnd: (e) ->
+  searchRoute : (emapx, emapy)->
     {direction,mapx,mapy} = @target
-    @callback @map.graph.searchRoute(direction, mapx, mapy, e.mapx, e.mapy)
+    @map.graph.searchRoute(direction, mapx, mapy, emapx, emapy)
+
+  commandAp: ->
+    @target.character.ap - @target.character.getActionCost(@turn)
+
+  _end: (e) ->
+    @callback @searchRoute(e.mapx, e.mapy)
     @one 'enterframe', -> @app.popScene()
     return
+
+  _over: (e) ->
+    @mapSprite.clearBlink()
+    ap = @commandAp()
+    route = @searchRoute(e.mapx, e.mapy)
+    for r in route
+      if ap < r.cost
+        break
+      @mapSprite.blink(r.mapx,r.mapy)
+
+tm.define 'nz.SceneBattleAttackCommand',
+  superClass: nz.SceneBattleMoveCommand
+
+  init: (param) ->
+    @superInit(param)
+
+  commandAp: ->
+    @target.character.ap - @target.character.getActionCost(@turn) - ACTION_COST.attack
 
 tm.define 'nz.SceneBattleShotCommand',
   superClass: tm.app.Scene

@@ -4,6 +4,7 @@
 ###
 
 DIRECTIONS = nz.system.character.directions
+ACTION_COST = nz.system.character.action_cost
 
 tm.define 'nz.Character',
 
@@ -57,8 +58,7 @@ tm.define 'nz.Character',
   ###* アクションコストの取得
   * @param {number} i 戦闘ターン数
   ###
-  actionCost: (i) ->
-    @_command(i).cost
+  getActionCost: (i) -> @_command(i).cost
 
   ###* 移動ルートの追加
   * @param {number} i 戦闘ターン数
@@ -67,8 +67,8 @@ tm.define 'nz.Character',
   addMoveCommand: (i,route) ->
     command = @_command i
     direction = @direction
-    for a in command.actions when a.direction?
-      direction = a.direction.direction
+    for a in command.actions when a.rotate?
+      direction = a.rotate.direction
     for r in route
       if direction != r.direction
         @addRotateCommand i, direction, DIRECTIONS[direction].rotateIndex[r.direction]
@@ -76,6 +76,7 @@ tm.define 'nz.Character',
       r.speed = @move.speed
       command.actions.push
         move: r
+      command.cost += ACTION_COST.move
     return @
 
   ###* 方向転換の追加
@@ -90,6 +91,7 @@ tm.define 'nz.Character',
         rotate:
           direction: (direction1 + i + 6) % 6
           speed: @move.speed
+      command.cost += ACTION_COST.rotate
     return @
 
   ###* 攻撃モードの設定
@@ -98,7 +100,12 @@ tm.define 'nz.Character',
   ###
   setAttackCommand: (i,flag = true) ->
     command = @_command i
-    command.attack = flag
+    if command.attack != flag
+      if flag
+        command.cost += ACTION_COST.attack
+      else
+        command.cost -= ACTION_COST.attack
+      command.attack = flag
     return @
 
   ###* 射撃角度の追加
@@ -112,4 +119,5 @@ tm.define 'nz.Character',
         rotation: rotation
         distance: @shot.distance
         speed: @shot.speed
+    command.cost += ACTION_COST.shot
     return @

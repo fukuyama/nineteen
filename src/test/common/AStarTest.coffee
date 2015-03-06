@@ -143,11 +143,20 @@ describe 'AStarTest', () ->
     describe 'nz.Graph', ->
       describe 'ヒューリスティック関数', ->
         it 'ヒューリスティック関数1', ->
-          s = new nz.GridNode(1,1,weight:1)
+          s = new nz.GridNode(5,5,weight:1)
+          data = [
+            [5,4,1]
+            [6,4,2]
+            [6,5,3]
+            [5,6,4]
+            [4,5,3]
+            [4,4,2]
+          ]
           s.direction = 0
-          e = new nz.GridNode(2,1,weight:1)
-          result = nz.Graph.heuristic(s,e)
-          result.should.equals 3
+          for d,i in data
+            e = new nz.GridNode(d[0],d[1],weight:1)
+            result = nz.Graph.heuristic(s,e)
+            result.should.equals d[2], "a #{i}=#{d[2]}"
         it 'ヒューリスティック関数2', ->
           s = new nz.GridNode(0,0,weight:1)
           s.direction = 0

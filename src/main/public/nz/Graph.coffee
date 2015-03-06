@@ -79,6 +79,7 @@ class nz.Graph
         mapx: node.x
         mapy: node.y
         direction: node.direction
+        cost: node.g
       }
     @clear()
     return route
@@ -86,15 +87,18 @@ class nz.Graph
 nz.Graph.heuristic = (node1,node2) ->
   hx = Math.abs(node1.x - node2.x)
   hy = Math.abs(node1.y - node2.y)
-  hr = Math.floor(hx / 2)
+  #hr = Math.floor(hx / 2)
+  hr = Math.ceil(hx / 2)
+  direction = node1.calcDirectionTo(node2)
+  hd = node1.getDirectionCost(direction)
   if hy == hr
     hy = 0
   else if hy < hr
-    hy = 1 if hy != 0
+    if hy != 0
+      hy = 1
+      if hd == 1
+        hd = 0
   else
     hy -= hr
-  hd = 0
-  direction = node1.calcDirectionTo(node2)
-  hd = node1.getDirectionCost(direction)
   # console.log "#{hx} #{hy} #{hd} #{direction}"
   hx + hy + hd

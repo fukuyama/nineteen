@@ -40,3 +40,8 @@
  - 攻撃
  - 射撃
 
+### 利用ライブラリ
+
+https://github.com/phi-jp/tmlib.js
+https://github.com/bgrins/javascript-astar
+https://github.com/josephg/noisejs
