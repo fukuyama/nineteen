@@ -3,9 +3,9 @@
 * 戦闘シーン
 ###
 
-SCREEN_W   = nz.system.screen.width
-SCREEN_H   = nz.system.screen.height
-DIRECTIONS = nz.system.character.directions
+SCREEN_W    = nz.system.screen.width
+SCREEN_H    = nz.system.screen.height
+DIRECTIONS  = nz.system.character.directions
 ACTION_COST = nz.system.character.action_cost
 
 tm.define 'nz.SceneBattle',
@@ -65,7 +65,7 @@ tm.define 'nz.SceneBattle',
       .setBaseline('top')
       .setPosition(0,0)
 
-    # スプライト
+    # マップ
     @mapSprite = nz.SpriteBattleMap(@map).addChildTo(@)
     @mapSprite.x += 32 * 5
 
@@ -131,7 +131,7 @@ tm.define 'nz.SceneBattle',
       menuFunc: [
         -> self._commandScene nz.SceneBattleMoveCommand, self._addMoveCommand.bind self
         -> self._commandScene nz.SceneBattleDirectionCommand, self._addRotateCommand.bind self
-        -> self._commandScene nz.SceneBattleMoveCommand, self._addAttackCommand.bind self
+        -> self._commandScene nz.SceneBattleAttackCommand, self._addAttackCommand.bind self
         -> self._commandScene nz.SceneBattleShotCommand, self._addShotCommand.bind self
       ]
     )
@@ -227,6 +227,7 @@ tm.define 'nz.SceneBattleMoveCommand',
 
   _end: (e) ->
     @callback @searchRoute(e.mapx, e.mapy)
+    @mapSprite.clearBlink()
     @one 'enterframe', -> @app.popScene()
     return
 

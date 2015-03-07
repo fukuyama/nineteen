@@ -17,7 +17,7 @@ tm.define 'nz.SpriteBattleMap',
     @superInit()
     @_chips  = []
     @_blinks = []
-    @_clearblinks = []
+    @_activeBlinks = []
     @characterSprites = []
 
     @width  = @map.width  * MAP_CHIP_W
@@ -109,6 +109,7 @@ tm.define 'nz.SpriteBattleMap',
       .setPosition(x,y)
       .setInteractive(true)
       .setAlpha(0.0)
+      .setVisible(false)
 
     @_chips[mapx] = [] unless @_chips[mapx]?
     @_chips[mapx][mapy] = chip
@@ -119,14 +120,19 @@ tm.define 'nz.SpriteBattleMap',
   blink: (mapx,mapy) ->
     blink = @_blinks[mapx][mapy]
     if blink?
-      blink.setAlpha(0.5)
-      @_clearblinks.push blink
+      blink.visible = true
+      blink.tweener.clear().fade(0.5,300).fade(0.1,300).setLoop(true)
+      @_activeBlinks.push blink
     return
 
-  clearBlink: () ->
-    for blink in @_clearblinks
+  clearBlink: ->
+    for blink in @_activeBlinks
+      blink.visible = false
       blink.setAlpha(0.0)
-    @_clearblinks.clear()
+      blink.tweener.clear()
+    @_activeBlinks.clear()
     return
+
+  isBlink: (mapx,mapy) -> @_blinks[mapx][mapy].visible
 
   getMapChip: (mapx,mapy) -> @_chips[mapx][mapy]
