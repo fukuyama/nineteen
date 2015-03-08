@@ -6,14 +6,14 @@ chipdata = [
     weight: 1
   }
   {
-    name: '草原'
+    name: '芝'
     frame: 1
     weight: 1
   }
   {
     name: '水辺'
     frame: 4
-    weight: 0
+    weight: 3
   }
   {
     name: '木'
@@ -21,6 +21,11 @@ chipdata = [
     weight: 0
     object:
       frame: 0
+  }
+  {
+    name: '草'
+    frame: 5
+    weight: 2
   }
 ]
 

@@ -16,4 +16,9 @@ for i in [0 ... 15]
   y = Math.floor(Math.random() * 10 + 2)
   mapdata.data[x][y] = 3
 
+for i in [0 ... 4]
+  x = Math.floor(Math.random() * 10 + 2)
+  y = Math.floor(Math.random() * 10 + 2)
+  mapdata.data[x][y] = 4
+
 module.exports = mapdata
