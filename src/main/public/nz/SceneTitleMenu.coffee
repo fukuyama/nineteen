@@ -11,8 +11,6 @@ tm.define 'nz.SceneTitleMenu',
   * @constructor nz.SceneTitleMenu
   ###
   init: () ->
-    console.log 'SceneTitleMenu'
-    screen = nz.system.screen
     menus = [
       {
         name: 'New Game'
@@ -33,8 +31,8 @@ tm.define 'nz.SceneTitleMenu',
 
     @superInit
       title: nz.system.title
-      screenWidth: screen.width
-      screenHeight: screen.height
+      screenWidth: nz.system.screen.width
+      screenHeight: nz.system.screen.height
       menu: for menu in menus then menu.name
       menuDesctiptions: for menu in menus then menu.desctiption
     @box.setStrokeStyle nz.system.dialog.strokeStyle
@@ -51,7 +49,7 @@ tm.define 'nz.SceneTitleMenu',
   * @constructor nz.SceneTitleMenu#
   ###
   _new_game: ->
-    @app.replaceScene nz.SceneBattle(mapId:1)
+    @app.replaceScene nz.SceneBattle(mapId:0)
     return
 
   ###* ゲームをロード

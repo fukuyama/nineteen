@@ -13,12 +13,18 @@ tm.define 'nz.SpriteBattleMap',
   * @classdesc 戦闘マップスプライト
   * @constructor nz.SpriteBattleMap
   ###
-  init: (@map) ->
+  init: (mapName) ->
     @superInit()
     @_chips  = []
     @_blinks = []
     @_activeBlinks = []
     @characterSprites = []
+
+    @map = tm.asset.Manager.get(mapName).data
+
+    @graph = new nz.Graph
+      mapdata: @map
+      chipdata: tm.asset.Manager.get('chipdata').data
 
     @width  = @map.width  * MAP_CHIP_W
     @height = @map.height * MAP_CHIP_H
@@ -29,11 +35,12 @@ tm.define 'nz.SpriteBattleMap',
 
     @cursor = @_createCursor().addChildTo(@)
 
+    self = @
     for line in @_chips
       for chip in line
         chip.on 'pointingover', ->
-          @parent.cursor.x = @x
-          @parent.cursor.y = @y
+          self.cursor.x = @x
+          self.cursor.y = @y
 
     return
 
@@ -78,7 +85,7 @@ tm.define 'nz.SpriteBattleMap',
     y += h * 0.5 if mapx % 2 == 0
 
     # マップデータから座標位置のマップチップを取得する
-    node = @map.graph.grid[mapx][mapy]
+    node = @graph.grid[mapx][mapy]
     frameIndex = node.frame
 
     chip = tm.display.Sprite('map_chip',w,h)

@@ -16,7 +16,6 @@ tm.define 'nz.SceneBattle',
   * @constructor nz.SceneBattle
   ###
   init: (param) ->
-    console.log 'SceneBattle'
     {
       @mapId
     } = param
@@ -46,13 +45,6 @@ tm.define 'nz.SceneBattle',
     return
 
   setup: () ->
-    # ゲームデータ
-    @map = tm.asset.Manager.get(@mapName).data
-    unless @map.graph?
-      @map.graph = new nz.Graph
-        mapdata: @map
-        chipdata: tm.asset.Manager.get('chipdata').data
-
     characters = [
       nz.Character(name:'キャラクター１',mapx:7,mapy:14)
       nz.Character(name:'キャラクター２',mapx:7,mapy:0,direction:3)
@@ -66,7 +58,7 @@ tm.define 'nz.SceneBattle',
       .setPosition(0,0)
 
     # マップ
-    @mapSprite = nz.SpriteBattleMap(@map).addChildTo(@)
+    @mapSprite = nz.SpriteBattleMap(@mapName).addChildTo(@)
     @mapSprite.x += 32 * 5
 
     for character,i in characters
@@ -91,7 +83,6 @@ tm.define 'nz.SceneBattle',
       turn: @turn
       target: target
       callback: callback
-      map: @map
       mapSprite: @mapSprite
     )
     @one 'pause', -> @mapSprite.addChildTo scene
@@ -146,28 +137,16 @@ tm.define 'nz.SceneBattle',
     )
 
   _startTurn: ->
-    console.log 'turn start'
-    for character in @characterSprites
-      character.clearGhost()
-      character.startAction(@turn)
-    @update = @_updateTurn
+    scene = nz.SceneBattleTurn
+      start: @turn
+      end: @turn
+      mapSprite: @mapSprite
+    @one 'pause', -> @mapSprite.addChildTo scene
+    @one 'resume', -> @mapSprite.addChildTo @
+    @mapSprite.remove()
+    @app.pushScene scene
     return
 
-  _updateTurn: ->
-    endflag = false
-    for character in @characterSprites
-      @_updateAttack(character)
-      endflag |= character.action
-    @_endTurn() unless endflag
-
-  _endTurn: ->
-    @turn += 1
-    @update = null
-    console.log 'turn end'
-
-  _updateAttack: (character) ->
-    for target,i in @characterSprites when character.index != i
-      character.updateAttack(target)
 
   _addMoveCommand: (route) ->
     @selectCharacter.addMoveCommand @turn, route
@@ -211,7 +190,6 @@ tm.define 'nz.SceneBattleMoveCommand',
       @turn
       @target
       @callback
-      @map
       @mapSprite
     } = param
 
@@ -220,15 +198,16 @@ tm.define 'nz.SceneBattleMoveCommand',
 
   searchRoute : (emapx, emapy)->
     {direction,mapx,mapy} = @target
-    @map.graph.searchRoute(direction, mapx, mapy, emapx, emapy)
+    @mapSprite.graph.searchRoute(direction, mapx, mapy, emapx, emapy)
 
   commandAp: ->
     @target.character.ap - @target.character.getActionCost(@turn)
 
   _end: (e) ->
-    @callback @searchRoute(e.mapx, e.mapy)
-    @mapSprite.clearBlink()
-    @one 'enterframe', -> @app.popScene()
+    if @mapSprite.isBlink(e.mapx, e.mapy)
+      @callback @searchRoute(e.mapx, e.mapy)
+      @mapSprite.clearBlink()
+      @one 'enterframe', -> @app.popScene()
     return
 
   _over: (e) ->
@@ -258,7 +237,6 @@ tm.define 'nz.SceneBattleShotCommand',
       @turn
       @target
       @callback
-      @map
     } = param
 
     @on 'map.pointingstart', @_pointStart
@@ -347,3 +325,62 @@ tm.define 'nz.SceneBattleDirectionCommand',
           @pointer.rotation = d.rotation
           return
     return
+
+tm.define 'nz.SceneBattleTurn',
+  superClass: tm.app.Scene
+
+  init: (param) ->
+    @superInit()
+    {
+      @mapSprite
+      start
+      end
+    } = param
+    @startTuen = start
+    @endTurn   = end
+    @turn      = @startTuen
+
+    @flag =
+      action: true
+
+    @mapSprite.cursor.visible = false
+    @_startTurn()
+    return
+
+  update: ->
+    @_updateCharacter()
+    @_updateTurn()
+    return
+
+  _startTurn: ->
+    @flag.action = true
+    for character in @characterSprites
+      character.clearGhost()
+      character.startAction(@turn)
+    return
+
+  _updateTurn: ->
+    unless @flag.action
+      if @turn >= @endTurn
+        @mapSprite.cursor.visible = true
+        @one 'enterframe', -> @app.popScene()
+      else
+        @turn += 1
+        @_startTurn()
+    return
+
+  _updateCharacter: ->
+    return unless @flag.action
+    flag = false
+    for character in @characterSprites
+      @_updateAttack(character)
+      flag |= character.action
+    @flag.action = flag
+    return
+
+  _updateAttack: (character) ->
+    for target,i in @characterSprites when character.index != i
+      character.updateAttack(target)
+    return
+
+nz.SceneBattleTurn.prototype.getter 'characterSprites', -> @mapSprite.characterSprites
