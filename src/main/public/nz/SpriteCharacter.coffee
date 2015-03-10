@@ -32,6 +32,7 @@ tm.define 'nz.SpriteCharacter',
     ).addChildTo @body
       .setOrigin(0.0,0.5)
       .setVisible(false)
+    @weapon.checkHierarchy = true
 
     @setMapPosition @character.mapx, @character.mapy
     @setDirection @character.direction
@@ -181,3 +182,13 @@ tm.define 'nz.SpriteCharacter',
     vy = distance * Math.sin(angle) + bv.y
     speed = speed * distance / 32
     ballet.tweener.move(vx,vy,speed).call(-> ballet.remove())
+
+
+  checkAttack: (x,y) ->
+    return unless @weapon.visible
+      if @weapon.isHitPoint x, y
+        unless @hitFlag
+          @hitFlag = true
+      else
+        @hitFlag = false
+    return @hitFlag

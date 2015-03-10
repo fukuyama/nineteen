@@ -46,8 +46,8 @@ tm.define 'nz.SceneBattle',
 
   setup: () ->
     characters = [
-      nz.Character(name:'キャラクター１',mapx:7,mapy:14)
-      nz.Character(name:'キャラクター２',mapx:7,mapy:0,direction:3)
+      nz.Character(name:'キャラクター１',mapx:5,mapy:10)
+      nz.Character(name:'キャラクター２',mapx:5,mapy:5,direction:3)
     ]
 
     # TODO: 情報を表示する場所
@@ -59,7 +59,8 @@ tm.define 'nz.SceneBattle',
 
     # マップ
     @mapSprite = nz.SpriteBattleMap(@mapName).addChildTo(@)
-    @mapSprite.x += 32 * 5
+    @mapSprite.x = (SCREEN_W - @mapSprite.width )
+    @mapSprite.y = (SCREEN_H - @mapSprite.height) / 2
 
     for character,i in characters
       @characterSprites.push nz.SpriteCharacter(i,character).addChildTo(@mapSprite)
@@ -85,7 +86,7 @@ tm.define 'nz.SceneBattle',
       callback: callback
       mapSprite: @mapSprite
     )
-    @one 'pause', -> @mapSprite.addChildTo scene
+    @one 'pause',  -> @mapSprite.addChildTo scene
     @one 'resume', -> @mapSprite.addChildTo @
     @mapSprite.remove()
     @app.pushScene scene
@@ -206,8 +207,8 @@ tm.define 'nz.SceneBattleMoveCommand',
   _end: (e) ->
     if @mapSprite.isBlink(e.mapx, e.mapy)
       @callback @searchRoute(e.mapx, e.mapy)
-      @mapSprite.clearBlink()
-      @one 'enterframe', -> @app.popScene()
+    @mapSprite.clearBlink()
+    @one 'enterframe', -> @app.popScene()
     return
 
   _over: (e) ->

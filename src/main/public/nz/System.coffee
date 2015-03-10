@@ -23,17 +23,16 @@ tm.define 'nz.System',
           {name:'default'   , rotation:   90, index:6, rotateIndex:[ 0, 1, 2, 3,-2,-1]}
         ]
         action_cost:
-          move: 1
           rotate: 1
           attack: 2
-          shot: 2
+          shot:   2
       map:
         chip:
-          width: 32
+          width:  32
           height: 32
       screen:
-        width: 32*20
-        height: 32*15
+        width:  640
+        height: 480
       dialog:
         strokeStyle:'rgba(255,255,255,1.0)'
         fillStyle:'rgba(  0,  0, 64,1.0)'
