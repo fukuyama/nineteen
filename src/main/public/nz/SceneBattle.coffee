@@ -133,17 +133,22 @@ tm.define 'nz.SceneBattle',
       title: 'Start Next Turn?'
       menu: ['Yes','No']
       menuFunc: [
-        @_startTurn.bind @
+        @_nextTurn.bind @
       ]
     )
 
-  _startTurn: ->
+  _nextTurn: ->
     scene = nz.SceneBattleTurn
       start: @turn
       end: @turn
       mapSprite: @mapSprite
-    @one 'pause', -> @mapSprite.addChildTo scene
-    @one 'resume', -> @mapSprite.addChildTo @
+    @one 'pause', ->
+      @mapSprite.addChildTo scene
+      return
+    @one 'resume', ->
+      @mapSprite.addChildTo @
+      @turn += 1
+      return
     @mapSprite.remove()
     @app.pushScene scene
     return
@@ -339,49 +344,42 @@ tm.define 'nz.SceneBattleTurn',
     } = param
     @startTuen = start
     @endTurn   = end
-    @turn      = @startTuen
 
-    @flag =
-      action: true
+    @on 'enter', @_startScene
+    return
 
-    @mapSprite.cursor.visible = false
+  _startScene: ->
+    @mapSprite.flare 'battleSceneStart'
     @_startTurn()
     return
 
-  update: ->
-    @_updateCharacter()
-    @_updateTurn()
+  _endScene: ->
+    @mapSprite.flare 'battleSceneEnd'
+    @one 'enterframe', -> @app.popScene()
     return
 
-  _startTurn: ->
-    @flag.action = true
-    for character in @characterSprites
-      character.clearGhost()
-      character.startAction(@turn)
+  _startTurn: (@turn = @startTuen) ->
+    @mapSprite.flare 'battleTurnStart', {turn: @turn}
     return
 
-  _updateTurn: ->
-    unless @flag.action
-      if @turn >= @endTurn
-        @mapSprite.cursor.visible = true
-        @one 'enterframe', -> @app.popScene()
-      else
-        @turn += 1
-        @_startTurn()
+  _endTurn: ->
+    @mapSprite.flare 'battleTurnEnd', {turn: @turn}
     return
 
-  _updateCharacter: ->
-    return unless @flag.action
+  _isEnd: -> @turn >= @endTurn
+
+  _isEndAllCharacterAction: ->
     flag = false
-    for character in @characterSprites
-      @_updateAttack(character)
-      flag |= character.action
-    @flag.action = flag
-    return
+    flag |= character.action for character in @characterSprites
+    return not flag
 
-  _updateAttack: (character) ->
-    for target,i in @characterSprites when character.index != i
-      character.updateAttack(target)
+  update: ->
+    if @_isEndAllCharacterAction()
+      @_endTurn()
+      if @_isEnd()
+        @_endScene()
+      else
+        @_startTurn(@turn + 1)
     return
 
 nz.SceneBattleTurn.prototype.getter 'characterSprites', -> @mapSprite.characterSprites

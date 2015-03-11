@@ -41,6 +41,18 @@ tm.define 'nz.SpriteCharacter',
     @on 'pointingover', @_dispatchCharacterEvent
     @on 'pointingout', @_dispatchCharacterEvent
     @on 'pointingend', @_dispatchCharacterEvent
+
+    @on 'battleSceneStart', ->
+      console.log 'battleSceneStart'
+      @clearGhost()
+      @update = @updateBattle
+      return
+    @on 'battleSceneEnd', ->
+      @update = null
+      return
+    @on 'battleTurnStart', (e) ->
+      @startAction(e.turn)
+      return
     return
 
   _dispatchCharacterEvent: (_e) ->
@@ -48,7 +60,9 @@ tm.define 'nz.SpriteCharacter',
     e.app   = _e.app
     e.mapx  = @mapx
     e.mapy  = @mapy
-    e.ghost = @isGhost() or (@ghost?.mapx == @mapx and @ghost?.mapy == @mapy)
+    e.ghost =
+      (@mapx != @character.mapx or @mapy != @character.mapy) or
+      (@ghost?.mapx == @mapx and @ghost?.mapy == @mapy)
     e.characterIndex = @index
     e.app.currentScene.dispatchEvent e
     return
@@ -67,8 +81,6 @@ tm.define 'nz.SpriteCharacter',
       @ghost = null
     return
 
-  isGhost: -> @mapx != @character.mapx or @mapy != @character.mapy
-
   setMapPosition: (@mapx,@mapy) ->
     w  = MAP_CHIP_W
     h  = MAP_CHIP_H
@@ -82,6 +94,11 @@ tm.define 'nz.SpriteCharacter',
     @body.rotation = d.rotation
     @gotoAndPlay(d.name)
     return @
+
+  updateBattle: (app) ->
+    for target,i in app.currentScene.characterSprites when @index != i
+      @updateAttack(target)
+    return
 
   updateAttack: (enemy) ->
     return unless @attack
@@ -160,7 +177,7 @@ tm.define 'nz.SpriteCharacter',
         .call @_attackAnimationEnd,@,[]
 
   _attackAnimationEnd: ->
-    @weapon.visible = false
+    @weapon.visible  = false
     @weapon.rotation = 0
     @tweener.play()
 
@@ -184,11 +201,6 @@ tm.define 'nz.SpriteCharacter',
     ballet.tweener.move(vx,vy,speed).call(-> ballet.remove())
 
 
-  checkAttack: (x,y) ->
-    return unless @weapon.visible
-      if @weapon.isHitPoint x, y
-        unless @hitFlag
-          @hitFlag = true
-      else
-        @hitFlag = false
-    return @hitFlag
+  isHitAttack: (x,y) ->
+    return false unless @weapon.visible
+    return @weapon.isHitPoint x, y

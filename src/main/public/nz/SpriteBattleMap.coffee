@@ -42,6 +42,20 @@ tm.define 'nz.SpriteBattleMap',
           self.cursor.x = @x
           self.cursor.y = @y
 
+    @on 'battleSceneStart', (e) ->
+      @cursor.visible = false
+      @_dispatchBattleEvent(e)
+      return
+    @on 'battleSceneEnd', (e) ->
+      @_dispatchBattleEvent(e)
+      @cursor.visible = true
+    @on 'battleTurnStart', (e) ->
+      @_dispatchBattleEvent(e)
+      return
+    @on 'battleTurnEnd', (e) ->
+      @_dispatchBattleEvent(e)
+      return
+
     return
 
   # 指定された座標のキャラクターを探す
@@ -63,6 +77,10 @@ tm.define 'nz.SpriteBattleMap',
     cursor._render = -> @canvas.strokeRect(0, 0, @width, @height)
     cursor.render()
     return cursor
+
+  # 戦闘用イベントハンドラ
+  _dispatchBattleEvent: (e) ->
+    c.fire(e) for c in @characterSprites
 
   # MapChip用イベントハンドラ
   _dispatchMapChipEvent: (_e) ->
