@@ -35,7 +35,7 @@ tm.define 'nz.Character',
           start: 0
           end: -120
         distance: 32 * 8
-        speed: 150
+        speed: 100
       commands: [] # 戦闘コマンドリスト
     }.$extend param
     return

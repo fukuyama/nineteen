@@ -43,7 +43,6 @@ tm.define 'nz.SpriteCharacter',
     @on 'pointingend', @_dispatchCharacterEvent
 
     @on 'battleSceneStart', ->
-      console.log 'battleSceneStart'
       @clearGhost()
       @update = @updateBattle
       return
@@ -53,6 +52,11 @@ tm.define 'nz.SpriteCharacter',
     @on 'battleTurnStart', (e) ->
       @startAction(e.turn)
       return
+
+    @on 'hit.ballet', (e) ->
+      @_hitBallet(e.ballet)
+      return
+
     return
 
   _dispatchCharacterEvent: (_e) ->
@@ -187,20 +191,39 @@ tm.define 'nz.SpriteCharacter',
       distance
       speed
     } = param
-    bv = @body.localToGlobal(tm.geom.Vector2(0,0))
+    scene = @getRoot()
+    bv = scene.mapSprite.globalToLocal @localToGlobal(@body.position)
     ballet = tm.display.CircleShape(
       x:      bv.x
       y:      bv.y
       width:  10
       height: 10
-    ).addChildTo @getRoot()
+    ).addChildTo scene.mapSprite
     angle = Math.degToRad(rotation)
     vx = distance * Math.cos(angle) + bv.x
     vy = distance * Math.sin(angle) + bv.y
     speed = speed * distance / 32
-    ballet.tweener.move(vx,vy,speed).call(-> ballet.remove())
+    einfo = {
+      ballet: ballet
+      owner: @
+    }
+    ballet.tweener.move(vx,vy,speed).call(->
+      ballet.remove()
+      scene.flare 'ballet.remove', einfo
+    )
+    ballet.on 'collisionenter', (e) ->
+      ballet.remove()
+      ballet.tweener.clear()
+      e.other.flare 'hit.ballet', einfo
+      # ballet.tweener.call で呼び出す
+      scene.flare 'ballet.remove', einfo
 
+    scene.flare 'ballet.add', einfo
 
   isHitAttack: (x,y) ->
     return false unless @weapon.visible
     return @weapon.isHitPoint x, y
+
+  _hitBallet: (ballet) ->
+    console.log "hitBallet #{@character.name}"
+    return
