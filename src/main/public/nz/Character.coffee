@@ -25,11 +25,11 @@ tm.define 'nz.Character',
         speed: 300
       weapon:
         height: 48
-        width: 8
+        width: 12
         rotation:
           start: 0
           end: 120
-        speed: 500
+        speed: 600
       shot:
         rotation:
           start: 0

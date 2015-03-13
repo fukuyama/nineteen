@@ -95,10 +95,9 @@ tm.define 'nz.SceneBattleShotCommand',
 
   _createPointer: ->
     @pointer = tm.display.Shape(
-      width: 40
+      width: 10
       height: 10
     ).addChildTo @target
-      .setOrigin(0.0,0.5)
     tm.display.CircleShape(
       x: 40
       width: 10

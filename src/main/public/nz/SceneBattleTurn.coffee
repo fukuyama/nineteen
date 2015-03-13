@@ -22,8 +22,8 @@ tm.define 'nz.SceneBattleTurn',
 
     @on 'enter', @_startScene
 
-    @on 'ballet.add', @_addBallet
-    @on 'ballet.remove', @_removeBallet
+    @on 'addBallet', @_addBallet
+    @on 'removeBallet', @_removeBallet
 
     return
 

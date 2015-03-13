@@ -17,6 +17,7 @@ tm.define 'nz.SpriteCharacter',
   ###
   init: (@index,@character) ->
     @superInit(@character.spriteSheet)
+    @checkHierarchy = true
     @ghost = null
 
     @body = tm.display.Shape(
@@ -34,6 +35,8 @@ tm.define 'nz.SpriteCharacter',
       .setVisible(false)
     @weapon.checkHierarchy = true
 
+    @weapon.on 'enterframe', @_enterframeWeapon.bind @
+
     @setMapPosition @character.mapx, @character.mapy
     @setDirection @character.direction
 
@@ -44,17 +47,22 @@ tm.define 'nz.SpriteCharacter',
 
     @on 'battleSceneStart', ->
       @clearGhost()
-      @update = @updateBattle
+      #@update = @updateBattle
       return
     @on 'battleSceneEnd', ->
       @update = null
       return
     @on 'battleTurnStart', (e) ->
       @startAction(e.turn)
+      @_weaponHitFlag = []
       return
 
-    @on 'hit.ballet', (e) ->
-      @_hitBallet(e.ballet)
+    @on 'hitWeapon', (e) ->
+      @_hitWeapon(e.owner)
+      return
+
+    @on 'hitBallet', (e) ->
+      @_hitBallet(e.owner,e.ballet)
       return
 
     return
@@ -99,12 +107,13 @@ tm.define 'nz.SpriteCharacter',
     @gotoAndPlay(d.name)
     return @
 
-  updateBattle: (app) ->
-    for target,i in app.currentScene.characterSprites when @index != i
-      @updateAttack(target)
+  updateBattle: ->
+    scene = @getRoot()
+    for enemy,i in scene.characterSprites when @index != i
+      @_updateAttack(enemy)
     return
 
-  updateAttack: (enemy) ->
+  _updateAttack: (enemy) ->
     return unless @attack
     cw = @character.weapon
     distance = enemy.position.distance @position
@@ -115,6 +124,24 @@ tm.define 'nz.SpriteCharacter',
         @attackAnimation()
         @attack = false
     return
+
+  _enterframeWeapon: (e) ->
+    return unless @weapon.visible
+    scene = e.app.currentScene
+    for enemy,i in scene.characterSprites when @index != i and not @_weaponHitFlag[i]
+      if @_isHitWeapon(enemy)
+        enemy.flare 'hitWeapon', {owner: @}
+        @_weaponHitFlag[i] = true
+    return
+
+  _isHitWeapon: (enemy) ->
+    for w in [16 ... @weapon.width] by 8
+      rt = tm.geom.Vector2 0,0
+      rt.setDegree(@weapon.rotation + @body.rotation, w)
+      rt = @localToGlobal rt
+      if enemy.isHitPoint(rt.x,rt.y)
+        return true
+    return false
 
   startAction: (turn) ->
     @tweener.clear()
@@ -130,6 +157,8 @@ tm.define 'nz.SpriteCharacter',
         @_setShotAction(action.shot) if action.shot?
         @_setMoveAction(action.move) if action.move?
         @_setRotateAction(action.rotate) if action.rotate?
+        if @attack
+          @tweener.call @updateBattle,@,[]
     @tweener.call @_endAction,@,[turn]
     return
 
@@ -171,19 +200,19 @@ tm.define 'nz.SpriteCharacter',
     @setDirection direction
 
   attackAnimation: ->
+    finish = ->
+      @weapon.visible  = false
+      @weapon.rotation = 0
+      @tweener.play()
     @tweener.pause()
     cw = @character.weapon
     @weapon.visible = true
     @weapon.rotation = cw.rotation.start
     @weapon.tweener
         .clear()
+        .wait 50
         .rotate(cw.rotation.end,cw.speed)
-        .call @_attackAnimationEnd,@,[]
-
-  _attackAnimationEnd: ->
-    @weapon.visible  = false
-    @weapon.rotation = 0
-    @tweener.play()
+        .call finish,@,[]
 
   shotAnimation: (param) ->
     {
@@ -207,23 +236,24 @@ tm.define 'nz.SpriteCharacter',
       ballet: ballet
       owner: @
     }
-    ballet.tweener.move(vx,vy,speed).call(->
+    finish = ->
       ballet.remove()
-      scene.flare 'ballet.remove', einfo
-    )
+      scene.flare 'removeBallet', einfo
+    ballet.tweener
+      .move(vx,vy,speed)
+      .call finish, @, []
     ballet.on 'collisionenter', (e) ->
-      ballet.remove()
-      ballet.tweener.clear()
-      e.other.flare 'hit.ballet', einfo
-      # ballet.tweener.call で呼び出す
-      scene.flare 'ballet.remove', einfo
+      e.other.flare 'hitBallet', einfo
+      ballet.tweener
+        .clear()
+        .call finish, @, []
 
-    scene.flare 'ballet.add', einfo
+    scene.flare 'addBallet', einfo
 
-  isHitAttack: (x,y) ->
-    return false unless @weapon.visible
-    return @weapon.isHitPoint x, y
+  _hitBallet: (shooter,ballet) ->
+    console.log "hit ballet #{@character.name}"
+    return
 
-  _hitBallet: (ballet) ->
-    console.log "hitBallet #{@character.name}"
+  _hitWeapon: (attacker) ->
+    console.log "hit weapon #{@character.name}"
     return
