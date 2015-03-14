@@ -119,7 +119,7 @@ tm.define 'nz.SpriteCharacter',
     distance = enemy.position.distance @position
     if distance < (cw.height + @body.width / 2)
       v = tm.geom.Vector2 enemy.x - @x, enemy.y - @y
-      r = Math.radToDeg(v.toAngle()) - @body.rotation
+      r = (Math.radToDeg(v.toAngle()) - @body.rotation + 360) % 360
       if cw.rotation.start <= r and r <= cw.rotation.end
         @attackAnimation()
         @attack = false
