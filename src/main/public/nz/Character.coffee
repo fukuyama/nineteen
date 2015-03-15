@@ -69,7 +69,7 @@ tm.define 'nz.Character',
     direction = @direction
     for a in command.actions when a.rotate?
       direction = a.rotate.direction
-    cost = command.cost
+    cost = 0
     for r in route
       if direction != r.direction
         @addRotateCommand i, direction, DIRECTIONS[direction].rotateIndex[r.direction]
@@ -78,7 +78,7 @@ tm.define 'nz.Character',
       command.actions.push
         move: r
       cost = r.cost
-    command.cost = cost
+    command.cost += cost
     return @
 
   ###* 方向転換の追加

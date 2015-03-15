@@ -71,8 +71,11 @@ tm.define 'nz.SceneBattle',
       @_selectGhost          = e.ghost
       @_openCharacterMenu()
     @on 'map.pointingend', (e) ->
-      unless @mapSprite.findCharacter(e.mapx,e.mapy)?
-        @_openMainMenu()
+      target = @mapSprite.findCharacter(e.mapx,e.mapy)
+      if target
+        if target.character.getActionCost(@turn) < target.character.ap
+          return
+      @_openMainMenu()
 
   _commandScene: (klass,callback) ->
     target = @selectCharacterSprite
