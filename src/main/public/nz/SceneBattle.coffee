@@ -47,7 +47,7 @@ tm.define 'nz.SceneBattle',
   setup: () ->
     characters = [
       nz.Character(name:'キャラクター１',mapx:5,mapy:10)
-      nz.Character(name:'キャラクター２',mapx:5,mapy:5,direction:3)
+      nz.Character(name:'キャラクター２',mapx:5,mapy:2,direction:3)
     ]
 
     # TODO: 情報を表示する場所
@@ -84,9 +84,9 @@ tm.define 'nz.SceneBattle',
     else
       @selectCharacter.clearAction(@turn)
     scene = klass(
-      turn: @turn
-      target: target
-      callback: callback
+      turn:      @turn
+      target:    target
+      callback:  callback
       mapSprite: @mapSprite
     )
     @one 'pause',  -> @mapSprite.addChildTo scene

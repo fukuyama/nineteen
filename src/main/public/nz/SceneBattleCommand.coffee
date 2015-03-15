@@ -128,6 +128,7 @@ tm.define 'nz.SceneBattleDirectionCommand',
   init: (param) ->
     @superInit(param)
 
+    @costa = @target.character.getActionCost(@turn)
     @_direction = null
 
   _setupCommand: ->
@@ -144,8 +145,10 @@ tm.define 'nz.SceneBattleDirectionCommand',
     rotation = Math.radToDeg v.toAngle()
     for d,i in DIRECTIONS when 0 <= i and i < 6
       if d.rotation - 30 < rotation and rotation < d.rotation + 30
-        if @_direction != d.index
-          @_direction = d.index
-          @pointer.rotation = d.rotation
-          return
+        costd = nz.GridNode.calcDirectionCost(@target.direction, d.index)
+        if (@costa + costd) <= @target.character.ap
+          if @_direction != d.index
+            @_direction = d.index
+            @pointer.rotation = d.rotation
+            return
     return
