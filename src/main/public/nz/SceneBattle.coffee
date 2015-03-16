@@ -120,15 +120,24 @@ tm.define 'nz.SceneBattle',
 
   _openCharacterMenu: ->
     self = @
+    menu = []
+    menuFunc = []
+    ap = @selectCharacter.ap - @selectCharacter.getActionCost(@turn)
+    if ap >= 1
+      menu.push 'Move'
+      menuFunc.push -> self._commandScene nz.SceneBattleMoveCommand, self._addMoveCommand.bind self
+      menu.push 'Direction'
+      menuFunc.push -> self._commandScene nz.SceneBattleDirectionCommand, self._addRotateCommand.bind self
+    if ap >= 2
+      menu.push 'Attack'
+      menuFunc.push -> self._commandScene nz.SceneBattleAttackCommand, self._addAttackCommand.bind self
+      menu.push 'Shot'
+      menuFunc.push -> self._commandScene nz.SceneBattleShotCommand, self._addShotCommand.bind self
+    menu.push 'Close Menu'
     @app.pushScene @_createMenuDialog(
       title: @selectCharacter.name
-      menu: ['Move','Direction','Attack','Shot','Close Menu']
-      menuFunc: [
-        -> self._commandScene nz.SceneBattleMoveCommand, self._addMoveCommand.bind self
-        -> self._commandScene nz.SceneBattleDirectionCommand, self._addRotateCommand.bind self
-        -> self._commandScene nz.SceneBattleAttackCommand, self._addAttackCommand.bind self
-        -> self._commandScene nz.SceneBattleShotCommand, self._addShotCommand.bind self
-      ]
+      menu: menu
+      menuFunc: menuFunc
     )
 
   _openCommandConf: ->

@@ -64,6 +64,8 @@ tm.define 'nz.SceneBattleShotCommand',
       @callback
     } = param
 
+    @costa = @target.character.getActionCost(@turn)
+
     @on 'map.pointingstart', @_pointStart
     @on 'pointingmove', @_pointMove
     @on 'map.pointingend', @_pointEnd
@@ -128,7 +130,6 @@ tm.define 'nz.SceneBattleDirectionCommand',
   init: (param) ->
     @superInit(param)
 
-    @costa = @target.character.getActionCost(@turn)
     @_direction = null
 
   _setupCommand: ->
