@@ -18,6 +18,7 @@ tm.define 'nz.SceneBattle',
   init: (param) ->
     {
       @mapId
+      @characters
     } = param
     @superInit()
     @mapName = 'map_' + "#{@mapId}".paddingLeft(3,'0')
@@ -45,11 +46,6 @@ tm.define 'nz.SceneBattle',
     return
 
   setup: () ->
-    characters = [
-      nz.Character(name:'キャラクター１',mapx:5,mapy:10)
-      nz.Character(name:'キャラクター２',mapx:5,mapy:2,direction:3)
-    ]
-
     # TODO: 情報を表示する場所
     tm.display.Label('Information')
       .addChildTo(@)
@@ -62,7 +58,7 @@ tm.define 'nz.SceneBattle',
     @mapSprite.x = (SCREEN_W - @mapSprite.width )
     @mapSprite.y = (SCREEN_H - @mapSprite.height) / 2
 
-    for character,i in characters
+    for character,i in @characters
       @characterSprites.push nz.SpriteCharacter(i,character).addChildTo(@mapSprite)
 
     # 基本操作

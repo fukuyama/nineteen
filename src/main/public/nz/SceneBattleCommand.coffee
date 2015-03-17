@@ -62,6 +62,7 @@ tm.define 'nz.SceneBattleShotCommand',
       @turn
       @target
       @callback
+      @mapSprite
     } = param
 
     @costa = @target.character.getActionCost(@turn)
@@ -116,12 +117,20 @@ tm.define 'nz.SceneBattleShotCommand',
 
   _movePointer: (pointing) ->
     if @pointer?
-      t = @target.body.localToGlobal tm.geom.Vector2(0,0)
-      x = pointing.x - t.x
-      y = pointing.y - t.y
-      v = tm.geom.Vector2 x,y
-      r = Math.radToDeg v.toAngle()
-      @pointer.rotation = r
+      t = @mapSprite.globalToLocal pointing
+      tcsr = @target.character.shot.rotation
+      @target.checkDirection(
+        x:     t.x
+        y:     t.y
+        start: tcsr.start
+        end:   tcsr.end
+        callback: (->
+          x = t.x - @target.x
+          y = t.y - @target.y
+          v = tm.geom.Vector2 x,y
+          @pointer.rotation = Math.radToDeg v.toAngle()
+        ).bind @
+      )
     return
 
 tm.define 'nz.SceneBattleDirectionCommand',

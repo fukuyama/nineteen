@@ -49,7 +49,13 @@ tm.define 'nz.SceneTitleMenu',
   * @constructor nz.SceneTitleMenu#
   ###
   _new_game: ->
-    @app.replaceScene nz.SceneBattle(mapId:0)
+    @app.replaceScene nz.SceneBattle(
+      mapId:0
+      characters: [
+        nz.Character(name:'キャラクター１',mapx:5,mapy:10)
+        nz.Character(name:'キャラクター２',mapx:5,mapy:2,direction:3)
+      ]
+    )
     return
 
   ###* ゲームをロード

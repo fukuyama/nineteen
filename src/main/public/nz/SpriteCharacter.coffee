@@ -113,25 +113,56 @@ tm.define 'nz.SpriteCharacter',
       @_updateAttack(enemy)
     return
 
+  ###* 座標方向確認。
+  * キャラクターの向いている方向を考慮し、指定された座標が、キャラクターからみてどの方向にあるか確認する。
+  * @param param.x {number} mapSprite の local X座標
+  * @param param.y {number} mapSprite の local Y座標
+  * @param param.start {number} 確認する開始角度 -180 ～ 180
+  * @param param.end   {number} 確認する終了角度 -180 ～ 180
+  * @param param.callback {Function} 範囲に入っていた場合に呼び出す関数
+  ###
+  checkDirection: (param) ->
+    {
+      x
+      y
+      start
+      end
+      callback
+    } = param
+    v = tm.geom.Vector2 x - @x, y - @y
+    r = Math.radToDeg(v.toAngle()) - @body.rotation
+    if r > 180
+      r = 360 - r
+    else if r < -180
+      r = 360 + r
+    if start < end
+      if start <= r and r <= end
+        callback()
+    else
+      if end <= r and r <= start
+        callback()
+    return
+
   _updateAttack: (enemy) ->
     return unless @attack
     cw = @character.weapon
     distance = enemy.position.distance @position
     if distance < (cw.height + @body.width / 2)
-      v = tm.geom.Vector2 enemy.x - @x, enemy.y - @y
-      r = Math.radToDeg(v.toAngle()) - @body.rotation
-      if r > 180
-        r = 360 - r
-      else if r < -180
-        r = 360 + r
-      if cw.rotation.start <= r and r <= cw.rotation.end
-        @attackAnimation()
-        @attack = false
+      @checkDirection(
+        x:     enemy.x
+        y:     enemy.y
+        start: cw.rotation.start
+        end:   cw.rotation.end
+        callback: (->
+          @attackAnimation()
+          @attack = false
+        ).bind @
+      )
     return
 
   _enterframeWeapon: (e) ->
     return unless @weapon.visible
-    scene = e.app.currentScene
+    scene = @getRoot()
     for enemy,i in scene.characterSprites when @index != i and not @_weaponHitFlag[i]
       if @_isHitWeapon(enemy)
         enemy.flare 'hitWeapon', {owner: @}
