@@ -100,7 +100,8 @@ tm.define 'nz.SceneBattleShotCommand',
     @pointer = tm.display.Shape(
       width: 10
       height: 10
-    ).addChildTo @target
+    ).addChildTo @mapSprite
+      .setPosition @target.x,@target.y
     tm.display.CircleShape(
       x: 40
       width: 10

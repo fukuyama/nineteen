@@ -46,20 +46,20 @@ tm.define 'nz.SceneBattle',
     return
 
   setup: () ->
-    # TODO: 情報を表示する場所
-    tm.display.Label('Information')
-      .addChildTo(@)
-      .setAlign('left')
-      .setBaseline('top')
-      .setPosition(0,0)
 
     # マップ
     @mapSprite = nz.SpriteBattleMap(@mapName).addChildTo(@)
     @mapSprite.x = (SCREEN_W - @mapSprite.width )
     @mapSprite.y = (SCREEN_H - @mapSprite.height) / 2
 
+    x = y = 0
     for character,i in @characters
       @characterSprites.push nz.SpriteCharacter(i,character).addChildTo(@mapSprite)
+      nz.SpriteStatus(
+        character: character
+      ).addChildTo @
+        .setPosition x, y
+      y += 32 * 2.5
 
     # 基本操作
     @on 'character.pointingend', (e) ->
