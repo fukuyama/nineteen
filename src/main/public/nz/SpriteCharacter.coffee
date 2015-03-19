@@ -116,7 +116,7 @@ tm.define 'nz.SpriteCharacter',
     return
 
   calcRotation: (p) ->
-    return Math.radToDeg(Math.atan2 p.x - @x, p.y - @y) - @body.rotation
+    return Math.radToDeg(Math.atan2 p.y - @y, p.x - @x) - @body.rotation
 
   ###* 座標方向確認。
   * キャラクターの向いている方向を考慮し、指定された座標が、キャラクターからみてどの方向にあるか確認する。
@@ -128,19 +128,18 @@ tm.define 'nz.SpriteCharacter',
   ###
   checkDirection: (param) ->
     {
-      x
-      y
       start
       end
       anticlockwise
     } = param
     # v = tm.geom.Vector2 x - @x, y - @y
     # r = Math.radToDeg(v.toAngle()) - @body.rotation
-    r = @calcRotation(x,y)
+    r = @calcRotation(param)
     if r > 180
       r = 360 - r
     else if r < -180
       r = 360 + r
+    #console.log "#{r} #{param.x} #{param.y} #{@x} #{@y}"
     if anticlockwise
       if start > end
         return start >= r and r >= end

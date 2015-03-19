@@ -121,18 +121,17 @@ tm.define 'nz.SceneBattleShotCommand',
       t    = @mapSprite.globalToLocal pointing
       tcsr = @target.character.shot.rotation
 
-      res  = @target.checkDirection(
+      if @target.checkDirection(
         x:             t.x
         y:             t.y
         start:         tcsr.start
         end:           tcsr.end
         anticlockwise: tcsr.anticlockwise
       )
-      if res
         x = t.x - @target.x
         y = t.y - @target.y
         v = tm.geom.Vector2 x,y
-        @pointer.rotation = Math.radToDeg v.toAngle()
+        @pointer.rotation = Math.radToDeg(v.toAngle())
     return
 
 tm.define 'nz.SceneBattleDirectionCommand',
