@@ -35,7 +35,7 @@ tm.define 'nz.System',
         height: 480
       dialog:
         strokeStyle:'rgba(255,255,255,1.0)'
-        fillStyle:'rgba(  0,  0, 64,1.0)'
+        fillStyle:'rgba(128,128,128,1.0)'
       assets:
         chipdata: 'data/chipdata.json'
         map_object: 'img/map_object.png'

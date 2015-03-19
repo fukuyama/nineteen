@@ -45,3 +45,7 @@
 https://github.com/phi-jp/tmlib.js
 https://github.com/bgrins/javascript-astar
 https://github.com/josephg/noisejs
+
+
+### 参考
+http://www.w3.org/TR/css3-color/

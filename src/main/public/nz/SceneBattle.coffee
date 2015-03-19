@@ -127,8 +127,9 @@ tm.define 'nz.SceneBattle',
     if ap >= 2
       menu.push 'Attack'
       menuFunc.push -> self._commandScene nz.SceneBattleAttackCommand, self._addAttackCommand.bind self
-      menu.push 'Shot'
-      menuFunc.push -> self._commandScene nz.SceneBattleShotCommand, self._addShotCommand.bind self
+      if @selectCharacter.isShotAction(@turn)
+        menu.push 'Shot'
+        menuFunc.push -> self._commandScene nz.SceneBattleShotCommand, self._addShotCommand.bind self
     menu.push 'Close Menu'
     @app.pushScene @_createMenuDialog(
       title: @selectCharacter.name

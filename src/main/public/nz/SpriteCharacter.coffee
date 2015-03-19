@@ -47,14 +47,16 @@ tm.define 'nz.SpriteCharacter',
 
     @on 'battleSceneStart', ->
       @clearGhost()
-      #@update = @updateBattle
       return
     @on 'battleSceneEnd', ->
-      @update = null
       return
     @on 'battleTurnStart', (e) ->
       @startAction(e.turn)
       @_weaponHitFlag = []
+      return
+    @on 'battleTurnEnd', (e) ->
+      @update = null
+      @attack = false
       return
 
     @on 'hitWeapon', (e) ->
@@ -113,13 +115,16 @@ tm.define 'nz.SpriteCharacter',
       @_updateAttack(enemy)
     return
 
+  calcRotation: (p) ->
+    return Math.radToDeg(Math.atan2 p.x - @x, p.y - @y) - @body.rotation
+
   ###* 座標方向確認。
   * キャラクターの向いている方向を考慮し、指定された座標が、キャラクターからみてどの方向にあるか確認する。
-  * @param param.x {number} mapSprite の local X座標
-  * @param param.y {number} mapSprite の local Y座標
-  * @param param.start {number} 確認する開始角度 -180 ～ 180
-  * @param param.end   {number} 確認する終了角度 -180 ～ 180
-  * @param param.callback {Function} 範囲に入っていた場合に呼び出す関数
+  * @param {number} param.x          mapSprite の local X座標
+  * @param {number} param.y          mapSprite の local Y座標
+  * @param {number} param.start      確認する開始角度 -180 ～ 180
+  * @param {number} param.end        確認する終了角度 -180 ～ 180
+  * @param {Function} param.callback 範囲に入っていた場合に呼び出す関数
   ###
   checkDirection: (param) ->
     {
@@ -127,37 +132,41 @@ tm.define 'nz.SpriteCharacter',
       y
       start
       end
-      callback
+      anticlockwise
     } = param
-    v = tm.geom.Vector2 x - @x, y - @y
-    r = Math.radToDeg(v.toAngle()) - @body.rotation
+    # v = tm.geom.Vector2 x - @x, y - @y
+    # r = Math.radToDeg(v.toAngle()) - @body.rotation
+    r = @calcRotation(x,y)
     if r > 180
       r = 360 - r
     else if r < -180
       r = 360 + r
-    if start < end
-      if start <= r and r <= end
-        callback()
+    if anticlockwise
+      if start > end
+        return start >= r and r >= end
+      else
+        return start >= r or r >= end
     else
-      if end <= r and r <= start
-        callback()
-    return
+      if start < end
+        return start <= r and r <= end
+      else
+        return start <= r or r <= end
+    return false
 
   _updateAttack: (enemy) ->
     return unless @attack
     cw = @character.weapon
     distance = enemy.position.distance @position
     if distance < (cw.height + @body.width / 2)
-      @checkDirection(
-        x:     enemy.x
-        y:     enemy.y
-        start: cw.rotation.start
-        end:   cw.rotation.end
-        callback: (->
-          @attackAnimation()
-          @attack = false
-        ).bind @
+      if @checkDirection(
+        x:             enemy.x
+        y:             enemy.y
+        start:         cw.rotation.start
+        end:           cw.rotation.end
+        anticlockwise: cw.rotation.anticlockwise
       )
+        @attackAnimation()
+        @attack = false
     return
 
   _enterframeWeapon: (e) ->
@@ -201,8 +210,10 @@ tm.define 'nz.SpriteCharacter',
     @character.mapx      = @mapx
     @character.mapy      = @mapy
     @character.direction = @direction
-    @attack              = false
     @action              = false
+    # まだ攻撃してない場合、攻撃をつづける
+    if @attack
+      @update = @updateBattle
     return
 
   _setShotAction: (param) ->
@@ -235,10 +246,14 @@ tm.define 'nz.SpriteCharacter',
     @setDirection direction
 
   attackAnimation: ->
+    # 攻撃アニメーション中は、アクションを続ける
+    action = @action
+    @action = true
     finish = ->
       @weapon.visible  = false
       @weapon.rotation = 0
       @tweener.play()
+      @action = action # 元の状態に
     @tweener.pause()
     cw = @character.weapon
     @weapon.visible = true

@@ -16,14 +16,16 @@ tm.define 'nz.SpriteStatus',
     @height = 32 * 2.5
     @setOrigin 0.0,0.0
 
+    @setAlpha 0.2
+
     @fromJSON
       children: [
         {
           type:          'RoundRectangleShape'
           width:         @width
           height:        @height
-          strokeStyle:   'gray'
-          fillStyle:     '#fffaf0'
+          strokeStyle:   'black'
+          fillStyle:     'blanchedalmond'
           shadowBlur:    1
           shadowOffsetX: 2
           shadowOffsetY: 2

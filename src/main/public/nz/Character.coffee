@@ -29,11 +29,13 @@ tm.define 'nz.Character',
         rotation:
           start: 0
           end: 120
+          anticlockwise: false
         speed: 600
       shot:
         rotation:
           start: 0
           end: -120
+          anticlockwise: true
         distance: 32 * 8
         speed: 100
       commands: [] # 戦闘コマンドリスト
@@ -97,7 +99,7 @@ tm.define 'nz.Character',
     return @
 
   ###* 攻撃モードの設定
-  * @param {number} i 戦闘ターン数
+  * @param {number}  i    戦闘ターン数
   * @param {boolean} flag 攻撃する場合 true
   ###
   setAttackCommand: (i,flag = true) ->
@@ -111,7 +113,7 @@ tm.define 'nz.Character',
     return @
 
   ###* 射撃角度の追加
-  * @param {number} i 戦闘ターン数
+  * @param {number} i        戦闘ターン数
   * @param {number} rotation 射撃角度
   ###
   addShotCommand: (i,rotation) ->
@@ -123,3 +125,15 @@ tm.define 'nz.Character',
         speed: @shot.speed
     command.cost += ACTION_COST.shot
     return @
+
+  ###* 射撃可能かどうか
+  * @param {number} i 戦闘ターン数
+  * @return {boolean} 射撃可能なら true
+  ###
+  isShotAction: (i) ->
+    command = @_command i
+    # このターンに射撃を行っている場合は、射撃できない
+    for action in command.actions
+      if action.shot?
+        return false
+    return true
