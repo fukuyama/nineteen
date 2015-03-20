@@ -126,7 +126,7 @@ tm.define 'nz.SceneBattle',
       menuFunc.push -> self._commandScene nz.SceneBattleDirectionCommand, self._addRotateCommand.bind self
     if ap >= 2
       menu.push 'Attack'
-      menuFunc.push -> self._commandScene nz.SceneBattleAttackCommand, self._addAttackCommand.bind self
+      menuFunc.push -> self._addAttackCommand()
       if @selectCharacter.isShotAction(@turn)
         menu.push 'Shot'
         menuFunc.push -> self._commandScene nz.SceneBattleShotCommand, self._addShotCommand.bind self
@@ -170,9 +170,8 @@ tm.define 'nz.SceneBattle',
       @selectCharacterSprite.createGhost(p.direction,p.mapx,p.mapy).addChildTo @mapSprite
     return
 
-  _addAttackCommand: (route) ->
+  _addAttackCommand: ->
     @selectCharacter.setAttackCommand @turn
-    @_addMoveCommand(route)
     return
 
   _addShotCommand: (rotation) ->

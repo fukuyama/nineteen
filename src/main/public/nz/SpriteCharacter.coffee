@@ -21,7 +21,7 @@ tm.define 'nz.SpriteCharacter',
     @ghost = null
 
     @body = tm.display.Shape(
-      width: @width
+      width:  @width
       height: @height
     ).addChildTo @
 
@@ -110,13 +110,19 @@ tm.define 'nz.SpriteCharacter',
     return @
 
   updateBattle: ->
+    console.log 'updateBattle'
     scene = @getRoot()
     for enemy,i in scene.characterSprites when @index != i
       @_updateAttack(enemy)
     return
 
   calcRotation: (p) ->
-    return Math.radToDeg(Math.atan2 p.y - @y, p.x - @x) - @body.rotation
+    r = Math.radToDeg(Math.atan2 p.y - @y, p.x - @x) - @body.rotation
+    if r > 180
+      r -= 360
+    else if r < -180
+      r += 360
+    return r
 
   ###* 座標方向確認。
   * キャラクターの向いている方向を考慮し、指定された座標が、キャラクターからみてどの方向にあるか確認する。
@@ -124,32 +130,41 @@ tm.define 'nz.SpriteCharacter',
   * @param {number} param.y          mapSprite の local Y座標
   * @param {number} param.start      確認する開始角度 -180 ～ 180
   * @param {number} param.end        確認する終了角度 -180 ～ 180
-  * @param {Function} param.callback 範囲に入っていた場合に呼び出す関数
+  * @param {Function} param.callback チェック結果をもらう関数
   ###
   checkDirection: (param) ->
     {
+      r
       start
       end
       anticlockwise
+      callback
     } = param
-    # v = tm.geom.Vector2 x - @x, y - @y
-    # r = Math.radToDeg(v.toAngle()) - @body.rotation
-    r = @calcRotation(param)
-    if r > 180
-      r = 360 - r
-    else if r < -180
-      r = 360 + r
-    #console.log "#{r} #{param.x} #{param.y} #{@x} #{@y}"
-    if anticlockwise
-      if start > end
-        return start >= r and r >= end
-      else
-        return start >= r or r >= end
+    r = @calcRotation(param) unless r?
+    r1 = if anticlockwise then end   else start
+    r2 = if anticlockwise then start else end
+    res = false
+    if r1 < r2
+      res = r1 <= r and r <= r2
     else
-      if start < end
-        return start <= r and r <= end
-      else
-        return start <= r or r <= end
+      res = r1 <= r or  r <= r2
+    if callback?
+      unless res
+        ra = r1 if r1 > r
+        ra = r2 if r  > r2
+      callback(res,ra)
+    return res
+
+  _checkAttackDirection: (p) ->
+    p.x -= @width  / 2
+    p.y -= @height / 2
+    return true if @checkDirection(p)
+    p.x += @width
+    return true if @checkDirection(p)
+    p.y += @height
+    return true if @checkDirection(p)
+    p.x -= @width
+    return true if @checkDirection(p)
     return false
 
   _updateAttack: (enemy) ->
@@ -157,13 +172,8 @@ tm.define 'nz.SpriteCharacter',
     cw = @character.weapon
     distance = enemy.position.distance @position
     if distance < (cw.height + @body.width / 2)
-      if @checkDirection(
-        x:             enemy.x
-        y:             enemy.y
-        start:         cw.rotation.start
-        end:           cw.rotation.end
-        anticlockwise: cw.rotation.anticlockwise
-      )
+      p = enemy.position.clone().$extend cw.rotation
+      if @_checkAttackDirection(p)
         @attackAnimation()
         @attack = false
     return
@@ -196,6 +206,7 @@ tm.define 'nz.SpriteCharacter',
     command = @character.commands[turn]
     if command?
       @attack = command.attack
+      console.log "startAction attack=#{@attack}"
       for action in command.actions
         @_setShotAction(action.shot) if action.shot?
         @_setMoveAction(action.move) if action.move?
@@ -211,7 +222,9 @@ tm.define 'nz.SpriteCharacter',
     @character.direction = @direction
     @action              = false
     # まだ攻撃してない場合、攻撃をつづける
+    console.log @attack
     if @attack
+      @updateBattle()
       @update = @updateBattle
     return
 
