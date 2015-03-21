@@ -52,7 +52,7 @@ tm.define 'nz.SceneBattle',
     @on 'enter', @load.bind @
     return
 
-  load: () ->
+  load: ->
     assets = {}
     assets[@mapName] = "data/#{@mapName}.json"
 
@@ -68,7 +68,7 @@ tm.define 'nz.SceneBattle',
     @app.pushScene scene
     return
 
-  setup: () ->
+  setup: ->
 
     # マップ
     @mapSprite = nz.SpriteBattleMap(@mapName).addChildTo(@)
@@ -93,6 +93,9 @@ tm.define 'nz.SceneBattle',
     @on 'map.pointingend', (e) ->
       target = @mapSprite.findCharacter(e.mapx,e.mapy)
       if target
+        return
+      target = @mapSprite.findCharacterGhost(e.mapx,e.mapy)
+      if target
         if target.character.getActionCost(@turn) < target.character.ap
           return
       @_openMainMenu()
@@ -107,8 +110,6 @@ tm.define 'nz.SceneBattle',
     target = @selectCharacterSprite
     if @_selectGhost
       target = @selectCharacterSprite.ghost
-    else
-      @selectCharacter.clearAction(@turn)
     scene = klass(
       turn:      @turn
       target:    target
@@ -121,7 +122,7 @@ tm.define 'nz.SceneBattle',
     @app.pushScene scene
     return
 
-  _createMenuDialog: (_param) ->
+  _openMenuDialog: (_param) ->
     param = {
       screenWidth:  SCREEN_W
       screenHeight: SCREEN_H
@@ -131,50 +132,53 @@ tm.define 'nz.SceneBattle',
     dlg.on 'menuclosed', (e) -> menuFunc[e.selectIndex]?.call(null)
     dlg.box.setStrokeStyle nz.system.dialog.strokeStyle
     dlg.box.setFillStyle   nz.system.dialog.fillStyle
-    return dlg
+    @app.pushScene dlg
+    return
 
   _openMainMenu: ->
-    @app.pushScene @_createMenuDialog(
+    @_openMenuDialog
       title: 'Command?'
       menu: ['Next Turn','Option','Exit Game','Close Menu']
       menuFunc: [
         @_openCommandConf.bind @
-        -> return
+        (e) -> return
         (e) -> e.app.replaceScene nz.SceneTitleMenu()
       ]
-    )
+    return
 
   _openCharacterMenu: ->
-    self = @
     menu = []
     menuFunc = []
-    ap = @selectCharacter.ap - @selectCharacter.getActionCost(@turn)
+    ap = @selectCharacter.ap
+    if @_selectGhost
+      ap -= @selectCharacter.getActionCost(@turn)
     if ap >= 1
       menu.push 'Move'
-      menuFunc.push -> self._commandScene nz.SceneBattleMoveCommand, self._addMoveCommand.bind self
+      menuFunc.push @_addMoveCommand.bind @
       menu.push 'Direction'
-      menuFunc.push -> self._commandScene nz.SceneBattleDirectionCommand, self._addRotateCommand.bind self
+      menuFunc.push @_addRotateCommand.bind @
     if ap >= 2
-      menu.push 'Attack'
-      menuFunc.push -> self._addAttackCommand()
-      if @selectCharacter.isShotAction(@turn)
+      unless @selectCharacter.isAttackAction(@turn)
+        menu.push 'Attack'
+        menuFunc.push @_addAttackCommand.bind @
+      unless @selectCharacter.isShotAction(@turn)
         menu.push 'Shot'
-        menuFunc.push -> self._commandScene nz.SceneBattleShotCommand, self._addShotCommand.bind self
+        menuFunc.push @_addShotCommand.bind @
     menu.push 'Close Menu'
-    @app.pushScene @_createMenuDialog(
+    @_openMenuDialog
       title: @selectCharacter.name
       menu: menu
       menuFunc: menuFunc
-    )
+    return
 
   _openCommandConf: ->
-    @app.pushScene @_createMenuDialog(
+    @_openMenuDialog
       title: 'Start Next Turn?'
       menu: ['Yes','No']
       menuFunc: [
         @_nextTurn.bind @
       ]
-    )
+    return
 
   _nextTurn: ->
     scene = nz.SceneBattleTurn
@@ -192,38 +196,64 @@ tm.define 'nz.SceneBattle',
     @app.pushScene scene
     return
 
+  _clearAction: ->
+    @selectCharacter.clearAction(@turn)
+    @selectCharacterSprite.clearGhost()
 
-  _addMoveCommand: (route) ->
-    @selectCharacter.addMoveCommand @turn, route
-    if route.length > 0
-      p = route[route.length-1]
-      @selectCharacterSprite.createGhost(p.direction,p.mapx,p.mapy).addChildTo @mapSprite
-    @refreshStatus()
+  _addMoveCommand: ->
+    # TODO: のこりＡＰしだいでクリアするかどうか考えないと…
+    @_clearAction() unless @_selectGhost
+    @_commandScene(
+      nz.SceneBattleMoveCommand
+      ((route) ->
+        @selectCharacter.addMoveCommand @turn, route
+        if route.length > 0
+          p = route[route.length-1]
+          @selectCharacterSprite.createGhost(p.direction,p.mapx,p.mapy).addChildTo @mapSprite
+        @refreshStatus()
+        return
+      ).bind @
+    )
     return
 
   _addAttackCommand: ->
+    # TODO: のこりＡＰしだいでクリアするかどうか考えないと…
+    @_clearAction() unless @_selectGhost
     @selectCharacter.setAttackCommand @turn
     @refreshStatus()
     return
 
-  _addShotCommand: (rotation) ->
-    @selectCharacter.addShotCommand @turn, rotation
-    unless @selectCharacterSprite.ghost?
-      s = @selectCharacterSprite
-      s.createGhost(s.direction,s.mapx,s.mapy).addChildTo @mapSprite
-    @refreshStatus()
+  _addShotCommand: ->
+    @_clearAction() unless @_selectGhost
+    @_commandScene(
+      nz.SceneBattleShotCommand
+      ((rotation) ->
+        @selectCharacter.addShotCommand @turn, rotation
+        unless @selectCharacterSprite.ghost?
+          s = @selectCharacterSprite
+          s.createGhost(s.direction,s.mapx,s.mapy).addChildTo @mapSprite
+        @refreshStatus()
+        return
+      ).bind @
+    )
     return
 
-  _addRotateCommand: (direction1,direction2) ->
-    @selectCharacter.addRotateCommand @turn, direction1, DIRECTIONS[direction1].rotateIndex[direction2]
-    unless @selectCharacterSprite.ghost?
-      s = @selectCharacterSprite
-      s.createGhost(direction2,s.mapx,s.mapy).addChildTo @mapSprite
-    else
-      @selectCharacterSprite.ghost.setDirection(direction2)
-    @refreshStatus()
+  _addRotateCommand: ->
+    @_clearAction() unless @_selectGhost
+    @_commandScene(
+      nz.SceneBattleDirectionCommand
+      ((direction1,direction2) ->
+        @selectCharacter.addRotateCommand @turn, direction1, DIRECTIONS[direction1].rotateIndex[direction2]
+        unless @selectCharacterSprite.ghost?
+          s = @selectCharacterSprite
+          s.createGhost(direction2,s.mapx,s.mapy).addChildTo @mapSprite
+        else
+          @selectCharacterSprite.ghost.setDirection(direction2)
+        @refreshStatus()
+        return
+      ).bind @
+    )
     return
-
 
 nz.SceneBattle.prototype.getter 'characterSprites', -> @mapSprite.characterSprites
 nz.SceneBattle.prototype.getter 'selectCharacterSprite', -> @characterSprites[@_selectCharacterIndex]

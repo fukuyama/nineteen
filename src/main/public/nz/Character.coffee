@@ -126,21 +126,21 @@ tm.define 'nz.Character',
     command.cost += ACTION_COST.shot
     return @
 
-  ###* 射撃可能かどうか
+  ###* 射撃アクションを行っているかどうか
   * @param {number} i 戦闘ターン数
-  * @return {boolean} 射撃可能なら true
+  * @return {boolean} 射撃アクションを設定していたら true
   ###
   isShotAction: (i) ->
     command = @_command i
     # このターンに射撃を行っている場合は、射撃できない
     for action in command.actions
       if action.shot?
-        return false
-    return true
+        return true
+    return false
 
-  ###* 射撃可能かどうか
+  ###* 攻撃アクションを行っているかどうか
   * @param {number} i 戦闘ターン数
-  * @return {boolean} 射撃可能なら true
+  * @return {boolean} 攻撃アクションを設定していたら true
   ###
   isAttackAction: (i) ->
     command = @_command i

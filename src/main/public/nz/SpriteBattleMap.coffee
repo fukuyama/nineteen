@@ -55,6 +55,9 @@ tm.define 'nz.SpriteBattleMap',
     for character in @characterSprites
       if character.mapx == mapx and character.mapy == mapy
         return character
+    return null
+  findCharacterGhost: (mapx,mapy) ->
+    for character in @characterSprites
       if character.ghost?.mapx == mapx and character.ghost?.mapy == mapy
         return character
     return null
