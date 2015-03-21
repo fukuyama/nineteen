@@ -222,10 +222,11 @@ tm.define 'nz.SpriteCharacter',
     @character.direction = @direction
     @action              = false
     # まだ攻撃してない場合、攻撃をつづける
-    console.log @attack
+    console.log '_endAction'
     if @attack
       @updateBattle()
       @update = @updateBattle
+    @tweener.clear()
     return
 
   _setShotAction: (param) ->

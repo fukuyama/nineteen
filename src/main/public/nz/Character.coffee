@@ -137,3 +137,11 @@ tm.define 'nz.Character',
       if action.shot?
         return false
     return true
+
+  ###* 射撃可能かどうか
+  * @param {number} i 戦闘ターン数
+  * @return {boolean} 射撃可能なら true
+  ###
+  isAttackAction: (i) ->
+    command = @_command i
+    return command.attack

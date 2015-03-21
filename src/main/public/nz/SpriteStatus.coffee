@@ -16,11 +16,11 @@ tm.define 'nz.SpriteStatus',
     @height = 32 * 2.5
     @setOrigin 0.0,0.0
 
-    @setAlpha 0.2
+    @setAlpha 1.0
 
     @fromJSON
-      children: [
-        {
+      children:
+        bg:
           type:          'RoundRectangleShape'
           width:         @width
           height:        @height
@@ -32,8 +32,7 @@ tm.define 'nz.SpriteStatus',
           shadowColor:   'gray'
           originX:       @originX
           originY:       @originY
-        }
-        {
+        name:
           type:      'Label'
           text:      @character.name
           fillStyle: 'black'
@@ -44,5 +43,17 @@ tm.define 'nz.SpriteStatus',
           originX:   @originX
           originY:   @originY
           fontSize:  10
-        }
-      ]
+        attackMode:
+          type:      'Label'
+          fillStyle: 'black'
+          align:     'left'
+          baseline:  'top'
+          x:         8
+          y:         16
+          originX:   @originX
+          originY:   @originY
+          fontSize:  10
+    
+    #
+    @on 'refreshStatus', (e) ->
+      @attackMode.text = if @character.isAttackAction(e.turn) then 'Attack' else 'No'

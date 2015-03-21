@@ -8,8 +8,30 @@ SCREEN_H    = nz.system.screen.height
 DIRECTIONS  = nz.system.character.directions
 ACTION_COST = nz.system.character.action_cost
 
-tm.define 'nz.SceneBattle',
+tm.define 'nz.SceneBase',
   superClass: tm.app.Scene
+
+  init: ->
+    @superInit()
+    return
+
+  fireAll: (e,param={}) ->
+    if typeof e is 'string'
+      e      = tm.event.Event(e)
+      e.app  = @app
+      e.$extend param
+    @_dispatchEvent(e)
+    return
+
+  _dispatchEvent: (e,element=@) ->
+    if element.hasEventListener(e.type)
+      element.fire(e)
+    for child in element.children
+      @_dispatchEvent(e,child)
+    return
+
+tm.define 'nz.SceneBattle',
+  superClass: nz.SceneBase
 
   ###* 初期化
   * @classdesc 戦闘シーンクラス
@@ -24,10 +46,11 @@ tm.define 'nz.SceneBattle',
     @mapName = 'map_' + "#{@mapId}".paddingLeft(3,'0')
     @_selectCharacterIndex = 0
 
-    @turn = 0 # 戦闘ターン数
-    @command = null
+    @data =
+      turn: 0 # 戦闘ターン数
 
     @on 'enter', @load.bind @
+    return
 
   load: () ->
     assets = {}
@@ -57,6 +80,7 @@ tm.define 'nz.SceneBattle',
       @characterSprites.push nz.SpriteCharacter(i,character).addChildTo(@mapSprite)
       nz.SpriteStatus(
         character: character
+        battleData: @data
       ).addChildTo @
         .setPosition x, y
       y += 32 * 2.5
@@ -72,6 +96,12 @@ tm.define 'nz.SceneBattle',
         if target.character.getActionCost(@turn) < target.character.ap
           return
       @_openMainMenu()
+    @refreshStatus()
+    return
+
+  refreshStatus: ->
+    @fireAll('refreshStatus',turn:@turn)
+    return
 
   _commandScene: (klass,callback) ->
     target = @selectCharacterSprite
@@ -156,7 +186,7 @@ tm.define 'nz.SceneBattle',
       return
     @one 'resume', ->
       @mapSprite.addChildTo @
-      @turn += 1
+      @data.turn += 1
       return
     @mapSprite.remove()
     @app.pushScene scene
@@ -168,10 +198,12 @@ tm.define 'nz.SceneBattle',
     if route.length > 0
       p = route[route.length-1]
       @selectCharacterSprite.createGhost(p.direction,p.mapx,p.mapy).addChildTo @mapSprite
+    @refreshStatus()
     return
 
   _addAttackCommand: ->
     @selectCharacter.setAttackCommand @turn
+    @refreshStatus()
     return
 
   _addShotCommand: (rotation) ->
@@ -179,6 +211,7 @@ tm.define 'nz.SceneBattle',
     unless @selectCharacterSprite.ghost?
       s = @selectCharacterSprite
       s.createGhost(s.direction,s.mapx,s.mapy).addChildTo @mapSprite
+    @refreshStatus()
     return
 
   _addRotateCommand: (direction1,direction2) ->
@@ -188,9 +221,12 @@ tm.define 'nz.SceneBattle',
       s.createGhost(direction2,s.mapx,s.mapy).addChildTo @mapSprite
     else
       @selectCharacterSprite.ghost.setDirection(direction2)
+    @refreshStatus()
     return
 
 
 nz.SceneBattle.prototype.getter 'characterSprites', -> @mapSprite.characterSprites
 nz.SceneBattle.prototype.getter 'selectCharacterSprite', -> @characterSprites[@_selectCharacterIndex]
 nz.SceneBattle.prototype.getter 'selectCharacter', -> @selectCharacterSprite.character
+nz.SceneBattle.prototype.getter 'turn', -> @data.turn
+
