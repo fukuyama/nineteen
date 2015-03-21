@@ -159,8 +159,9 @@ tm.define 'nz.SceneBattle',
       menuFunc.push @_addRotateCommand.bind @
     if ap >= 2
       unless @selectCharacter.isAttackAction(@turn)
-        menu.push 'Attack'
-        menuFunc.push @_addAttackCommand.bind @
+        if (ap - @selectCharacter.getActionCost(@turn)) >= 2
+          menu.push 'Attack'
+          menuFunc.push @_addAttackCommand.bind @
       unless @selectCharacter.isShotAction(@turn)
         menu.push 'Shot'
         menuFunc.push @_addShotCommand.bind @
@@ -196,13 +197,11 @@ tm.define 'nz.SceneBattle',
     @app.pushScene scene
     return
 
-  _clearAction: ->
-    @selectCharacter.clearAction(@turn)
-    @selectCharacterSprite.clearGhost()
-
   _addMoveCommand: ->
-    # TODO: のこりＡＰしだいでクリアするかどうか考えないと…
-    @_clearAction() unless @_selectGhost
+    unless @_selectGhost
+      # ゴーストを選択してない場合は、移動アクションを削除して、ゴーストも削除
+      @selectCharacter.clearMoveAction(@turn)
+      @selectCharacterSprite.clearGhost()
     @_commandScene(
       nz.SceneBattleMoveCommand
       ((route) ->
@@ -217,14 +216,15 @@ tm.define 'nz.SceneBattle',
     return
 
   _addAttackCommand: ->
-    # TODO: のこりＡＰしだいでクリアするかどうか考えないと…
-    @_clearAction() unless @_selectGhost
     @selectCharacter.setAttackCommand @turn
     @refreshStatus()
     return
 
   _addShotCommand: ->
-    @_clearAction() unless @_selectGhost
+    unless @_selectGhost
+      # ゴーストを選択してない場合は、移動アクションを削除して、ゴーストも削除
+      @selectCharacter.clearMoveAction(@turn)
+      @selectCharacterSprite.clearGhost()
     @_commandScene(
       nz.SceneBattleShotCommand
       ((rotation) ->
@@ -239,7 +239,10 @@ tm.define 'nz.SceneBattle',
     return
 
   _addRotateCommand: ->
-    @_clearAction() unless @_selectGhost
+    unless @_selectGhost
+      # ゴーストを選択してない場合は、移動アクションを削除して、ゴーストも削除
+      @selectCharacter.clearMoveAction(@turn)
+      @selectCharacterSprite.clearGhost()
     @_commandScene(
       nz.SceneBattleDirectionCommand
       ((direction1,direction2) ->

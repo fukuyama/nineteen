@@ -56,6 +56,23 @@ tm.define 'nz.Character',
     command.attack = false
     command.actions = []
     command.cost = 0
+    return
+  clearMoveAction: (i) ->
+    command = @_command i
+    command.actions = []
+    command.cost = 0
+    if @isAttackAction(i)
+      command.cost += ACTION_COST.attack
+    return
+  clearShotAction: (i) ->
+    command = @_command i
+    actions = []
+    for action in command.actions
+      if action.shot?
+        command.cost += ACTION_COST.shot
+      actions.push action
+    command.actions = actions
+    return
 
   ###* アクションコストの取得
   * @param {number} i 戦闘ターン数
@@ -71,6 +88,7 @@ tm.define 'nz.Character',
     direction = @direction
     for a in command.actions when a.rotate?
       direction = a.rotate.direction
+    prev = command.cost
     cost = 0
     for r in route
       if direction != r.direction
@@ -80,7 +98,7 @@ tm.define 'nz.Character',
       command.actions.push
         move: r
       cost = r.cost
-    command.cost += cost
+    command.cost = prev + cost
     return @
 
   ###* 方向転換の追加

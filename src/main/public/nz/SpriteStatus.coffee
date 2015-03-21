@@ -53,7 +53,18 @@ tm.define 'nz.SpriteStatus',
           originX:   @originX
           originY:   @originY
           fontSize:  10
+        cost:
+          type:      'Label'
+          fillStyle: 'black'
+          align:     'left'
+          baseline:  'top'
+          x:         8
+          y:         24
+          originX:   @originX
+          originY:   @originY
+          fontSize:  10
     
     #
     @on 'refreshStatus', (e) ->
       @attackMode.text = if @character.isAttackAction(e.turn) then 'Attack' else 'No'
+      @cost.text = @character.ap - @character.getActionCost(e.turn)
