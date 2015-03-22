@@ -20,6 +20,13 @@ tm.define 'nz.SpriteBattleMap',
     @_activeBlinks = []
     @characterSprites = []
 
+    ###
+    @interactive = true
+
+    @on 'mousemove', ->
+      console.log 'move'
+    ###
+
     @map = tm.asset.Manager.get(mapName).data
 
     @graph = new nz.Graph

@@ -68,12 +68,13 @@ tm.define 'nz.SceneBattleShotCommand',
     @costa = @target.character.getActionCost(@turn)
 
     @on 'map.pointingstart', @_pointStart
-    @on 'pointingmove', @_pointMove
-    @on 'map.pointingend', @_pointEnd
+    @on 'pointingmove',      @_pointMove
+    @on 'map.pointingend',   @_pointEnd
+    @_createPointer()
 
   _pointStart: (e) ->
-    @_removePointer()
-    @_createPointer()
+    #@_removePointer()
+    #@_createPointer()
     @_movePointer(e.pointing)
     return
 
@@ -108,6 +109,7 @@ tm.define 'nz.SceneBattleShotCommand',
       height: 10
       fillStyle: 'blue'
     ).addChildTo @pointer
+    @pointer.rotation = @target.body.rotation
     return
 
   _removePointer: ->

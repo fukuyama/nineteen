@@ -6,17 +6,17 @@
 tm.define 'nz.SpriteStatus',
   superClass: tm.display.CanvasElement
 
-  init: (param={}) ->
-    {
-      @character
-    } = param
+  init: (@index,@character) ->
     @superInit()
 
     @width  = 32 * 5
     @height = 32 * 2.5
-    @setOrigin 0.0,0.0
-
+    @setOrigin 0.0, 0.0
     @setAlpha 1.0
+
+    @boundingType   = 'rect'
+    @interactive    = true
+    @checkHierarchy = true
 
     @fromJSON
       children:

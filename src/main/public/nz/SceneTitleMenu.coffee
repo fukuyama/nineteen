@@ -54,6 +54,7 @@ tm.define 'nz.SceneTitleMenu',
       characters: [
         nz.Character(name:'キャラクター１',mapx:5,mapy:5)
         nz.Character(name:'キャラクター２',mapx:0,mapy:0,direction:3)
+        nz.Character(name:'キャラクター３',mapx:5,mapy:0,direction:2)
       ]
     )
     return

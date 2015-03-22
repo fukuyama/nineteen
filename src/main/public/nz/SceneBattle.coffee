@@ -69,28 +69,32 @@ tm.define 'nz.SceneBattle',
     return
 
   setup: ->
+    scene = @
 
     # マップ
     @mapSprite = nz.SpriteBattleMap(@mapName).addChildTo(@)
     @mapSprite.x = (SCREEN_W - @mapSprite.width )
     @mapSprite.y = (SCREEN_H - @mapSprite.height) / 2
 
+    @status = tm.display.CanvasElement().addChildTo @
+
     x = y = 0
     for character,i in @characters
       @characterSprites.push nz.SpriteCharacter(i,character).addChildTo(@mapSprite)
-      nz.SpriteStatus(
-        character: character
-        battleData: @data
-      ).addChildTo @
-        .setPosition x, y
-      y += 32 * 2.5
+      s = nz.SpriteStatus i,character
+      s.setPosition x, y
+      s.on 'pointingend', (e) -> scene.activeStatus @
+      @addChildAt s, 0
+      y += 32 * 2.5 - 8
 
     # 基本操作
     @on 'character.pointingend', (e) ->
+      @mapSprite.clearBlink()
       @_selectCharacterIndex = e.characterIndex
       @_selectGhost          = e.ghost
       @_openCharacterMenu()
     @on 'map.pointingend', (e) ->
+      @mapSprite.clearBlink()
       target = @mapSprite.findCharacter(e.mapx,e.mapy)
       if target
         return
@@ -106,7 +110,18 @@ tm.define 'nz.SceneBattle',
     @fireAll('refreshStatus',turn:@turn)
     return
 
+  activeStatus: (status) ->
+    status.remove()
+    @status.addChild status
+    @mapSprite.clearBlink()
+    @mapSprite.blink(status.character.mapx,status.character.mapy)
+    ghost = @characterSprites[status.index].ghost
+    if ghost?
+      @mapSprite.blink(ghost.mapx,ghost.mapy)
+    return
+
   _commandScene: (klass,callback) ->
+    @refreshStatus()
     target = @selectCharacterSprite
     if @_selectGhost
       target = @selectCharacterSprite.ghost
@@ -142,7 +157,7 @@ tm.define 'nz.SceneBattle',
       menuFunc: [
         @_openCommandConf.bind @
         (e) -> return
-        (e) -> e.app.replaceScene nz.SceneTitleMenu()
+        (e) -> @app.replaceScene nz.SceneTitleMenu()
       ]
     return
 
@@ -159,7 +174,7 @@ tm.define 'nz.SceneBattle',
       menuFunc.push @_addRotateCommand.bind @
     if ap >= 2
       unless @selectCharacter.isAttackAction(@turn)
-        if (ap - @selectCharacter.getActionCost(@turn)) >= 2
+        if (@selectCharacter.ap - @selectCharacter.getActionCost(@turn)) >= 2
           menu.push 'Attack'
           menuFunc.push @_addAttackCommand.bind @
       unless @selectCharacter.isShotAction(@turn)
@@ -182,6 +197,7 @@ tm.define 'nz.SceneBattle',
     return
 
   _nextTurn: ->
+    @refreshStatus()
     scene = nz.SceneBattleTurn
       start: @turn
       end: @turn
@@ -192,6 +208,7 @@ tm.define 'nz.SceneBattle',
     @one 'resume', ->
       @mapSprite.addChildTo @
       @data.turn += 1
+      @refreshStatus()
       return
     @mapSprite.remove()
     @app.pushScene scene
