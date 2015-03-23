@@ -170,25 +170,27 @@ tm.define 'nz.SceneBattle',
   _openCharacterMenu: ->
     menu = []
     menuFunc = []
-    ap = @selectCharacter.ap
-    if @_selectGhost
-      ap -= @selectCharacter.getActionCost(@turn)
-    if ap >= 1
+    sc     = @selectCharacter
+    ap     = sc.ap
+    cost   = sc.getActionCost(@turn)
+    attack = sc.isAttackAction(@turn)
+    shot   = sc.isShotAction(@turn)
+    if (ap - cost) >= 1 or not @_selectGhost
       menu.push 'Move'
       menuFunc.push @_addMoveCommand.bind @
       menu.push 'Direction'
       menuFunc.push @_addRotateCommand.bind @
-    if ap >= 2
-      unless @selectCharacter.isAttackAction(@turn)
-        if (@selectCharacter.ap - @selectCharacter.getActionCost(@turn)) >= 2
+    if not shot
+      if (ap - cost) >= 2
+        if not attack
           menu.push 'Attack'
           menuFunc.push @_addAttackCommand.bind @
-      unless @selectCharacter.isShotAction(@turn)
-        menu.push 'Shot'
-        menuFunc.push @_addShotCommand.bind @
+        if cost == 0 or @_selectGhost
+          menu.push 'Shot'
+          menuFunc.push @_addShotCommand.bind @
     menu.push 'Close Menu'
     @_openMenuDialog
-      title: @selectCharacter.name
+      title: sc.name
       menu: menu
       menuFunc: menuFunc
     return

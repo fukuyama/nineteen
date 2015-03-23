@@ -110,7 +110,6 @@ tm.define 'nz.SpriteCharacter',
     return @
 
   updateBattle: ->
-    console.log 'updateBattle'
     scene = @getRoot()
     for enemy,i in scene.characterSprites when @index != i
       @_updateAttack(enemy)
@@ -206,7 +205,6 @@ tm.define 'nz.SpriteCharacter',
     command = @character.commands[turn]
     if command?
       @attack = command.attack
-      console.log "startAction attack=#{@attack}"
       for action in command.actions
         @_setShotAction(action.shot) if action.shot?
         @_setMoveAction(action.move) if action.move?
@@ -222,7 +220,6 @@ tm.define 'nz.SpriteCharacter',
     @character.direction = @direction
     @action              = false
     # まだ攻撃してない場合、攻撃をつづける
-    console.log '_endAction'
     if @attack
       @updateBattle()
       @update = @updateBattle
