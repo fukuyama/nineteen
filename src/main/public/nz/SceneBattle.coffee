@@ -83,8 +83,10 @@ tm.define 'nz.SceneBattle',
       @characterSprites.push nz.SpriteCharacter(i,character).addChildTo(@mapSprite)
       s = nz.SpriteStatus i,character
       s.setPosition x, y
-      s.on 'pointingend', (e) -> scene.activeStatus @
-      @addChildAt s, 0
+      s.on 'pointingend', (e) ->
+        scene.activeStatus @
+        scene.blinkCharacter @index
+      @status.addChildAt s, 0
       y += 32 * 2.5 - 8
 
     # 基本操作
@@ -92,6 +94,8 @@ tm.define 'nz.SceneBattle',
       @mapSprite.clearBlink()
       @_selectCharacterIndex = e.characterIndex
       @_selectGhost          = e.ghost
+      for s in @status.children when s.index == e.characterIndex
+        @activeStatus s
       @_openCharacterMenu()
     @on 'map.pointingend', (e) ->
       @mapSprite.clearBlink()
@@ -110,14 +114,16 @@ tm.define 'nz.SceneBattle',
     @fireAll('refreshStatus',turn:@turn)
     return
 
-  activeStatus: (status) ->
-    status.remove()
-    @status.addChild status
+  blinkCharacter: (index) ->
+    s = @characterSprites[index]
     @mapSprite.clearBlink()
-    @mapSprite.blink(status.character.mapx,status.character.mapy)
-    ghost = @characterSprites[status.index].ghost
-    if ghost?
-      @mapSprite.blink(ghost.mapx,ghost.mapy)
+    @mapSprite.blink(s.mapx,s.mapy)
+    if s.ghost?
+      @mapSprite.blink(s.ghost.mapx,s.ghost.mapy)
+    return
+
+  activeStatus: (status) ->
+    @status.addChild status
     return
 
   _commandScene: (klass,callback) ->
