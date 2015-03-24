@@ -37,6 +37,7 @@ module.exports = (grunt) ->
     'nz/SpriteCharacter'
     'nz/SpriteStatus'
 
+    'nz/SceneBase'
     'nz/SceneTitleMenu'
     'nz/SceneBattle'
     'nz/SceneBattleCommand'

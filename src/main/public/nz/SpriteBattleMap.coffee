@@ -59,15 +59,17 @@ tm.define 'nz.SpriteBattleMap',
 
   # 指定された座標のキャラクターを探す
   findCharacter: (mapx,mapy) ->
+    res = []
     for character in @characterSprites
       if character.mapx == mapx and character.mapy == mapy
-        return character
-    return null
+        res.push character
+    return res
   findCharacterGhost: (mapx,mapy) ->
+    res = []
     for character in @characterSprites
       if character.ghost?.mapx == mapx and character.ghost?.mapy == mapy
-        return character
-    return null
+        res.push character.ghost
+    return res
 
   _createCursor: ->
     cursor = tm.display.Shape(

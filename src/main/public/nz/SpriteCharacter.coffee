@@ -41,9 +41,11 @@ tm.define 'nz.SpriteCharacter',
     @setDirection @character.direction
 
     @setInteractive true
+    ###
     @on 'pointingover', @_dispatchCharacterEvent
     @on 'pointingout', @_dispatchCharacterEvent
     @on 'pointingend', @_dispatchCharacterEvent
+    ###
 
     @on 'battleSceneStart', ->
       @clearGhost()
@@ -80,6 +82,8 @@ tm.define 'nz.SpriteCharacter',
     e.characterIndex = @index
     e.app.currentScene.dispatchEvent e
     return
+
+  isGhost: () -> (@alpha == 0.5) # 半透明かどうかで判断
 
   createGhost: (direction,mapx,mapy) ->
     @clearGhost()
@@ -197,6 +201,7 @@ tm.define 'nz.SpriteCharacter',
 
   startAction: (turn) ->
     @tweener.clear()
+    @move      = false
     @action    = true
     @mapx      = @character.mapx
     @mapy      = @character.mapy
@@ -211,13 +216,14 @@ tm.define 'nz.SpriteCharacter',
         @_setRotateAction(action.rotate) if action.rotate?
         if @attack
           @tweener.call @updateBattle,@,[]
-    @tweener.call @_endAction,@,[turn]
+    @tweener.call @_endAction,@,[]
     return
 
-  _endAction: (turn) ->
+  _endAction: ->
     @character.mapx      = @mapx
     @character.mapy      = @mapy
     @character.direction = @direction
+    @move                = false
     @action              = false
     # まだ攻撃してない場合、攻撃をつづける
     if @attack
@@ -226,11 +232,15 @@ tm.define 'nz.SpriteCharacter',
     @tweener.clear()
     return
 
+  isMove: -> @move
+  isStop: -> not @move
+
   _setShotAction: (param) ->
     @tweener.call @shotAnimation,@,[param]
     return
 
   _setMoveAction: (param) ->
+    @move = true
     {
       @mapx
       @mapy

@@ -8,28 +8,6 @@ SCREEN_H    = nz.system.screen.height
 DIRECTIONS  = nz.system.character.directions
 ACTION_COST = nz.system.character.action_cost
 
-tm.define 'nz.SceneBase',
-  superClass: tm.app.Scene
-
-  init: ->
-    @superInit()
-    return
-
-  fireAll: (e,param={}) ->
-    if typeof e is 'string'
-      e      = tm.event.Event(e)
-      e.app  = @app
-      e.$extend param
-    @_dispatchEvent(e)
-    return
-
-  _dispatchEvent: (e,element=@) ->
-    if element.hasEventListener(e.type)
-      element.fire(e)
-    for child in element.children
-      @_dispatchEvent(e,child)
-    return
-
 tm.define 'nz.SceneBattle',
   superClass: nz.SceneBase
 
@@ -76,11 +54,15 @@ tm.define 'nz.SceneBattle',
     @mapSprite.x = (SCREEN_W - @mapSprite.width )
     @mapSprite.y = (SCREEN_H - @mapSprite.height) / 2
 
+    # ステータスフォルダ
     @status = tm.display.CanvasElement().addChildTo @
 
     x = y = 0
     for character,i in @characters
+      # キャラクター
       @characterSprites.push nz.SpriteCharacter(i,character).addChildTo(@mapSprite)
+
+      # ステータス
       s = nz.SpriteStatus i,character
       s.setPosition x, y
       s.on 'pointingend', (e) ->
@@ -90,28 +72,31 @@ tm.define 'nz.SceneBattle',
       y += 32 * 2.5 - 8
 
     # 基本操作
-    @on 'character.pointingend', (e) ->
-      @mapSprite.clearBlink()
-      @_selectCharacterIndex = e.characterIndex
-      @_selectGhost          = e.ghost
-      for s in @status.children when s.index == e.characterIndex
-        @activeStatus s
-      @_openCharacterMenu()
-    @on 'map.pointingend', (e) ->
-      @mapSprite.clearBlink()
-      target = @mapSprite.findCharacter(e.mapx,e.mapy)
-      if target
-        return
-      target = @mapSprite.findCharacterGhost(e.mapx,e.mapy)
-      if target
-        if target.character.getActionCost(@turn) < target.character.ap
-          return
-      @_openMainMenu()
+    @on 'map.pointingend', @mapPointingend
     @refreshStatus()
+    return
+
+  mapPointingend: (e) ->
+    @mapSprite.clearBlink()
+    list = @mapSprite.findCharacterGhost(e.mapx,e.mapy)
+    for t in @mapSprite.findCharacter(e.mapx,e.mapy)
+      if not t.ghost? or t.ghost.mapx != e.mapx or t.ghost.mapy != e.mapy
+        list.push t
+    targets = (t for t in list when not t.isGhost() or t.character.getRemnantAp(@turn) > 0)
+    if targets.length == 0
+      @_openMainMenu()
+    else if targets.length == 1
+      @_openCharacterMenu(targets[0])
+    else
+      @_openCharacterSelectMenu(targets)
     return
 
   refreshStatus: ->
     @fireAll('refreshStatus',turn:@turn)
+    return
+
+  activeStatus: (status) ->
+    @status.addChild status
     return
 
   blinkCharacter: (index) ->
@@ -120,10 +105,6 @@ tm.define 'nz.SceneBattle',
     @mapSprite.blink(s.mapx,s.mapy)
     if s.ghost?
       @mapSprite.blink(s.ghost.mapx,s.ghost.mapy)
-    return
-
-  activeStatus: (status) ->
-    @status.addChild status
     return
 
   _commandScene: (klass,callback) ->
@@ -150,11 +131,11 @@ tm.define 'nz.SceneBattle',
     }.$extend _param
     menuFunc = param.menuFunc
     dlg = tm.ui.MenuDialog(param)
-    dlg.on 'menuclosed', (e) -> menuFunc[e.selectIndex]?.call(null)
+    dlg.on 'menuclosed', (e) -> menuFunc[e.selectIndex]?.call(null,e.selectIndex)
     dlg.box.setStrokeStyle nz.system.dialog.strokeStyle
     dlg.box.setFillStyle   nz.system.dialog.fillStyle
     @app.pushScene dlg
-    return
+    return dlg
 
   _openMainMenu: ->
     @_openMenuDialog
@@ -167,8 +148,25 @@ tm.define 'nz.SceneBattle',
       ]
     return
 
-  _openCharacterMenu: ->
-    menu = []
+  _openCharacterSelectMenu: (targets) ->
+    menu     = []
+    menuFunc = []
+    for t in targets
+      menu.push t.character.name
+      menuFunc.push ((i) -> @_openCharacterMenu targets[i]).bind @
+    menu.push 'Close Menu'
+    @_openMenuDialog
+      title: 'Select Character'
+      menu: menu
+      menuFunc: menuFunc
+    return
+
+  _openCharacterMenu: (target) ->
+    @_selectCharacterIndex = target.index
+    @_selectGhost          = target.isGhost()
+    for s in @status.children when s.index == target.index
+      @activeStatus s
+    menu     = []
     menuFunc = []
     sc     = @selectCharacter
     ap     = sc.ap

@@ -44,15 +44,6 @@ tm.define 'nz.SceneBattleMoveCommand',
         break
       @mapSprite.blink(r.mapx,r.mapy)
 
-tm.define 'nz.SceneBattleAttackCommand',
-  superClass: nz.SceneBattleMoveCommand
-
-  init: (param) ->
-    @superInit(param)
-
-  commandAp: ->
-    @target.character.ap - @target.character.getActionCost(@turn) - ACTION_COST.attack
-
 tm.define 'nz.SceneBattleShotCommand',
   superClass: tm.app.Scene
 
