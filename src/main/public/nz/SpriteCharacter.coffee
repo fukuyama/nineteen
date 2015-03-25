@@ -40,13 +40,6 @@ tm.define 'nz.SpriteCharacter',
     @setMapPosition @character.mapx, @character.mapy
     @setDirection @character.direction
 
-    @setInteractive true
-    ###
-    @on 'pointingover', @_dispatchCharacterEvent
-    @on 'pointingout', @_dispatchCharacterEvent
-    @on 'pointingend', @_dispatchCharacterEvent
-    ###
-
     @on 'battleSceneStart', ->
       @clearGhost()
       return
@@ -69,18 +62,6 @@ tm.define 'nz.SpriteCharacter',
       @_hitBallet(e.owner,e.ballet)
       return
 
-    return
-
-  _dispatchCharacterEvent: (_e) ->
-    e = tm.event.Event('character.' + _e.type)
-    e.app   = _e.app
-    e.mapx  = @mapx
-    e.mapy  = @mapy
-    e.ghost =
-      (@mapx != @character.mapx or @mapy != @character.mapy) or
-      (@ghost?.mapx == @mapx and @ghost?.mapy == @mapy)
-    e.characterIndex = @index
-    e.app.currentScene.dispatchEvent e
     return
 
   isGhost: () -> (@alpha == 0.5) # 半透明かどうかで判断

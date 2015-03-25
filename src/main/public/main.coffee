@@ -4,6 +4,7 @@ tm.main ->
   assets = nz.system.assets
 
   app = tm.display.CanvasApp '#world'
+  app.enableStats()
 
   # リサイズ
   app.resize screen.width, screen.height

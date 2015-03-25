@@ -129,7 +129,8 @@ tm.define 'nz.SceneBattle',
       screenWidth:  SCREEN_W
       screenHeight: SCREEN_H
     }.$extend _param
-    menuFunc = param.menuFunc
+    menuFunc   = (m.func for m in param.menu when m.func?)
+    param.menu = (m.name for m in param.menu when m.name?)
     dlg = tm.ui.MenuDialog(param)
     dlg.on 'menuclosed', (e) -> menuFunc[e.selectIndex]?.call(null,e.selectIndex)
     dlg.box.setStrokeStyle nz.system.dialog.strokeStyle
@@ -140,25 +141,24 @@ tm.define 'nz.SceneBattle',
   _openMainMenu: ->
     @_openMenuDialog
       title: 'Command?'
-      menu: ['Next Turn','Option','Exit Game','Close Menu']
-      menuFunc: [
-        @_openCommandConf.bind @
-        (e) -> return
-        (e) -> @app.replaceScene nz.SceneTitleMenu()
+      menu: [
+        {name:'Next Turn', func: @_openCommandConf.bind @}
+        {name:'Option',    func: (e) -> return}
+        {name:'Exit Game', func: (e) -> @app.replaceScene nz.SceneTitleMenu()}
+        {name:'Close Menu'}
       ]
     return
 
   _openCharacterSelectMenu: (targets) ->
-    menu     = []
-    menuFunc = []
+    menu = []
     for t in targets
-      menu.push t.character.name
-      menuFunc.push ((i) -> @_openCharacterMenu targets[i]).bind @
-    menu.push 'Close Menu'
+      menu.push
+        name: t.character.name
+        func: ((i) -> @_openCharacterMenu targets[i]).bind @
+    menu.push {name: 'Close Menu'}
     @_openMenuDialog
       title: 'Select Character'
       menu: menu
-      menuFunc: menuFunc
     return
 
   _openCharacterMenu: (target) ->
@@ -166,39 +166,41 @@ tm.define 'nz.SceneBattle',
     @_selectGhost          = target.isGhost()
     for s in @status.children when s.index == target.index
       @activeStatus s
-    menu     = []
-    menuFunc = []
+    menu   = []
     sc     = @selectCharacter
     ap     = sc.ap
     cost   = sc.getActionCost(@turn)
     attack = sc.isAttackAction(@turn)
     shot   = sc.isShotAction(@turn)
     if (ap - cost) >= 1 or not @_selectGhost
-      menu.push 'Move'
-      menuFunc.push @_addMoveCommand.bind @
-      menu.push 'Direction'
-      menuFunc.push @_addRotateCommand.bind @
+      menu.push
+        name: 'Move'
+        func: @_addMoveCommand.bind @
+      menu.push
+        name: 'Direction'
+        func: @_addRotateCommand.bind @
     if not shot
       if (ap - cost) >= 2
         if not attack
-          menu.push 'Attack'
-          menuFunc.push @_addAttackCommand.bind @
+          menu.push
+            name: 'Attack'
+            func: @_addAttackCommand.bind @
         if cost == 0 or @_selectGhost
-          menu.push 'Shot'
-          menuFunc.push @_addShotCommand.bind @
-    menu.push 'Close Menu'
+          menu.push
+            name: 'Shot'
+            func: @_addShotCommand.bind @
+    menu.push {name:'Close Menu'}
     @_openMenuDialog
       title: sc.name
       menu: menu
-      menuFunc: menuFunc
     return
 
   _openCommandConf: ->
     @_openMenuDialog
       title: 'Start Next Turn?'
-      menu: ['Yes','No']
-      menuFunc: [
-        @_nextTurn.bind @
+      menu: [
+        {name:'Yes',func:@_nextTurn.bind @}
+        {name:'No'}
       ]
     return
 
@@ -285,4 +287,3 @@ nz.SceneBattle.prototype.getter 'characterSprites', -> @mapSprite.characterSprit
 nz.SceneBattle.prototype.getter 'selectCharacterSprite', -> @characterSprites[@_selectCharacterIndex]
 nz.SceneBattle.prototype.getter 'selectCharacter', -> @selectCharacterSprite.character
 nz.SceneBattle.prototype.getter 'turn', -> @data.turn
-
