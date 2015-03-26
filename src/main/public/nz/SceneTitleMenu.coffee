@@ -49,12 +49,16 @@ tm.define 'nz.SceneTitleMenu',
   * @constructor nz.SceneTitleMenu#
   ###
   _new_game: ->
-    @app.replaceScene nz.SceneBattle(
-      mapId:0
+    @app.pushScene nz.SceneBattle(
+      mapId: 0
+      controlTeam: ['teamA']
       characters: [
-        nz.Character(name:'キャラクター１',mapx:5,mapy:5)
-        nz.Character(name:'キャラクター２',mapx:0,mapy:0,direction:3)
-        nz.Character(name:'キャラクター３',mapx:5,mapy:0,direction:2)
+        nz.Character(name:'キャラクター1',team:'teamA')
+        nz.Character(name:'キャラクター2',team:'teamA')
+        nz.Character(name:'キャラクター3',team:'teamA')
+        nz.Character(name:'キャラクター4',team:'teamB')
+        nz.Character(name:'キャラクター5',team:'teamB')
+        nz.Character(name:'キャラクター6',team:'teamB')
       ]
     )
     return

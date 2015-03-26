@@ -8,12 +8,11 @@ tm.define 'nz.SpriteStatus',
 
   init: (@index,@character) ->
     @superInit()
+    @setOrigin(0.0,0.0)
 
-    @width  = 32 * 5
-    @height = 32 * 2.5
-    @setOrigin 0.0, 0.0
-    @setAlpha 1.0
-
+    @width          = 32 * 5
+    @height         = 32 * 2.5
+    @alpha          = 1.0
     @boundingType   = 'rect'
     @interactive    = true
     @checkHierarchy = true

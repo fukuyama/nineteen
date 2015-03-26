@@ -19,6 +19,7 @@ tm.define 'nz.SceneBattle',
     {
       @mapId
       @characters
+      @controlTeam
     } = param
     @superInit()
     @mapName = 'map_' + "#{@mapId}".paddingLeft(3,'0')
@@ -60,7 +61,11 @@ tm.define 'nz.SceneBattle',
     x = y = 0
     for character,i in @characters
       # キャラクター
-      @characterSprites.push nz.SpriteCharacter(i,character).addChildTo(@mapSprite)
+      @characterSprites.push(
+        nz.SpriteCharacter(i,character)
+          .setVisible(false)
+          .addChildTo(@mapSprite)
+      )
 
       # ステータス
       s = nz.SpriteStatus i,character
@@ -74,15 +79,21 @@ tm.define 'nz.SceneBattle',
     # 基本操作
     @on 'map.pointingend', @mapPointingend
     @refreshStatus()
+
+    @one 'enterframe', ->
+      @_pushScene(
+        nz.SceneBattlePosition(
+          mapSprite: @mapSprite
+        )
+      )
     return
 
   mapPointingend: (e) ->
     @mapSprite.clearBlink()
-    list = @mapSprite.findCharacterGhost(e.mapx,e.mapy)
+    targets = @mapSprite.findCharacterGhost(e.mapx,e.mapy)
     for t in @mapSprite.findCharacter(e.mapx,e.mapy)
-      if not t.ghost? or t.ghost.mapx != e.mapx or t.ghost.mapy != e.mapy
-        list.push t
-    targets = (t for t in list when not t.isGhost() or t.character.getRemnantAp(@turn) > 0)
+      if not t.hasGhost() or t.ghost.mapx != e.mapx or t.ghost.mapy != e.mapy
+        targets.push t
     if targets.length == 0
       @_openMainMenu()
     else if targets.length == 1
@@ -103,8 +114,14 @@ tm.define 'nz.SceneBattle',
     s = @characterSprites[index]
     @mapSprite.clearBlink()
     @mapSprite.blink(s.mapx,s.mapy)
-    if s.ghost?
-      @mapSprite.blink(s.ghost.mapx,s.ghost.mapy)
+    @mapSprite.blink(s.ghost.mapx,s.ghost.mapy) if s.hasGhost()
+    return
+
+  _pushScene: (scene) ->
+    @one 'pause',  -> @mapSprite.addChildTo scene
+    @one 'resume', -> @mapSprite.addChildTo @
+    @mapSprite.remove()
+    @app.pushScene scene
     return
 
   _commandScene: (klass,callback) ->
@@ -112,16 +129,12 @@ tm.define 'nz.SceneBattle',
     target = @selectCharacterSprite
     if @_selectGhost
       target = @selectCharacterSprite.ghost
-    scene = klass(
+    @_pushScene klass(
       turn:      @turn
       target:    target
       callback:  callback
       mapSprite: @mapSprite
     )
-    @one 'pause',  -> @mapSprite.addChildTo scene
-    @one 'resume', -> @mapSprite.addChildTo @
-    @mapSprite.remove()
-    @app.pushScene scene
     return
 
   _openMenuDialog: (_param) ->
@@ -144,7 +157,7 @@ tm.define 'nz.SceneBattle',
       menu: [
         {name:'Next Turn', func: @_openCommandConf.bind @}
         {name:'Option',    func: (e) -> return}
-        {name:'Exit Game', func: (e) -> @app.replaceScene nz.SceneTitleMenu()}
+        {name:'Exit Game', func: @_exitGame.bind @}
         {name:'Close Menu'}
       ]
     return
@@ -164,31 +177,34 @@ tm.define 'nz.SceneBattle',
   _openCharacterMenu: (target) ->
     @_selectCharacterIndex = target.index
     @_selectGhost          = target.isGhost()
-    for s in @status.children when s.index == target.index
-      @activeStatus s
-    menu   = []
-    sc     = @selectCharacter
-    ap     = sc.ap
-    cost   = sc.getActionCost(@turn)
-    attack = sc.isAttackAction(@turn)
-    shot   = sc.isShotAction(@turn)
-    if (ap - cost) >= 1 or not @_selectGhost
-      menu.push
-        name: 'Move'
-        func: @_addMoveCommand.bind @
-      menu.push
-        name: 'Direction'
-        func: @_addRotateCommand.bind @
-    if not shot
-      if (ap - cost) >= 2
-        if not attack
+    @activeStatus(s) for s in @status.children when s.index == target.index
+    menu  = []
+    sc    = @selectCharacter
+    acost = sc.getActionCost(@turn)
+    rap   = sc.getRemnantAp(@turn)
+    # アクションの入力が可能かどうか。（ゴーストを選択しているか、ゴーストを選択してない場合は、ゴーストを持っていなければ、入力可能）
+    if @_selectGhost or (not @_selectGhost and not target.hasGhost())
+      if rap > 0
+        menu.push
+          name: 'Move'
+          func: @_addMoveCommand.bind @
+        menu.push
+          name: 'Direction'
+          func: @_addRotateCommand.bind @
+      if rap >= 2
+        attack = sc.isAttackAction(@turn)
+        shot   = sc.isShotAction(@turn)
+        if not attack and not shot
           menu.push
             name: 'Attack'
             func: @_addAttackCommand.bind @
-        if cost == 0 or @_selectGhost
           menu.push
             name: 'Shot'
             func: @_addShotCommand.bind @
+    if acost > 0
+      menu.push
+        name: 'Reset Action'
+        func: @_resetAction.bind @
     menu.push {name:'Close Menu'}
     @_openMenuDialog
       title: sc.name
@@ -202,6 +218,10 @@ tm.define 'nz.SceneBattle',
         {name:'Yes',func:@_nextTurn.bind @}
         {name:'No'}
       ]
+    return
+
+  _exitGame: ->
+    @app.replaceScene nz.SceneTitleMenu()
     return
 
   _nextTurn: ->
@@ -223,10 +243,6 @@ tm.define 'nz.SceneBattle',
     return
 
   _addMoveCommand: ->
-    unless @_selectGhost
-      # ゴーストを選択してない場合は、移動アクションを削除して、ゴーストも削除
-      @selectCharacter.clearMoveAction(@turn)
-      @selectCharacterSprite.clearGhost()
     @_commandScene(
       nz.SceneBattleMoveCommand
       ((route) ->
@@ -241,46 +257,56 @@ tm.define 'nz.SceneBattle',
     return
 
   _addAttackCommand: ->
-    @selectCharacter.setAttackCommand @turn
+    sc = @selectCharacter
+    sc.setAttackCommand @turn
     @refreshStatus()
+    if sc.getRemnantAp(@turn) > 0
+      @_selectGhost = true
+      @one 'enterframe', @_addMoveCommand
     return
 
   _addShotCommand: ->
-    unless @_selectGhost
-      # ゴーストを選択してない場合は、移動アクションを削除して、ゴーストも削除
-      @selectCharacter.clearMoveAction(@turn)
-      @selectCharacterSprite.clearGhost()
     @_commandScene(
       nz.SceneBattleShotCommand
       ((rotation) ->
-        @selectCharacter.addShotCommand @turn, rotation
-        unless @selectCharacterSprite.ghost?
-          s = @selectCharacterSprite
-          s.createGhost(s.direction,s.mapx,s.mapy).addChildTo @mapSprite
+        sc  = @selectCharacter
+        scs = @selectCharacterSprite
+        sc.addShotCommand @turn, rotation
+        if not scs.hasGhost() and not scs.isGhost()
+          scs.createGhost(scs.direction,scs.mapx,scs.mapy).addChildTo @mapSprite
         @refreshStatus()
+        if sc.getRemnantAp(@turn) > 0
+          @_selectGhost = true
+          @one 'enterframe', @_addMoveCommand
         return
       ).bind @
     )
     return
 
   _addRotateCommand: ->
-    unless @_selectGhost
-      # ゴーストを選択してない場合は、移動アクションを削除して、ゴーストも削除
-      @selectCharacter.clearMoveAction(@turn)
-      @selectCharacterSprite.clearGhost()
     @_commandScene(
       nz.SceneBattleDirectionCommand
       ((direction1,direction2) ->
-        @selectCharacter.addRotateCommand @turn, direction1, DIRECTIONS[direction1].rotateIndex[direction2]
-        unless @selectCharacterSprite.ghost?
-          s = @selectCharacterSprite
+        sc  = @selectCharacter
+        scs = @selectCharacterSprite
+        sc.addRotateCommand @turn, direction1, DIRECTIONS[direction1].rotateIndex[direction2]
+        unless scs.hasGhost()
+          s = scs
           s.createGhost(direction2,s.mapx,s.mapy).addChildTo @mapSprite
         else
-          @selectCharacterSprite.ghost.setDirection(direction2)
+          scs.ghost.setDirection(direction2)
         @refreshStatus()
+        if sc.getRemnantAp(@turn) > 0
+          @_selectGhost = true
+          @one 'enterframe', @_addMoveCommand
         return
       ).bind @
     )
+    return
+
+  _resetAction: ->
+    @selectCharacter.clearAction()
+    @selectCharacterSprite.clearGhost()
     return
 
 nz.SceneBattle.prototype.getter 'characterSprites', -> @mapSprite.characterSprites

@@ -4,7 +4,7 @@ tm.main ->
   assets = nz.system.assets
 
   app = tm.display.CanvasApp '#world'
-  app.enableStats()
+  # app.enableStats()
 
   # リサイズ
   app.resize screen.width, screen.height
@@ -16,7 +16,7 @@ tm.main ->
   app.background = 'gray'
   
   # 最初のシーンに切り替える
-  app.replaceScene tm.scene.LoadingScene(
+  app.pushScene tm.scene.LoadingScene(
     assets: assets
     width: screen.width
     height: screen.height

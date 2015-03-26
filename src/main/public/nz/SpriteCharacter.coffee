@@ -65,6 +65,7 @@ tm.define 'nz.SpriteCharacter',
     return
 
   isGhost: () -> (@alpha == 0.5) # 半透明かどうかで判断
+  hasGhost: () -> @ghost != null
 
   createGhost: (direction,mapx,mapy) ->
     @clearGhost()

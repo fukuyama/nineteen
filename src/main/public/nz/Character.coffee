@@ -16,6 +16,7 @@ tm.define 'nz.Character',
     @.$extend {
       name: 'テストキャラクター'
       spriteSheet: 'character_001'
+      team: 'teamA'
       hp: 10
       ap: 6
       mapx: 0
@@ -43,6 +44,7 @@ tm.define 'nz.Character',
     return
 
   _command: (i) ->
+    i = @commands.length - 1 unless i?
     unless @commands[i]?
       @commands[i] = {}
       @clearAction i

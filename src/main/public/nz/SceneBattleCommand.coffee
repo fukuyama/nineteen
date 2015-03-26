@@ -6,6 +6,24 @@
 DIRECTIONS  = nz.system.character.directions
 ACTION_COST = nz.system.character.action_cost
 
+tm.define 'nz.SceneBattlePosition',
+  superClass: tm.app.Scene
+
+  init: (param) ->
+    @superInit()
+    {
+      @mapSprite
+    } = param
+
+    @on 'map.pointingend', -> @one 'enterframe', -> @app.popScene()
+
+    mapx = 0
+    mapy = 0
+    for c in @mapSprite.characterSprites
+      c.setVisible true
+      c.setMapPosition(mapx,mapy)
+      mapx += 1
+
 tm.define 'nz.SceneBattleMoveCommand',
   superClass: tm.app.Scene
 
