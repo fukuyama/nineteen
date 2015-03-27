@@ -1,5 +1,7 @@
 
 tm.main ->
+  for url in nz.system.scripts
+    tm.util.Script.load(url).on 'load', -> console.log 'load script ' + url
   screen = nz.system.screen
   assets = nz.system.assets
 

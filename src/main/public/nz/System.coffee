@@ -43,6 +43,12 @@ tm.define 'nz.System',
         character_001:
           type: 'tmss'
           src: 'data/character_001.json'
+      scripts: [
+        'nz/ai/SampleAI.js'
+      ]
+    @ai = {}
     return
+
+  addAI: (name,ai) -> @ai[name] = ai
 
 nz.system = nz.System()

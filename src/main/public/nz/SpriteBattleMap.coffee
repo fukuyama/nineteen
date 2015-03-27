@@ -20,13 +20,6 @@ tm.define 'nz.SpriteBattleMap',
     @_activeBlinks = []
     @characterSprites = []
 
-    ###
-    @interactive = true
-
-    @on 'mousemove', ->
-      console.log 'move'
-    ###
-
     @map = tm.asset.Manager.get(mapName).data
 
     @graph = new nz.Graph
@@ -143,7 +136,7 @@ tm.define 'nz.SpriteBattleMap',
     return
 
   blink: (mapx,mapy) ->
-    blink = @_blinks[mapx][mapy]
+    blink = @_blinks[mapx]?[mapy]
     if blink?
       blink.visible = true
       blink.tweener.clear().fade(0.5,300).fade(0.1,300).setLoop(true)

@@ -40,10 +40,17 @@ module.exports = (grunt) ->
     'nz/SceneBase'
     'nz/SceneTitleMenu'
     'nz/SceneBattle'
-    'nz/SceneBattleCommand'
+    'nz/SceneBattlePosition'
+    'nz/SceneBattleMoveCommand'
+    'nz/SceneBattleShotCommand'
+    'nz/SceneBattleDirectionCommand'
     'nz/SceneBattleTurn'
 
     'main'
+  ]
+
+  ai_scripts = [
+    'nz/ai/SampleAI'
   ]
 
   src_dir = 'src/'
@@ -130,9 +137,24 @@ module.exports = (grunt) ->
       tasks: ['coffeelint',"coffee:#{f}",'concat','uglify']
     }
 
+  for f in ai_scripts
+    js = target_gen_dir + public_path + "#{f}.js"
+    coffee = src_main_dir + public_path + "#{f}.coffee"
+    coffeeConfig[f] = {}
+    coffeeConfig[f].files = {}
+    coffeeConfig[f].files[js] = coffee
+    watchConfig[f] = {
+      files: [coffee]
+      tasks: ['coffeelint',"coffee:#{f}"]
+    }
+
   sources = [
     (target_gen_dir + common_path + sec + '.js' for sec in common_sections)
     (target_gen_dir + public_path + sec + '.js' for sec in public_sections)
+  ]
+
+  aifiles = [
+    (sec + '.js' for sec in ai_scripts)
   ]
 
   uglify_files = {}
@@ -170,6 +192,11 @@ module.exports = (grunt) ->
         expand: true
         cwd: src_test_dir + public_path
         src: ['**']
+        dest: target_public_dir
+      aifiles:
+        expand: true
+        cwd: target_gen_dir + public_path
+        src: aifiles
         dest: target_public_dir
 
     express:

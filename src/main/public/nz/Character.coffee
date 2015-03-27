@@ -17,10 +17,11 @@ tm.define 'nz.Character',
       name: 'テストキャラクター'
       spriteSheet: 'character_001'
       team: 'teamA'
+      ai: 'SampleAI'
       hp: 10
       ap: 6
-      mapx: 0
-      mapy: 0
+      mapx: -1
+      mapy: -1
       direction: 0
       move:
         speed: 300

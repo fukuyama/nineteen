@@ -84,6 +84,7 @@ tm.define 'nz.SceneBattle',
       @_pushScene(
         nz.SceneBattlePosition(
           mapSprite: @mapSprite
+          controlTeam: @controlTeam
         )
       )
     return
@@ -137,22 +138,8 @@ tm.define 'nz.SceneBattle',
     )
     return
 
-  _openMenuDialog: (_param) ->
-    param = {
-      screenWidth:  SCREEN_W
-      screenHeight: SCREEN_H
-    }.$extend _param
-    menuFunc   = (m.func for m in param.menu when m.func?)
-    param.menu = (m.name for m in param.menu when m.name?)
-    dlg = tm.ui.MenuDialog(param)
-    dlg.on 'menuclosed', (e) -> menuFunc[e.selectIndex]?.call(null,e.selectIndex)
-    dlg.box.setStrokeStyle nz.system.dialog.strokeStyle
-    dlg.box.setFillStyle   nz.system.dialog.fillStyle
-    @app.pushScene dlg
-    return dlg
-
   _openMainMenu: ->
-    @_openMenuDialog
+    @openMenuDialog
       title: 'Command?'
       menu: [
         {name:'Next Turn', func: @_openCommandConf.bind @}
@@ -169,7 +156,7 @@ tm.define 'nz.SceneBattle',
         name: t.character.name
         func: ((i) -> @_openCharacterMenu targets[i]).bind @
     menu.push {name: 'Close Menu'}
-    @_openMenuDialog
+    @openMenuDialog
       title: 'Select Character'
       menu: menu
     return
@@ -191,7 +178,7 @@ tm.define 'nz.SceneBattle',
         menu.push
           name: 'Direction'
           func: @_addRotateCommand.bind @
-      if rap >= 2
+      if rap >= ACTION_COST.attack
         attack = sc.isAttackAction(@turn)
         shot   = sc.isShotAction(@turn)
         if not attack and not shot
@@ -206,13 +193,13 @@ tm.define 'nz.SceneBattle',
         name: 'Reset Action'
         func: @_resetAction.bind @
     menu.push {name:'Close Menu'}
-    @_openMenuDialog
+    @openMenuDialog
       title: sc.name
       menu: menu
     return
 
   _openCommandConf: ->
-    @_openMenuDialog
+    @openMenuDialog
       title: 'Start Next Turn?'
       menu: [
         {name:'Yes',func:@_nextTurn.bind @}

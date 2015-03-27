@@ -3,6 +3,9 @@
 * シーンベース
 ###
 
+SCREEN_W    = nz.system.screen.width
+SCREEN_H    = nz.system.screen.height
+
 tm.define 'nz.SceneBase',
   superClass: tm.app.Scene
 
@@ -24,3 +27,17 @@ tm.define 'nz.SceneBase',
     for child in element.children
       @_dispatchEvent(e,child)
     return
+
+  openMenuDialog: (_param) ->
+    param = {
+      screenWidth:  SCREEN_W
+      screenHeight: SCREEN_H
+    }.$extend _param
+    menuFunc   = (m.func for m in param.menu when m.func?)
+    param.menu = (m.name for m in param.menu when m.name?)
+    dlg = tm.ui.MenuDialog(param)
+    dlg.on 'menuclosed', (e) -> menuFunc[e.selectIndex]?.call(null,e.selectIndex)
+    dlg.box.setStrokeStyle nz.system.dialog.strokeStyle
+    dlg.box.setFillStyle   nz.system.dialog.fillStyle
+    @app.pushScene dlg
+    return dlg
