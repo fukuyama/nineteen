@@ -30,9 +30,11 @@ tm.define 'nz.SceneBattlePosition',
     for team in @otherTeam
       area    = @teamArea[team]
       members = (m.character for m in @members[team])
-      for member in @members[team]
+      for member,i in @members[team]
         c = member.character
-        nz.system.ai[c.ai]?.setupBattlePosition(c,members,area)
+        p = nz.system.ai[c.ai]?.setupBattlePosition(c,members,area)
+        p = area[i] unless p?
+        member.setMapPosition(p[0],p[1])
 
     @on 'map.pointingover', @mapPointingover
     @on 'map.pointingend',  @mapPointingend
@@ -74,6 +76,8 @@ tm.define 'nz.SceneBattlePosition',
         unless c.visible
           @openCharacterMenu()
           return
+    for c in @mapSprite.characterSprites when not c.visible
+      c.setVisible true
     @mapSprite.clearBlink()
     @one 'enterframe', -> @app.popScene()
     return
