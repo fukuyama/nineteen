@@ -12,6 +12,13 @@ tm.define 'nz.System',
   init: () ->
     @.$extend
       title: 'Nineteen'
+      DIRECTION_NUM:
+        UP:         0
+        UP_RIGHT:   1
+        DOWN_RIGHT: 2
+        DOWN:       3
+        DOWN_LEFT:  4
+        UP_LEFT:    5
       character:
         directions: [
           {name:'up'        , rotation:  -90, index:0, rotateIndex:[ 0, 1, 2, 3,-2,-1]}
@@ -43,6 +50,7 @@ tm.define 'nz.System',
         character_001:
           type: 'tmss'
           src: 'data/character_001.json'
+        sampleAI: 'nz/ai/SampleAI.js'
       scripts: [
         'nz/ai/SampleAI.js'
       ]

@@ -87,6 +87,7 @@ tm.define 'nz.SceneBattle',
           controlTeam: @controlTeam
         )
       )
+      @one 'resume', -> @_startInputPhase()
     return
 
   mapPointingend: (e) ->
@@ -200,9 +201,9 @@ tm.define 'nz.SceneBattle',
 
   _openCommandConf: ->
     @openMenuDialog
-      title: 'Start Next Turn?'
+      title: 'Start Battle?'
       menu: [
-        {name:'Yes',func:@_nextTurn.bind @}
+        {name:'Yes',func:@_startBattlePhase.bind @}
         {name:'No'}
       ]
     return
@@ -211,22 +212,26 @@ tm.define 'nz.SceneBattle',
     @app.replaceScene nz.SceneTitleMenu()
     return
 
-  _nextTurn: ->
+  _startInputPhase: () ->
+    @data.turn += 1
+    for c in @characters
+      nz.system.ai[c.ai]?.setupAction(
+        character: c
+        characters: @characters
+        graph: @mapSprite.graph
+      )
     @refreshStatus()
-    scene = nz.SceneBattleTurn
-      start: @turn
-      end: @turn
-      mapSprite: @mapSprite
-    @one 'pause', ->
-      @mapSprite.addChildTo scene
-      return
-    @one 'resume', ->
-      @mapSprite.addChildTo @
-      @data.turn += 1
-      @refreshStatus()
-      return
-    @mapSprite.remove()
-    @app.pushScene scene
+
+  _startBattlePhase: ->
+    @refreshStatus()
+    @_pushScene(
+      nz.SceneBattleTurn(
+        start: @turn
+        end: @turn
+        mapSprite: @mapSprite
+      )
+    )
+    @one 'resume', -> @_startInputPhase()
     return
 
   _addMoveCommand: ->
