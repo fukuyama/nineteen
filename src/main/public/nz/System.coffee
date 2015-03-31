@@ -50,10 +50,6 @@ tm.define 'nz.System',
         character_001:
           type: 'tmss'
           src: 'data/character_001.json'
-        sampleAI: 'nz/ai/SampleAI.js'
-      scripts: [
-        'nz/ai/SampleAI.js'
-      ]
     @ai = {}
     return
 

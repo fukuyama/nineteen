@@ -2,6 +2,7 @@
 
 class SampleAI
   setupBattlePosition: (param) ->
+    console.log 'setupBattlePosition'
     {
       character
       members
@@ -11,6 +12,7 @@ class SampleAI
     return area[i]
 
   setupAction: (param) ->
+    console.log 'setupAction'
     {
       character
       characters

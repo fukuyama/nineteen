@@ -17,7 +17,9 @@ tm.define 'nz.Character',
       name: 'テストキャラクター'
       spriteSheet: 'character_001'
       team: 'teamA'
-      ai: 'SampleAI'
+      ai:
+        name: 'SampleAI'
+        src: 'nz/ai/SampleAI.js'
       hp: 10
       ap: 6
       mapx: -1

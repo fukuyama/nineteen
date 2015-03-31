@@ -32,19 +32,28 @@ tm.define 'nz.SceneBattle',
     return
 
   load: ->
+    loaded = true
     assets = {}
-    assets[@mapName] = "data/#{@mapName}.json"
+    unless tm.asset.Manager.contains(@mapName)
+      assets[@mapName] = "data/#{@mapName}.json"
+      loaded = false
+    for c in @characters when not tm.asset.Manager.contains(c.ai.name)
+      assets[c.ai.name] = c.ai.src
+      loaded = false
 
-    scene = tm.scene.LoadingScene(
-      assets:  assets
-      width:   SCREEN_W
-      height:  SCREEN_H
-      autopop: true
-    )
+    unless loaded
+      scene = tm.scene.LoadingScene(
+        assets:  assets
+        width:   SCREEN_W
+        height:  SCREEN_H
+        autopop: true
+      )
 
-    scene.on 'load', @setup.bind @
+      scene.on 'load', @setup.bind @
 
-    @app.pushScene scene
+      @app.pushScene scene
+    else
+      @setup()
     return
 
   setup: ->
@@ -214,8 +223,8 @@ tm.define 'nz.SceneBattle',
 
   _startInputPhase: () ->
     @data.turn += 1
-    for c in @characters
-      nz.system.ai[c.ai]?.setupAction(
+    for c in @characters when not @controlTeam.contains c.team
+      nz.system.ai[c.ai.name]?.setupAction(
         character: c
         characters: @characters
         graph: @mapSprite.graph

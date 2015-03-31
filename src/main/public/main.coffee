@@ -30,3 +30,5 @@ tm.main ->
 
   # 実行
   app.run()
+
+  #tm.inform()

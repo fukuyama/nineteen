@@ -3,6 +3,11 @@
 * 戦闘開始位置設定
 ###
 
+MSG =
+  battle:
+    position:
+      setiing: '{name} の開始位置を選択してください。'
+
 DIRNUM = nz.system.DIRECTION_NUM
 
 tm.define 'nz.SceneBattlePosition',
@@ -36,7 +41,7 @@ tm.define 'nz.SceneBattlePosition',
       members = (m.character for m in @members[team])
       for member,i in @members[team]
         c = member.character
-        p = nz.system.ai[c.ai]?.setupBattlePosition(
+        p = nz.system.ai[c.ai.name]?.setupBattlePosition(
           character: c
           members:   members
           area:      area
@@ -48,8 +53,30 @@ tm.define 'nz.SceneBattlePosition',
 
     @on 'map.pointingover', @_mapPointingover
     @on 'map.pointingend',  @_mapPointingend
-    @on 'enter',            @_openCharacterMenu
+    @on 'enter',            @_start
 
+    return
+
+  _start: ->
+    #@_openCharacterMenu()
+    for c in @mapSprite.characterSprites when not c.visible
+      @_selectCharacter c
+      @description MSG.battle.position.setiing.format name:c.character.name
+      return
+    return
+
+  _end: ->
+    mapycenter = @mapSprite.map.width / 2
+    for c in @mapSprite.characterSprites
+      c.visible = true
+      if c.mapy < mapycenter
+        c.character.direction = DIRNUM.DOWN
+        c.setDirection(DIRNUM.DOWN)
+      else
+        c.character.direction = DIRNUM.UP
+        c.setDirection(DIRNUM.UP)
+    @mapSprite.clearBlink()
+    @one 'enterframe', -> @app.popScene()
     return
 
   _openCharacterMenu: ->
@@ -90,17 +117,7 @@ tm.define 'nz.SceneBattlePosition',
     @_setMapPosition(e.mapx,e.mapy)
     for team in @controlTeam
       for c in @members[team] when not c.visible
-        @_openCharacterMenu()
+        @_start()
         return
-    mapycenter = @mapSprite.map.width / 2
-    for c in @mapSprite.characterSprites
-      c.visible = true
-      if c.mapy < mapycenter
-        c.character.direction = DIRNUM.DOWN
-        c.setDirection(DIRNUM.DOWN)
-      else
-        c.character.direction = DIRNUM.UP
-        c.setDirection(DIRNUM.UP)
-    @mapSprite.clearBlink()
-    @one 'enterframe', -> @app.popScene()
+    @_end()
     return
