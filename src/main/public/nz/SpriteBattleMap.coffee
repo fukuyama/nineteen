@@ -66,10 +66,11 @@ tm.define 'nz.SpriteBattleMap',
 
   _createCursor: ->
     cursor = tm.display.Shape(
-      width: MAP_CHIP_W
-      height: MAP_CHIP_H
+      width:       MAP_CHIP_W
+      height:      MAP_CHIP_H
       strokeStyle: 'red'
-      lineWidth: 3
+      lineWidth:   3
+      visible:     false
     )
     cursor._render = -> @canvas.strokeRect(0, 0, @width, @height)
     cursor.render()

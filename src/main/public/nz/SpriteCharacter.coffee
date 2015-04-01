@@ -201,10 +201,14 @@ tm.define 'nz.SpriteCharacter',
     @tweener.call @_endAction,@,[]
     return
 
-  _endAction: ->
+  applyPosition: ->
     @character.mapx      = @mapx
     @character.mapy      = @mapy
     @character.direction = @direction
+    return
+
+  _endAction: ->
+    @applyPosition()
     @move                = false
     @action              = false
     # まだ攻撃してない場合、攻撃をつづける

@@ -12,7 +12,7 @@ tm.define 'nz.SpriteStatus',
 
     @width          = 32 * 5
     @height         = 32 * 2.5
-    @alpha          = 0.5
+    @alpha          = 1.0
     @boundingType   = 'rect'
     @interactive    = true
     @checkHierarchy = true

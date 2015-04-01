@@ -47,9 +47,8 @@ tm.define 'nz.SceneBattlePosition',
           area:      area
         )
         p = area[i] unless p?
-        member.character.mapx = p[0]
-        member.character.mapy = p[1]
-        member.setMapPosition(p[0],p[1])
+        @_setBattlePosition(member,p[0],p[1])
+        member.applyPosition()
 
     @on 'map.pointingover', @_mapPointingover
     @on 'map.pointingend',  @_mapPointingend
@@ -58,7 +57,6 @@ tm.define 'nz.SceneBattlePosition',
     return
 
   _start: ->
-    #@_openCharacterMenu()
     for c in @mapSprite.characterSprites when not c.visible
       @_selectCharacter c
       @description MSG.battle.position.setiing.format name:c.character.name
@@ -101,23 +99,27 @@ tm.define 'nz.SceneBattlePosition',
       if @mapSprite.findCharacter(m[0],m[1]).length == 0
         @mapSprite.blink(m[0],m[1])
 
-  _setMapPosition: (mapx,mapy) ->
-    if @mapSprite.isBlink(mapx,mapy)
-      @character.character.mapx = mapx
-      @character.character.mapy = mapy
-      @character.setMapPosition(mapx,mapy).setVisible(true)
+  _setBattlePosition: (c,mapx,mapy) ->
+    c.setMapPosition mapx,mapy
+    if c.mapy < @mapSprite.map.width / 2
+      c.setDirection DIRNUM.DOWN
+    else
+      c.setDirection DIRNUM.UP
     return
 
   _mapPointingover: (e) ->
     @mapSprite.cursor.visible = true
-    @_setMapPosition(e.mapx,e.mapy)
+    @character.visible = true
+    @_setBattlePosition(@character,e.mapx,e.mapy)
+    @character.applyPosition()
     return
 
   _mapPointingend: (e) ->
-    @_setMapPosition(e.mapx,e.mapy)
-    for team in @controlTeam
-      for c in @members[team] when not c.visible
-        @_start()
-        return
-    @_end()
+    if @mapSprite.isBlink(e.mapx,e.mapy)
+      @_mapPointingover(e)
+      for team in @controlTeam
+        for c in @members[team] when not c.visible
+          @_start()
+          return
+      @_end()
     return
