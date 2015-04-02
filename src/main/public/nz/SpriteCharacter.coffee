@@ -154,6 +154,7 @@ tm.define 'nz.SpriteCharacter',
 
   _updateAttack: (enemy) ->
     return unless @attack
+    return if @character.team == enemy.character.team
     cw = @character.weapon
     distance = enemy.position.distance @position
     if distance < (cw.height + @body.width / 2)

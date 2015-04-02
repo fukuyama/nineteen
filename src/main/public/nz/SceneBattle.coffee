@@ -146,6 +146,7 @@ tm.define 'nz.SceneBattle',
       callback:  callback
       mapSprite: @mapSprite
     )
+    @one 'resume', @_checkCommandConf.bind @
     return
 
   _openMainMenu: ->
@@ -217,6 +218,13 @@ tm.define 'nz.SceneBattle',
       ]
     return
 
+  _checkCommandConf: ->
+    for c in @characters when @controlTeam.contains c.team
+      if c.getRemnantAp(@turn) > 0
+        return
+    @_openCommandConf()
+    return
+
   _exitGame: ->
     @app.replaceScene nz.SceneTitleMenu()
     return
@@ -260,10 +268,15 @@ tm.define 'nz.SceneBattle',
   _addAttackCommand: ->
     sc = @selectCharacter
     sc.setAttackCommand @turn
+    scs = @selectCharacterSprite
+    if not scs.hasGhost() and not scs.isGhost()
+      scs.createGhost(scs.direction,scs.mapx,scs.mapy).addChildTo @mapSprite
     @refreshStatus()
     if sc.getRemnantAp(@turn) > 0
       @_selectGhost = true
       @one 'enterframe', @_addMoveCommand
+    else
+      @_checkCommandConf()
     return
 
   _addShotCommand: ->

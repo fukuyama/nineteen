@@ -83,6 +83,10 @@ tm.define 'nz.Character',
   * @param {number} i 戦闘ターン数
   ###
   getActionCost: (i) -> @_command(i).cost
+
+  ###* 残りのアクションポイント
+  * @param {number} i 戦闘ターン数
+  ###
   getRemnantAp: (i) -> @ap - @getActionCost(i)
 
   ###* 移動ルートの追加
