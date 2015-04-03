@@ -62,6 +62,7 @@ module.exports = (grunt) ->
   common_path = 'common/'
   public_path = 'public/'
   data_path = 'data/'
+  ai_path = 'ai/'
 
   target_gen_dir = target_dir + 'generate/'
   target_public_dir = target_dir + public_path
@@ -109,7 +110,7 @@ module.exports = (grunt) ->
       reporter: 'nyan'
       ui: 'bdd'
     all:
-      src: [src_test_dir + common_path + '**.coffee']
+      src: [src_test_dir + common_path + '**.coffee',src_test_dir + ai_path + '**.coffee']
 
   for f in common_sections
     js = target_gen_dir + common_path + "#{f}.js"
@@ -140,12 +141,16 @@ module.exports = (grunt) ->
   for f in ai_scripts
     js = target_gen_dir + public_path + "#{f}.js"
     coffee = src_main_dir + public_path + "#{f}.coffee"
+    testcase = src_test_dir + ai_path + "#{f}Test.coffee"
     coffeeConfig[f] = {}
     coffeeConfig[f].files = {}
     coffeeConfig[f].files[js] = coffee
     watchConfig[f] = {
-      files: [coffee]
-      tasks: ['coffeelint',"coffee:#{f}"]
+      files: [coffee,testcase]
+      tasks: ['coffeelint',"coffee:#{f}","simplemocha:#{f}",'copy:aifiles']
+    }
+    simplemochaConfig[f] = {
+      src: [testcase]
     }
 
   sources = [

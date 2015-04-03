@@ -50,6 +50,10 @@ tm.define 'nz.System',
         character_001:
           type: 'tmss'
           src: 'data/character_001.json'
+      MESSAGES:
+        battle:
+          position:
+            setiing: '{name} の開始位置を選択してください。'
     @ai = {}
     return
 

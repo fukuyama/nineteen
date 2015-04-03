@@ -6,7 +6,12 @@
 tm.define 'nz.SpriteStatus',
   superClass: tm.display.CanvasElement
 
-  init: (@index,@character) ->
+  init: (param) ->
+    {
+      @index
+      @character
+      @detail
+    } = param
     @superInit()
     @setOrigin(0.0,0.0)
 
@@ -42,7 +47,7 @@ tm.define 'nz.SpriteStatus',
           originX:   @originX
           originY:   @originY
           fontSize:  10
-        attackMode:
+        action:
           type:      'Label'
           fillStyle: 'black'
           align:     'left'
@@ -52,18 +57,17 @@ tm.define 'nz.SpriteStatus',
           originX:   @originX
           originY:   @originY
           fontSize:  10
-        cost:
-          type:      'Label'
-          fillStyle: 'black'
-          align:     'left'
-          baseline:  'top'
-          x:         8
-          y:         24
-          originX:   @originX
-          originY:   @originY
-          fontSize:  10
     
     #
     @on 'refreshStatus', (e) ->
-      @attackMode.text = if @character.isAttackAction(e.turn) then 'Attack' else 'No'
-      @cost.text = @character.ap - @character.getActionCost(e.turn)
+      {
+        turn
+      } = e
+      if @detail
+        actions = []
+        actions.push 'Attack' if @character.isAttackAction(turn)
+        actions.push 'Shot'   if @character.isShotAction(turn)
+        actions.push 'Move'   if @character.isMoveAction(turn)
+        text = actions.join('&')
+        text += "(#{@character.getActionCost(turn)}/#{@character.ap})"
+        @action.text = text

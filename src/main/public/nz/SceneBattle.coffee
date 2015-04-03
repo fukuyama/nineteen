@@ -77,7 +77,11 @@ tm.define 'nz.SceneBattle',
       )
 
       # ステータス
-      s = nz.SpriteStatus i,character
+      s = nz.SpriteStatus(
+        index: i
+        character: character
+        detail: @controlTeam.contains character.team
+      )
       s.setPosition x, y
       s.on 'pointingend', (e) ->
         scene.activeStatus @

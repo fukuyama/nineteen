@@ -3,11 +3,7 @@
 * 戦闘開始位置設定
 ###
 
-MSG =
-  battle:
-    position:
-      setiing: '{name} の開始位置を選択してください。'
-
+MSGS   = nz.system.MESSAGES
 DIRNUM = nz.system.DIRECTION_NUM
 
 tm.define 'nz.SceneBattlePosition',
@@ -50,16 +46,26 @@ tm.define 'nz.SceneBattlePosition',
         @_setBattlePosition(member,p[0],p[1])
         member.applyPosition()
 
-    @on 'map.pointingover', @_mapPointingover
-    @on 'map.pointingend',  @_mapPointingend
-    @on 'enter',            @_start
+    #@on 'map.pointingover', @_mapPointingover
+    #@on 'map.pointingend',  @_mapPointingend
+    #@on 'enter',            @_start
+    @on 'map.pointingover', @_test
 
+    return
+
+  _test: (e) ->
+    @mapSprite.cursor.visible = true
+    @mapSprite.clearBlink()
+    for x in [0 ... @mapSprite.map.width]
+      for y in [0 ... @mapSprite.map.height]
+        if nz.system.ai['SampleAI'].calcDistance({x:e.mapx,y:e.mapy},{x:x,y:y}) <= 3
+          @mapSprite.blink(x,y)
     return
 
   _start: ->
     for c in @mapSprite.characterSprites when not c.visible
       @_selectCharacter c
-      @description MSG.battle.position.setiing.format name:c.character.name
+      @description MSGS.battle.position.setiing.format name:c.character.name
       return
     return
 

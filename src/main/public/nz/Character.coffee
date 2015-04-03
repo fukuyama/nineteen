@@ -160,10 +160,8 @@ tm.define 'nz.Character',
   ###
   isShotAction: (i) ->
     command = @_command i
-    # このターンに射撃を行っている場合は、射撃できない
-    for action in command.actions
-      if action.shot?
-        return true
+    for action in command.actions when action.shot?
+      return true
     return false
 
   ###* 攻撃アクションを行っているかどうか
@@ -173,3 +171,13 @@ tm.define 'nz.Character',
   isAttackAction: (i) ->
     command = @_command i
     return command.attack
+
+  ###* 移動アクションを行っているかどうか
+  * @param {number} i 戦闘ターン数
+  * @return {boolean} 移動アクションを設定していたら true
+  ###
+  isMoveAction: (i) ->
+    command = @_command i
+    for action in command.actions when action.move?
+      return true
+    return false
