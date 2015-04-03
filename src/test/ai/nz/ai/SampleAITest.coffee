@@ -16,7 +16,7 @@ nz.system = {
 require('../../../../main/public/nz/ai/SampleAI.coffee')
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
-describe.skip 'SampleAITest', () ->
+describe 'SampleAITest', () ->
   describe 'Distance', ->
     it 'Distance1 (55)', ->
       ai = new nz.ai.SampleAI()
@@ -128,7 +128,7 @@ describe.skip 'SampleAITest', () ->
       ai.calcDistance(s,{x:8,y:3}).should.equals 3,'83'
       ai.calcDistance(s,{x:8,y:2}).should.equals 4,'82'
 
-    it.skip 'Distance3 (65)', ->
+    it 'Distance3 (65)', ->
       ai = new nz.ai.SampleAI()
       s = {x:6,y:5}
       ai.calcDistance(s,{x:6,y:1}).should.equals 4,'61'
@@ -136,15 +136,15 @@ describe.skip 'SampleAITest', () ->
       ai.calcDistance(s,{x:6,y:8}).should.equals 3,'68'
       ai.calcDistance(s,{x:6,y:9}).should.equals 4,'69'
 
-      ai.calcDistance(s,{x:5,y:8}).should.equals 4,'58'
-      ai.calcDistance(s,{x:5,y:7}).should.equals 3,'57'
-      ai.calcDistance(s,{x:5,y:2}).should.equals 3,'52'
-      ai.calcDistance(s,{x:5,y:1}).should.equals 4,'51'
+      ai.calcDistance(s,{x:5,y:9}).should.equals 4,'59'
+      ai.calcDistance(s,{x:5,y:8}).should.equals 3,'58'
+      ai.calcDistance(s,{x:5,y:3}).should.equals 3,'53'
+      ai.calcDistance(s,{x:5,y:2}).should.equals 4,'52'
 
-      ai.calcDistance(s,{x:7,y:8}).should.equals 4,'78'
-      ai.calcDistance(s,{x:7,y:7}).should.equals 3,'77'
-      ai.calcDistance(s,{x:7,y:2}).should.equals 3,'72'
-      ai.calcDistance(s,{x:7,y:1}).should.equals 4,'71'
+      ai.calcDistance(s,{x:7,y:9}).should.equals 4,'79'
+      ai.calcDistance(s,{x:7,y:8}).should.equals 3,'78'
+      ai.calcDistance(s,{x:7,y:3}).should.equals 3,'73'
+      ai.calcDistance(s,{x:7,y:2}).should.equals 4,'72'
 
       ai.calcDistance(s,{x:4,y:8}).should.equals 4,'48'
       ai.calcDistance(s,{x:4,y:7}).should.equals 3,'47'
@@ -156,16 +156,16 @@ describe.skip 'SampleAITest', () ->
       ai.calcDistance(s,{x:8,y:3}).should.equals 3,'83'
       ai.calcDistance(s,{x:8,y:2}).should.equals 4,'82'
 
-      ai.calcDistance(s,{x:3,y:7}).should.equals 4,'37'
+      ai.calcDistance(s,{x:3,y:8}).should.equals 4,'38'
+      ai.calcDistance(s,{x:3,y:7}).should.equals 3,'37'
       ai.calcDistance(s,{x:3,y:6}).should.equals 3,'36'
       ai.calcDistance(s,{x:3,y:5}).should.equals 3,'35'
       ai.calcDistance(s,{x:3,y:4}).should.equals 3,'34'
-      ai.calcDistance(s,{x:3,y:3}).should.equals 3,'33'
-      ai.calcDistance(s,{x:3,y:2}).should.equals 4,'32'
+      ai.calcDistance(s,{x:3,y:3}).should.equals 4,'33'
 
-      ai.calcDistance(s,{x:9,y:7}).should.equals 4,'97'
+      ai.calcDistance(s,{x:9,y:8}).should.equals 4,'98'
+      ai.calcDistance(s,{x:9,y:7}).should.equals 3,'97'
       ai.calcDistance(s,{x:9,y:6}).should.equals 3,'96'
       ai.calcDistance(s,{x:9,y:5}).should.equals 3,'95'
       ai.calcDistance(s,{x:9,y:4}).should.equals 3,'94'
-      ai.calcDistance(s,{x:9,y:3}).should.equals 3,'93'
-      ai.calcDistance(s,{x:9,y:2}).should.equals 4,'92'
+      ai.calcDistance(s,{x:9,y:3}).should.equals 4,'93'

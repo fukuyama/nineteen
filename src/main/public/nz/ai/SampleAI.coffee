@@ -17,16 +17,21 @@ class nz.ai.SampleAI
     hr = Math.ceil(hx / 2)
     if hx % 2 == 1
       if node1.x % 2 == 1
-        if hy <= hr
-          if node1.y < node2.y
-            hy -= hr
-          else
-            hy = 0
+        if hy < hr
+          dist = hx
         else
-          hy -= hr
-        dist = hx + hy
+          if node1.y <= node2.y
+            dist = hx + hy - hr + 1
+          else
+            dist = hx + hy - hr
       else
-        dist = hx + hy
+        if hy < hr
+          dist = hx
+        else
+          if node1.y <= node2.y
+            dist = hx + hy - hr
+          else
+            dist = hx + hy - hr + 1
     else
       if hy <= hr
         hy = 0
