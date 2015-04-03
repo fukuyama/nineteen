@@ -58,7 +58,7 @@ tm.define 'nz.SceneBattlePosition',
     @mapSprite.clearBlink()
     for x in [0 ... @mapSprite.map.width]
       for y in [0 ... @mapSprite.map.height]
-        if nz.system.ai['SampleAI'].calcDistance({x:e.mapx,y:e.mapy},{x:x,y:y}) <= 4
+        if nz.system.ai['SampleAI'].calcDistance({x:e.mapx,y:e.mapy},{x:x,y:y}) <= 3
           @mapSprite.blink(x,y)
     return
 
