@@ -113,10 +113,10 @@ tm.define 'nz.SpriteBattleMap',
     chip.mapx = mapx
     chip.mapy = mapy
 
-    tm.display.Label("#{mapx},#{mapy}",{fontSize:10}).addChildTo chip
+    tm.display.Label("#{mapx},#{mapy}",{fontSize:8}).setPosition(0,h/2-8).addChildTo(chip)
 
     if node.object?
-      tm.display.Sprite('map_object',32,64)
+      tm.display.Sprite('map_object',w,h*2)
         .setOrigin(0.5,0.75)
         .addChildTo(chip)
         .setFrameIndex(node.object.frame)

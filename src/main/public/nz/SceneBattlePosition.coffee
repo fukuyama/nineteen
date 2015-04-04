@@ -46,10 +46,10 @@ tm.define 'nz.SceneBattlePosition',
         @_setBattlePosition(member,p[0],p[1])
         member.applyPosition()
 
-    #@on 'map.pointingover', @_mapPointingover
-    #@on 'map.pointingend',  @_mapPointingend
-    #@on 'enter',            @_start
-    @on 'map.pointingover', @_test
+    @on 'map.pointingover', @_mapPointingover
+    @on 'map.pointingend',  @_mapPointingend
+    @on 'enter',            @_start
+    #@on 'map.pointingover', @_test
 
     return
 

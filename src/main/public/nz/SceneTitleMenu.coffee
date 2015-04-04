@@ -41,7 +41,7 @@ tm.define 'nz.SceneTitleMenu',
     @index = 0
     @on 'menuselected', (e) -> @index = e.selectIndex
     @on 'exit', (e) -> menus[@index].callback.call(@, e)
-    @on 'enter', (e) -> @app.pushScene tm.scene.TitleScene(title:nz.system.title)
+    @on 'enter', (e) -> @app.pushScene tm.game.TitleScene(title:nz.system.title)
 
     return
 

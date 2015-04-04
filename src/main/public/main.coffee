@@ -1,5 +1,5 @@
 
-tm.asset.Loader.register 'js', tm.util.Script.load
+#tm.asset.Loader.register 'js', tm.util.Script.load
 
 tm.main ->
   #for url in nz.system.scripts
@@ -20,7 +20,7 @@ tm.main ->
   app.background = 'gray'
   
   # 最初のシーンに切り替える
-  app.pushScene tm.scene.LoadingScene(
+  app.pushScene tm.game.LoadingScene(
     assets: assets
     width: screen.width
     height: screen.height

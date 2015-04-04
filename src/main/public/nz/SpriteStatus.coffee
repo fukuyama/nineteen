@@ -69,5 +69,5 @@ tm.define 'nz.SpriteStatus',
         actions.push 'Shot'   if @character.isShotAction(turn)
         actions.push 'Move'   if @character.isMoveAction(turn)
         text = actions.join('&')
-        text += "(#{@character.getActionCost(turn)}/#{@character.ap})"
+        text += "(#{@character.ap - @character.getActionCost(turn)})"
         @action.text = text

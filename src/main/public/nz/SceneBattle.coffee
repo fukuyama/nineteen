@@ -42,7 +42,7 @@ tm.define 'nz.SceneBattle',
       loaded = false
 
     unless loaded
-      scene = tm.scene.LoadingScene(
+      scene = tm.game.LoadingScene(
         assets:  assets
         width:   SCREEN_W
         height:  SCREEN_H
