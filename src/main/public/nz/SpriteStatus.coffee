@@ -22,6 +22,9 @@ tm.define 'nz.SpriteStatus',
     @interactive    = true
     @checkHierarchy = true
 
+    @bgColor = 'blanchedalmond'
+    gaugebBrderColor = 'gray'
+
     @fromJSON
       children:
         bg:
@@ -29,7 +32,8 @@ tm.define 'nz.SpriteStatus',
           width:         @width
           height:        @height
           strokeStyle:   'black'
-          fillStyle:     'blanchedalmond'
+          fillStyle:     @bgColor
+          lineWidth:     1
           shadowBlur:    1
           shadowOffsetX: 2
           shadowOffsetY: 2
@@ -43,20 +47,57 @@ tm.define 'nz.SpriteStatus',
           align:     'left'
           baseline:  'top'
           x:         8
-          y:         8
+          y:         10
           originX:   @originX
           originY:   @originY
-          fontSize:  10
+          fontSize:  8
         action:
           type:      'Label'
           fillStyle: 'black'
           align:     'left'
           baseline:  'top'
           x:         8
-          y:         16
+          y:         20
           originX:   @originX
           originY:   @originY
-          fontSize:  10
+          fontSize:  8
+        hpGauge:
+          type:        'tm.ui.FlatGauge'
+          x:           8
+          y:           32
+          width:       @width - 16
+          height:      4
+          originX:     @originX
+          originY:     @originY
+          borderWidth: 1
+          color:       'blue'
+          bgColor:     @bgColor
+          borderColor: gaugebBrderColor
+        mpGauge:
+          type:        'tm.ui.FlatGauge'
+          x:           8
+          y:           40
+          width:       @width - 16
+          height:      4
+          originX:     @originX
+          originY:     @originY
+          borderWidth: 1
+          color:       'green'
+          bgColor:     @bgColor
+          borderColor: gaugebBrderColor
+        spGauge:
+          type:        'tm.ui.FlatGauge'
+          x:           8
+          y:           48
+          width:       @width - 16
+          height:      4
+          originX:     @originX
+          originY:     @originY
+          borderWidth: 1
+          color:       'Cyan'
+          bgColor:     @bgColor
+          borderColor: gaugebBrderColor
+
     
     #
     @on 'refreshStatus', (e) ->
