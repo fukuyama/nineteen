@@ -17,10 +17,14 @@ tm.define 'nz.SceneBattleShotCommand',
 
     @costa = @target.character.getActionCost(@turn)
 
-    @on 'map.pointingstart', @_pointStart
-    @on 'pointingmove',      @_pointMove
+    #@on 'map.pointingstart', @_pointStart
+    #@on 'pointingmove',      @_pointMove
     @on 'map.pointingend',   @_pointEnd
     @_createPointer()
+
+  update: (app) ->
+    @_movePointer(app.pointing)
+    return
 
   _pointStart: (e) ->
     #@_removePointer()
