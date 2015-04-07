@@ -36,7 +36,5 @@ tm.define 'nz.SceneBattleMoveCommand',
     @mapSprite.clearBlink()
     ap = @commandAp()
     route = @searchRoute(e.mapx, e.mapy)
-    for r in route
-      if ap < r.cost
-        break
+    for r in route when r.cost <= ap
       @mapSprite.blink(r.mapx,r.mapy)

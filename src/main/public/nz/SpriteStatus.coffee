@@ -104,14 +104,14 @@ tm.define 'nz.SpriteStatus',
       {
         turn
       } = e
+      text = '行動: '
       if @detail
         actions = []
         actions.push 'Attack' if @character.isAttackAction(turn)
         actions.push 'Shot'   if @character.isShotAction(turn)
         actions.push 'Move'   if @character.isMoveAction(turn)
-        text = '行動: ' + actions.join(' & ')
+        text += actions.join(' & ')
         text += " (#{@character.ap - @character.getActionCost(turn)})"
-        @action.text = text
       else
-        text = '行動: ？？？'
-        @action.text = text
+        text += '？？？'
+      @action.text = text

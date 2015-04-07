@@ -21,6 +21,7 @@ tm.define 'nz.Character',
         name: 'SampleAI'
         src: 'nz/ai/SampleAI.js'
       hp: 10
+      sp: 10
       ap: 6
       mapx: -1
       mapy: -1
@@ -52,6 +53,23 @@ tm.define 'nz.Character',
       @commands[i] = {}
       @clearAction i
     @commands[i]
+
+  createAiInfo: (i) ->
+    # nz.Character JSON.parse(JSON.stringify(c)
+    info = {
+      name:      @name
+      hp:        @hp
+      sp:        @sp
+      ap:        @ap
+      mapx:      @mapx
+      mapy:      @mapy
+      direction: @direction
+      team:      @team
+      move:      JSON.parse(JSON.stringify(@move  ))
+      weapon:    JSON.parse(JSON.stringify(@weapon))
+      shot:      JSON.parse(JSON.stringify(@shot  ))
+    }
+    return nz.Character info
 
   ###* アクション削除
   * @param {number} i 戦闘ターン数
@@ -100,7 +118,7 @@ tm.define 'nz.Character',
       direction = a.rotate.direction
     prev = command.cost
     cost = 0
-    for r in route
+    for r in route when prev + cost <= @ap
       if direction != r.direction
         @addRotateCommand i, direction, DIRECTIONS[direction].rotateIndex[r.direction]
         direction = r.direction
@@ -131,13 +149,14 @@ tm.define 'nz.Character',
   * @param {boolean} flag 攻撃する場合 true
   ###
   setAttackCommand: (i,flag = true) ->
-    command = @_command i
-    if command.attack != flag
-      if flag
-        command.cost += ACTION_COST.attack
-      else
-        command.cost -= ACTION_COST.attack
-      command.attack = flag
+    if @ap >= ACTION_COST.attack
+      command = @_command i
+      if command.attack != flag
+        if flag
+          command.cost += ACTION_COST.attack
+        else
+          command.cost -= ACTION_COST.attack
+        command.attack = flag
     return @
 
   ###* 射撃角度の追加

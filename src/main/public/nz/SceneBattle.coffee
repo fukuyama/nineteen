@@ -91,8 +91,6 @@ tm.define 'nz.SceneBattle',
 
     # 基本操作
     @on 'map.pointingend', @mapPointingend
-    @refreshStatus()
-
     @one 'enterframe', ->
       @_pushScene(
         nz.SceneBattlePosition(
@@ -101,6 +99,8 @@ tm.define 'nz.SceneBattle',
         )
       )
       @one 'resume', -> @_startInputPhase()
+
+    @refreshStatus()
     return
 
   mapPointingend: (e) ->
@@ -109,6 +109,7 @@ tm.define 'nz.SceneBattle',
     for t in @mapSprite.findCharacter(e.mapx,e.mapy)
       if not t.hasGhost() or t.ghost.mapx != e.mapx or t.ghost.mapy != e.mapy
         targets.push t
+    targets = (t for t in targets when @controlTeam.contains t.tearm)
     if targets.length == 0
       @_openMainMenu()
     else if targets.length == 1
@@ -235,12 +236,15 @@ tm.define 'nz.SceneBattle',
 
   _startInputPhase: () ->
     @data.turn += 1
-    for c in @characters when not @controlTeam.contains c.team
+    characters = (c.createAiInfo() for c in @characters)
+    for c,i in characters when not (@controlTeam.contains c.team)
       nz.system.ai[c.ai.name]?.setupAction(
         character: c
-        characters: @characters
+        characters: characters
         graph: @mapSprite.graph
+        turn: @turn
       )
+      @characters[i].commands[@turn] = c.commands[@turn]
     @refreshStatus()
 
   _startBattlePhase: ->
