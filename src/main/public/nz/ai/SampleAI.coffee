@@ -84,6 +84,27 @@ class nz.ai.SampleAI
           hy += 1
     return hx + hy - hr
 
+  direction = (c1,c2) ->
+    d = 0
+    if c1.mapx == c2.mapx
+      d = 0 if c1.mapy > c2.mapy
+      d = 3 if c1.mapy < c2.mapy
+    else if c1.mapx > c2.mapx # 左側
+      if c1.mapy == c2.mapy
+        d = if c1.mapx % 2 == 0 then 5 else 4
+      else if c1.mapy > c2.mapy
+        d = 5
+      else if c1.mapy < c2.mapy
+        d = 4
+    else if c1.mapx < c2.mapx # 右側
+      if c1.mapy == c2.mapy
+        d = if c1.mapx % 2 == 0 then 1 else 2
+      else if c1.mapy > c2.mapy
+        d = 1
+      else if c1.mapy < c2.mapy
+        d = 2
+    return d
+
   findNearTarget: (c,targets) ->
     result = {
       target: null
