@@ -241,6 +241,9 @@ tm.define 'nz.SpriteCharacter',
     @tweener.move(x,y,speed)
     return
 
+  _setBackAction: (param) ->
+    return
+
   _setRotateAction: (param) ->
     {
       direction

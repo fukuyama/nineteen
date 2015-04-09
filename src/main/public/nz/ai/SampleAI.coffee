@@ -84,7 +84,7 @@ class nz.ai.SampleAI
           hy += 1
     return hx + hy - hr
 
-  direction = (c1,c2) ->
+  direction: (c1,c2) ->
     d = 0
     if c1.mapx == c2.mapx
       d = 0 if c1.mapy > c2.mapy

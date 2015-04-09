@@ -17,6 +17,25 @@ require('../../../../main/public/nz/ai/SampleAI.coffee')
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'SampleAITest', () ->
+  describe 'Direction', ->
+    it 'Direction1 (55)', ->
+      ai = new nz.ai.SampleAI()
+      s = {mapx:5,mapy:5}
+      ai.direction(s,{mapx:5,mapy:4}).should.equals 0, '55,54'
+      ai.direction(s,{mapx:6,mapy:4}).should.equals 1, '55.64'
+      ai.direction(s,{mapx:6,mapy:5}).should.equals 2, '55,65'
+      ai.direction(s,{mapx:5,mapy:6}).should.equals 3, '55.56'
+      ai.direction(s,{mapx:4,mapy:5}).should.equals 4, '55.45'
+      ai.direction(s,{mapx:4,mapy:4}).should.equals 5, '55,44'
+    it 'Direction1 (65)', ->
+      ai = new nz.ai.SampleAI()
+      s = {mapx:5,mapy:5}
+      ai.direction(s,{mapx:6,mapy:4}).should.equals 0, '65,64'
+      ai.direction(s,{mapx:7,mapy:5}).should.equals 1, '65.75'
+      ai.direction(s,{mapx:7,mapy:6}).should.equals 2, '65,76'
+      ai.direction(s,{mapx:6,mapy:6}).should.equals 3, '65.66'
+      ai.direction(s,{mapx:5,mapy:6}).should.equals 4, '65.56'
+      ai.direction(s,{mapx:5,mapy:5}).should.equals 5, '65,55'
   describe 'Distance', ->
     it 'Distance1 (55)', ->
       ai = new nz.ai.SampleAI()
