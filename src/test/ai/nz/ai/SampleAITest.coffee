@@ -15,6 +15,11 @@ nz.system = {
 
 require('../../../../main/public/nz/ai/SampleAI.coffee')
 
+test_direction = (ai,s,data) ->
+  for d in data
+    ai.direction(s,{mapx:d[0],mapy:d[1]}).should.equals d[2], "#{s.mapx}#{s.mapy},#{d[0]}#{d[1]}=#{d[2]}"
+
+
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'SampleAITest', () ->
   describe 'Direction', ->
@@ -29,13 +34,31 @@ describe 'SampleAITest', () ->
       ai.direction(s,{mapx:4,mapy:4}).should.equals 5, '55,44'
     it 'Direction1 (65)', ->
       ai = new nz.ai.SampleAI()
-      s = {mapx:5,mapy:5}
+      s = {mapx:6,mapy:5}
       ai.direction(s,{mapx:6,mapy:4}).should.equals 0, '65,64'
       ai.direction(s,{mapx:7,mapy:5}).should.equals 1, '65.75'
       ai.direction(s,{mapx:7,mapy:6}).should.equals 2, '65,76'
       ai.direction(s,{mapx:6,mapy:6}).should.equals 3, '65.66'
       ai.direction(s,{mapx:5,mapy:6}).should.equals 4, '65.56'
       ai.direction(s,{mapx:5,mapy:5}).should.equals 5, '65,55'
+    it 'Direction2 (55)', ->
+      ai = new nz.ai.SampleAI()
+      s = {mapx:5,mapy:5}
+      data = [
+        [5,3,0]
+        [6,3,1]
+        [7,4,1]
+        [7,5,2]
+        [7,6,2]
+        [6,6,2]
+        [5,7,3]
+        [4,6,4]
+        [3,6,4]
+        [3,5,4]
+        [3,4,5]
+        [4,3,5]
+      ]
+      test_direction(ai,s,data)
   describe 'Distance', ->
     it 'Distance1 (55)', ->
       ai = new nz.ai.SampleAI()

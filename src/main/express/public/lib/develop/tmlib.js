@@ -54,7 +54,7 @@ if (typeof module !== 'undefined' && module.exports) {
         else if (/opera/i.test(navigator.userAgent))    { return "Opera";   }
         else if (/getcko/i.test(navigator.userAgent))   { return "Getcko";  }
         else if (/msie/i.test(navigator.userAgent))     { return "IE";      }
-        else { return null; }
+        else { return ''; }
     })();
 
     /**
@@ -364,59 +364,27 @@ if (typeof module !== 'undefined' && module.exports) {
 (function() {
     if (!window.document) return ;
 
-    _loadCheckList = [];
-    tm.addLoadCheckList = function(obj) {
-        console.assert(obj.isLoaded !== undefined, "isLoaded が定義されていません!!");
+    var _mainListeners = [];
 
-        _loadCheckList.push(obj);
-    };
-
-    _preloadListners = [];
-    _mainListners = [];
-    var loadedFlag = false;
-
-    tm.preload = function(fn) { _preloadListners.push(fn); };
     tm.main    = function(fn) {
-        if (loadedFlag === false) {
-            _mainListners.push(fn);
+        if (fn) {
+            _mainListeners.push(fn);
         }
         else {
-            fn();
+            _main();
         }
-    };
-
-    var _preload = function() {
-
-        for (var i=0,len=_preloadListners.length; i<len; ++i) {
-            _preloadListners[i]();
-        }
-        _preloadListners = [];
     };
 
     var _main = function() {
-        for (var i=0,len=_loadCheckList.length; i<len; ++i) {
-            var c = _loadCheckList[i];
-            if (c.isLoaded() == false) {
-                setTimeout(arguments.callee, 0);
-                return ;
-            }
+        for (var i=0,len=_mainListeners.length; i<len; ++i) {
+            _mainListeners[i]();
         }
 
-        for (var i=0,len=_mainListners.length; i<len; ++i) {
-            _mainListners[i]();
-        }
-
-        _mainListners = [];
+        _mainListeners = [];
     };
 
     window.addEventListener("load", function() {
-
-        _preload();
-
         _main();
-
-        loadedFlag = true;
-
     }, false);
 
 })();
@@ -13018,7 +12986,7 @@ tm.app = tm.app || {};
      * 左
      */
     tm.app.Object2D.prototype.accessor("bottom", {
-        "get": function()   { return this.y - this.height*(1-this.originY); },
+        "get": function()   { return this.y + this.height*(1-this.originY); },
         "set": function(v)  { this.y = v - this.height*(1-this.originY); },
     });
  
@@ -13199,6 +13167,8 @@ tm.app = tm.app || {};
     tm.app.Scene = tm.createClass({
         superClass: tm.app.Object2D,
 
+        app: null,
+
         /** ManagerScene 経由で生成された際に次にどのシーンに遷移するかのラベル */
         nextLabel: "",
 
@@ -13215,6 +13185,28 @@ tm.app = tm.app || {};
             
             // タッチに反応させる
             this.setInteractive(true);
+        },
+
+        exit: function(param) {
+            if (!this.app) return ;
+
+            if (typeof param !== 'object') {
+                var temp = {};
+                temp.nextLabel = arguments[0];
+                temp.nextArguments = arguments[1];
+                param = temp;
+            }
+
+            if (param.nextLabel) {
+                this.nextLabel = param.nextLabel;
+            }
+            if (param.nextArguments) {
+                this.nextArguments = param.nextArguments;
+            }
+
+            this.app.popScene();
+
+            return this;
         },
 
     });
@@ -16169,7 +16161,49 @@ tm.ui = tm.ui || {};
 tm.ui = tm.ui || {};
 
 
-(function() {
+;(function() {
+
+    tm.define("tm.ui.BaseButton", {
+        superClass: "tm.display.CanvasElement",
+
+        init: function(param) {
+            this.superInit();
+
+            param = param || {};
+            this.width = param.width || 64;
+            this.height = param.height || 64;
+
+            this.setInteractive(true);
+            this.boundingType = "rect";
+
+            this.on("pointingend", function() {
+                this.flare('push');
+            });
+        },
+    });
+
+})();
+
+
+;(function() {
+
+    tm.define("tm.ui.SpriteButton", {
+        superClass: "tm.ui.BaseButton",
+
+        init: function(image) {
+            this.superInit();
+
+            this.sprite = tm.display.Sprite(image).addChildTo(this);
+
+            this.width = this.sprite.width;
+            this.height = this.sprite.height;
+        },
+    });
+
+})();
+
+
+;(function() {
     
     /**
      * @class tm.ui.LabelButton
@@ -16234,25 +16268,14 @@ tm.ui = tm.ui || {};
         /**
          * @constructor
          */
-        init: function(texture) {
-            if (texture) {
-                this.superInit(texture, texture.width, texture.height);
-            }
-            else {
-                this.superInit();
-            }
-            
-            this.alpha = tm.ui.IconButton.DEFAULT_ALPHA;
+        init: function() {
+            this.superInit.call(this, arguments);
             
             this.setInteractive(true);
             this.boundingType = "rect";
-            this.addEventListener("pointingover", function() {
-                this.tweener.clear();
-                this.tweener.fade(1, 250);
-            });
-            this.addEventListener("pointingout", function() {
-                this.tweener.clear();
-                this.tweener.fade(tm.ui.LabelButton.DEFAULT_ALPHA, 250);
+
+            this.on("pointingend", function() {
+                this.flare('push');
             });
         },
     });
@@ -16370,7 +16393,7 @@ tm.ui = tm.ui || {};
      * @extends tm.display.Shape
      */
     tm.define("tm.ui.FlatButton", {
-        superClass: "tm.display.RoundRectangleShape",
+        superClass: "tm.ui.BaseButton",
 
         /**
          * @constructor
@@ -16380,11 +16403,7 @@ tm.ui = tm.ui || {};
 
             this.superInit(param);
 
-            this.setInteractive(true);
-            this.setBoundingType("rect");
-            this.on("pointingend", function() {
-                this.flare('push');
-            });
+            this.shape = tm.display.RoundRectangleShape(param).addChildTo(this);
 
             this.label = tm.display.Label(param.text).addChildTo(this);
             this.label.setFontSize(param.fontSize).setFontFamily(param.fontFamily).setAlign("center").setBaseline("middle");
@@ -16913,7 +16932,7 @@ tm.ui = tm.ui || {};
          * 値を比率でセット
          */
         setRatio: function(ratio) {
-            return this.setValue(this._maxValue*percent);
+            return this.setValue(this._maxValue*ratio);
         },
 
         /**
@@ -17263,6 +17282,9 @@ tm.ui = tm.ui || {};
             width: 640,
             height: 960,
             startLabel: 'title',
+            fitting: true,
+            fps: 30,
+            assets: window.ASSETS || null,
         });
 
         tm.globalize();
@@ -17307,14 +17329,15 @@ tm.ui = tm.ui || {};
         ];
 
         tm.main(function() {
-            var app = tm.app.CanvasApp(param.query);       // 生成
+            var app = tm.app.CanvasApp(param.query);    // 生成
             app.resize(SCREEN_WIDTH, SCREEN_HEIGHT);    // サイズ(解像度)設定
-            app.fitWindow();                            // 自動フィッティング有効
-            app.background = param.background;// 背景色
+            if (param.fitting) { app.fitWindow(); }     // 自動フィッティング有効
+            app.background = param.background;          // 背景色
+            app.fps = param.fps;                        // fps
 
-            if (window.ASSETS) {
+            if (param.assets) {
                 var loading = tm.game.LoadingScene({
-                    assets: ASSETS,
+                    assets: param.assets,
                     width: SCREEN_WIDTH,
                     height: SCREEN_HEIGHT,
                 });
@@ -17334,6 +17357,8 @@ tm.ui = tm.ui || {};
             }
 
             app.run();
+
+            tm.game.app = app;
         });
     };
 
@@ -17675,7 +17700,7 @@ tm.ui = tm.ui || {};
     });
 
     tm.game.ResultScene.default = {
-        score: 256,
+        score: 0,
         message: "this is tmlib.js project.",
         hashtags: "tmlibjs,game",
         related: "tmlib.js tmlife javascript",
@@ -18195,6 +18220,7 @@ tm.ui = tm.ui || {};
                 bgColor: '#444',
                 count: 3,
                 autopop: true,
+                fontSize: 180,
             });
 
             param = param || {};
@@ -18212,22 +18238,29 @@ tm.ui = tm.ui || {};
                     label: {
                         type: "tm.display.Label",
                         fillStyle: "white",
-                        fontSize: 200,
+                        fontSize: param.fontSize,
                         x: SCREEN_CENTER_X,
                         y: SCREEN_CENTER_Y,
                     },
                 }
             });
 
-            this.counter = param.count;
+            if (param.count instanceof Array) {
+                this.countList = param.count.reverse();
+            }
+            else {
+                this.countList = Array.range(1, param.count+1);
+            }
+            this.counter = this.countList.length;
             this.autopop = param.autopop;
             this._updateCount();
         },
 
         _updateCount: function() {
             var endFlag = this.counter <= 0;
+            var index = --this.counter;
 
-            this.label.text = this.counter--;
+            this.label.text = this.countList[index];
 
             this.label.scale.set(1, 1);
             this.label.tweener
