@@ -27,6 +27,11 @@ tm.define 'nz.SceneTitleMenu',
         desctiption: 'ゲームオプション'
         callback: @_option
       }
+      {
+        name: 'Debug'
+        desctiption: 'デバック'
+        callback: @_debug_game
+      }
     ]
 
     @superInit
@@ -50,7 +55,7 @@ tm.define 'nz.SceneTitleMenu',
   ###
   _new_game: ->
     @app.pushScene nz.SceneBattle(
-      mapId: 0
+      mapId: 1
       controlTeam: ['teamA']
       characters: [
         nz.Character(name:'キャラクター1',team:'teamA')
@@ -75,4 +80,22 @@ tm.define 'nz.SceneTitleMenu',
   ###
   _option: ->
     console.log 'option'
+    return
+
+  ###* 新しいゲームを開始
+  * @constructor nz.SceneTitleMenu#
+  ###
+  _debug_game: ->
+    @app.pushScene nz.SceneBattle(
+      mapId: 0
+      controlTeam: ['teamA']
+      characters: [
+        nz.Character(name:'キャラクター1',team:'teamA')
+        nz.Character(name:'キャラクター2',team:'teamA')
+        nz.Character(name:'キャラクター3',team:'teamA')
+        nz.Character(name:'キャラクター4',team:'teamB')
+        nz.Character(name:'キャラクター5',team:'teamB')
+        nz.Character(name:'キャラクター6',team:'teamB')
+      ]
+    )
     return

@@ -209,7 +209,7 @@ module.exports = (grunt) ->
         background: true
       dev:
         options:
-          script: target_dir + 'app.js'
+          script: target_dir + 'bin/www'
 
     clean:
       target: [target_dir, doc_dir]
@@ -242,3 +242,5 @@ module.exports = (grunt) ->
     'coffeelint','coffee', 'simplemocha:all'
     'concat', 'uglify', 'copy', 'createdata'
   ]
+
+  grunt.file.mkdir 'target/public/data'
