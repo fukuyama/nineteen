@@ -226,11 +226,12 @@ module.exports = (grunt) ->
           console.log mapdata
       createdata:
         call: (grunt, op) ->
+          grunt.file.mkdir 'target/public/data'
           fs = require 'fs'
           for name in data_names
             obj = require './' + src_main_dir + data_path + name + '.coffee'
             out = target_public_dir + data_path + name + '.json'
-            fs.writeFile out, JSON.stringify(obj), (err) -> throw err if err?
+            fs.writeFileSync out, JSON.stringify(obj)
 
   for o of pkg.devDependencies
     grunt.loadNpmTasks o if /grunt-/.test o
@@ -242,5 +243,3 @@ module.exports = (grunt) ->
     'coffeelint','coffee', 'simplemocha:all'
     'concat', 'uglify', 'copy', 'createdata'
   ]
-
-  grunt.file.mkdir 'target/public/data'
