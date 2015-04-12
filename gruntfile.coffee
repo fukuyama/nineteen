@@ -19,6 +19,7 @@ module.exports = (grunt) ->
     'map_000'
     'map_001'
     'character_001'
+    'character_test'
   ]
 
   # 共通系スクリプト(tmlib.js 非依存のつもり)

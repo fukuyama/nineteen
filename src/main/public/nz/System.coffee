@@ -50,6 +50,9 @@ tm.define 'nz.System',
         character_001:
           type: 'tmss'
           src: 'data/character_001.json'
+        character_test:
+          type: 'tmss'
+          src: 'data/character_test.json'
       MESSAGES:
         battle:
           position:
