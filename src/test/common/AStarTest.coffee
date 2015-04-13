@@ -16,6 +16,10 @@ describe 'AStarTest', () ->
     node.x.should.equals x,"x #{i}"
     node.y.should.equals y,"y #{i}"
     return
+  chkmapxy = (node,x,y,i) ->
+    node.mapx.should.equals x,"x #{i}"
+    node.mapy.should.equals y,"y #{i}"
+    return
 
   nz.astar = astar
   options =
@@ -210,17 +214,18 @@ describe 'AStarTest', () ->
       describe 'ルート検索', ->
         route_search_test = (s,e,r,graph) ->
           graph = new nz.Graph(testdata) unless graph?
-          start = graph.grid[s.x][s.y]
+          result = graph.searchRoute(s.dir,s.x,s.y,e.x,e.y)
+          #start = graph.grid[s.x][s.y]
           end = graph.grid[e.x][e.y]
-          start.direction = s.dir
-          result = astar.search(graph, start, end, options)
+          #start.direction = s.dir
+          #result = astar.search(graph, start, end, options)
           result.length.should.equals r.len,'length'
           for pos,i in r.route
-            chkxy result[i],pos[0],pos[1],i
-            result[i].g.should.equals r.costs[i],'costs' if r.costs?[i]?
+            chkmapxy result[i],pos[0],pos[1],i
+            result[i].cost.should.equals r.costs[i],'costs' if r.costs?[i]?
           end.g.should.equals r.cost,'cost'
           end.direction.should.equals r.dir,'direction'
-          graph.clear()
+          #graph.clear()
           return graph
         it 'ほぼ真横の移動', ->
           # まだうまく行かない 2015/02/14
@@ -449,3 +454,31 @@ describe 'AStarTest', () ->
             }
             graph
           )
+        it '移動不可', ->
+          data =
+            chipdata: [
+              {
+                weight: 0
+              }
+              {
+                weight: 1
+              }
+            ]
+            mapdata:
+              width:  15 # マップの幅
+              height: 15 # マップの高さ
+              data: for y in [0 ... 15] then for x in [0 ... 15] then 1
+          data.mapdata.data[5][5] = 0
+          graph = new nz.Graph(data)
+          route_search_test(
+            {x:1,y:0,dir:2}
+            {x:5,y:5}
+            {
+              len: 0
+              cost: 0
+              dir: 0
+              route: []
+            }
+            graph
+          )
+          graph.dirtyNodes.length.should.equals 0

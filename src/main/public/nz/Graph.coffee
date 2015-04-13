@@ -30,10 +30,17 @@ class nz.Graph
     for node in @nodes
       node.clean()
       astar.cleanNode(node)
+    @dirtyNodes = []
 
   cleanDirty: ->
+    for node in @dirtyNodes
+      node.clean()
+      astar.cleanNode(node)
+    @dirtyNodes = []
 
   markDirty: (node) ->
+    if @dirtyNodes.indexOf(node) < 0
+      @dirtyNodes.push node
 
   neighbors: (node) ->
     ret = []
@@ -71,17 +78,25 @@ class nz.Graph
     route = []
     start = @grid[sx][sy]
     end   = @grid[ex][ey]
+    # 壁じゃなかったら探索
+    unless end.isWall()
+      # search の中で、dirty node をクリアされるので
+      # 事前に開始位置だけ、dirty node から除外しておく
+      start.clean()
+      astar.cleanNode(start)
+      start.direction = sd # ノード検索時に向きが重要なので、開始位置の向きをクリアされると困る。
+      i = @dirtyNodes.indexOf start
+      @dirtyNodes.splice(i, 1) if i >= 0
 
-    start.direction = sd
-    result = astar.search(@, start, end, {heuristic: nz.Graph.heuristic})
-    for node in result
-      route.push {
-        mapx: node.x
-        mapy: node.y
-        direction: node.direction
-        cost: node.g
-      }
-    @clear()
+      result = astar.search(@, start, end, {heuristic: nz.Graph.heuristic})
+      for node in result
+        route.push {
+          mapx: node.x
+          mapy: node.y
+          direction: node.direction
+          cost: node.g
+        }
+      #@clear()
     return route
 
 nz.Graph.heuristic = (node1,node2) ->
