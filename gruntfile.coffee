@@ -111,7 +111,7 @@ module.exports = (grunt) ->
       reporter: 'nyan'
       ui: 'bdd'
     all:
-      src: [src_test_dir + common_path + '**.coffee',src_test_dir + ai_path + '**.coffee']
+      src: [src_test_dir + common_path + '**/**.coffee',src_test_dir + ai_path + '**/*.coffee']
 
   for f in common_sections
     js = target_gen_dir + common_path + "#{f}.js"

@@ -85,25 +85,27 @@ class nz.ai.SampleAI
     return hx + hy - hr
 
   direction: (c1,c2) ->
-    d = 0
-    if c1.mapx == c2.mapx
-      d = 0 if c1.mapy > c2.mapy
-      d = 3 if c1.mapy < c2.mapy
+    dis = @distance c1,c2
+    r   = Math.floor(dis / 2)
+    dir = 0
+    if (c2.mapx - r) <= c1.mapx and c1.mapx <= (c2.mapx + r)
+      dir = 0 if c1.mapy > c2.mapy
+      dir = 3 if c1.mapy < c2.mapy
     else if c1.mapx > c2.mapx # 左側
       if c1.mapy == c2.mapy
-        d = if c1.mapx % 2 == 0 then 5 else 4
+        dir = if c1.mapx % 2 == 0 then 5 else 4
       else if c1.mapy > c2.mapy
-        d = 5
+        dir = 5
       else if c1.mapy < c2.mapy
-        d = 4
+        dir = 4
     else if c1.mapx < c2.mapx # 右側
       if c1.mapy == c2.mapy
-        d = if c1.mapx % 2 == 0 then 1 else 2
+        dir = if c1.mapx % 2 == 0 then 1 else 2
       else if c1.mapy > c2.mapy
-        d = 1
+        dir = 1
       else if c1.mapy < c2.mapy
-        d = 2
-    return d
+        dir = 2
+    return dir
 
   findNearTarget: (c,targets) ->
     result = {
