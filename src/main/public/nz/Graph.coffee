@@ -74,7 +74,7 @@ class nz.Graph
       graphString.push(rowDebug.join(" "))
     return graphString.join("\n")
 
-  searchRoute: (sd,sx,sy,ex,ey) ->
+  searchRoute: (sd,sx,sy,ex,ey,op={}) ->
     route = []
     start = @grid[sx][sy]
     end   = @grid[ex][ey]
@@ -88,7 +88,9 @@ class nz.Graph
       i = @dirtyNodes.indexOf start
       @dirtyNodes.splice(i, 1) if i >= 0
 
-      result = astar.search(@, start, end, {heuristic: nz.Graph.heuristic})
+      op.heuristic = nz.Graph.heuristic unless op.heuristic?
+
+      result = astar.search(@, start, end, op)
       for node in result
         route.push {
           mapx: node.x

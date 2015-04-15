@@ -28,8 +28,8 @@ tm.define 'nz.SceneTitleMenu',
         callback: @_option
       }
       {
-        name: 'Debug'
-        desctiption: 'デバック'
+        name: 'Debug Game'
+        desctiption: 'デバックゲーム'
         callback: @_debug_game
       }
     ]

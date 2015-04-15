@@ -7,7 +7,61 @@ _g = undefined
 
 nz.ai = nz.ai ? {}
 
-class nz.ai.SampleAI
+class nz.ai.Base
+  searchRoute : (graph, source, target, options = {})->
+    {direction,mapx,mapy} = source
+    return graph.searchRoute(direction, mapx, mapy, target.mapx, target.mapy, options)
+
+  distance: (c1,c2) ->
+    hx = Math.abs(c1.mapx - c2.mapx)
+    hy = Math.abs(c1.mapy - c2.mapy)
+    hr = Math.ceil(hx / 2)
+    return hx if hy < hr
+    if hx % 2 == 1
+      if c1.mapx % 2 == 1
+        if c1.mapy <= c2.mapy
+          hy += 1
+      else
+        if c1.mapy >= c2.mapy
+          hy += 1
+    return hx + hy - hr
+
+  direction: (c1,c2) ->
+    dis = @distance c1,c2
+    r   = Math.floor(dis / 2)
+    dir = 0
+    if (c2.mapx - r) <= c1.mapx and c1.mapx <= (c2.mapx + r)
+      dir = 0 if c1.mapy > c2.mapy
+      dir = 3 if c1.mapy < c2.mapy
+    else if c1.mapx > c2.mapx # 左側
+      if c1.mapy == c2.mapy
+        dir = if c1.mapx % 2 == 0 then 5 else 4
+      else if c1.mapy > c2.mapy
+        dir = 5
+      else if c1.mapy < c2.mapy
+        dir = 4
+    else if c1.mapx < c2.mapx # 右側
+      if c1.mapy == c2.mapy
+        dir = if c1.mapx % 2 == 0 then 1 else 2
+      else if c1.mapy > c2.mapy
+        dir = 1
+      else if c1.mapy < c2.mapy
+        dir = 2
+    return dir
+
+  findNearTarget: (c,targets) ->
+    result = {
+      target: null
+      distance: 99
+    }
+    for t in targets
+      d = @distance(c,t)
+      if d < result.distance
+        result.distance = d
+        result.target = t
+    return result
+
+class nz.ai.SampleAI extends nz.ai.Base
 
   constructor: ->
     @rules = [
@@ -65,59 +119,6 @@ class nz.ai.SampleAI
           return
       }
     ]
-
-  searchRoute : (graph,character,target)->
-    {direction,mapx,mapy} = character
-    graph.searchRoute(direction, mapx, mapy, target.mapx, target.mapy)
-
-  distance: (c1,c2) ->
-    hx = Math.abs(c1.mapx - c2.mapx)
-    hy = Math.abs(c1.mapy - c2.mapy)
-    hr = Math.ceil(hx / 2)
-    return hx if hy < hr
-    if hx % 2 == 1
-      if c1.mapx % 2 == 1
-        if c1.mapy <= c2.mapy
-          hy += 1
-      else
-        if c1.mapy >= c2.mapy
-          hy += 1
-    return hx + hy - hr
-
-  direction: (c1,c2) ->
-    dis = @distance c1,c2
-    r   = Math.floor(dis / 2)
-    dir = 0
-    if (c2.mapx - r) <= c1.mapx and c1.mapx <= (c2.mapx + r)
-      dir = 0 if c1.mapy > c2.mapy
-      dir = 3 if c1.mapy < c2.mapy
-    else if c1.mapx > c2.mapx # 左側
-      if c1.mapy == c2.mapy
-        dir = if c1.mapx % 2 == 0 then 5 else 4
-      else if c1.mapy > c2.mapy
-        dir = 5
-      else if c1.mapy < c2.mapy
-        dir = 4
-    else if c1.mapx < c2.mapx # 右側
-      if c1.mapy == c2.mapy
-        dir = if c1.mapx % 2 == 0 then 1 else 2
-      else if c1.mapy > c2.mapy
-        dir = 1
-      else if c1.mapy < c2.mapy
-        dir = 2
-    return dir
-
-  findNearTarget: (c,targets) ->
-    result = {
-      target: null
-      distance: 99
-    }
-    for t in targets
-      d = @distance(c,t)
-      if d < result.distance
-        result.distance = d
-        result.target = t
-    return result
 
   setupBattlePosition: (param) ->
     console.log 'setupBattlePosition'
