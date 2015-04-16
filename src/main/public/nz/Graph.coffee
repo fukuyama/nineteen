@@ -74,12 +74,12 @@ class nz.Graph
       graphString.push(rowDebug.join(" "))
     return graphString.join("\n")
 
-  searchRoute: (sd,sx,sy,ex,ey,op={}) ->
+  searchRoute: (sd,sx,sy,ex,ey,op={closest:false}) ->
     route = []
     start = @grid[sx][sy]
     end   = @grid[ex][ey]
     # 壁じゃなかったら探索
-    unless end.isWall()
+    if (not end.isWall()) or op.closest
       # search の中で、dirty node をクリアされるので
       # 事前に開始位置だけ、dirty node から除外しておく
       start.clean()

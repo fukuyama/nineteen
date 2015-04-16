@@ -90,11 +90,10 @@ tm.define 'nz.SpriteBattleMap',
   _initMapChip: (mapx,mapy) ->
     w = MAP_CHIP_W
     h = MAP_CHIP_H
-    x = mapx * w + w * 0.5
-    y = mapy * h + h * 0.5
-
-    # 疑似ヘックス表示にするために偶数の座標は半分ずらす
-    y += h * 0.5 if mapx % 2 == 0
+    {
+      x
+      y
+    } = nz.utils.mapxy2screenxy(mapx,mapy)
 
     # マップデータから座標位置のマップチップを取得する
     node = @graph.grid[mapx][mapy]

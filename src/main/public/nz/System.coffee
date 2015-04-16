@@ -3,14 +3,19 @@
 * システム情報
 ###
 
-tm.define 'nz.System',
+# node.js と ブラウザでの this.nz を同じインスタンスにする
+_g = window ? global
+nz = _g.nz = _g.nz ? {}
+_g = undefined
+
+class nz.System
 
   ###* 初期化
   * @classdesc システムクラス
   * @constructor nz.System
   ###
-  init: () ->
-    @.$extend
+  constructor: () ->
+    for k,v of {
       title: 'Nineteen'
       DIRECTION_NUM:
         UP:         0
@@ -57,9 +62,12 @@ tm.define 'nz.System',
         battle:
           position:
             setiing: '{name} の開始位置を選択してください。'
+    }
+      @[k] = v
+
     @ai = {}
     return
 
   addAI: (name,ai) -> @ai[name] = ai
 
-nz.system = nz.System()
+nz.system = new nz.System()

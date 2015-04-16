@@ -29,6 +29,7 @@ module.exports = (grunt) ->
   # 公開用スクリプト
   public_sections = [
     'nz/System'
+    'nz/Utils'
 
     'nz/Graph'
     'nz/GridNode'

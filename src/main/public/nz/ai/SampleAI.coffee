@@ -8,46 +8,20 @@ _g = undefined
 nz.ai = nz.ai ? {}
 
 class nz.ai.Base
-  searchRoute : (graph, source, target, options = {})->
+  ###* 経路探索
+  * @param {nz.Graph}     graph  グラフ（マップ情報）
+  * @param {nz.Character} source 開始位置のキャラクター
+  * @param {nz.Character} target 終了位置のキャラクター
+  * @param {Object}       [options] オプション
+  * @param {boolean}      [options.closest] 到達できない場合に近くまで探索する場合 true
+  ###
+  searchRoute: (graph, source, target, options = {closest:true})->
     {direction,mapx,mapy} = source
     return graph.searchRoute(direction, mapx, mapy, target.mapx, target.mapy, options)
 
-  distance: (c1,c2) ->
-    hx = Math.abs(c1.mapx - c2.mapx)
-    hy = Math.abs(c1.mapy - c2.mapy)
-    hr = Math.ceil(hx / 2)
-    return hx if hy < hr
-    if hx % 2 == 1
-      if c1.mapx % 2 == 1
-        if c1.mapy <= c2.mapy
-          hy += 1
-      else
-        if c1.mapy >= c2.mapy
-          hy += 1
-    return hx + hy - hr
+  distance: nz.utils.distance
 
-  direction: (c1,c2) ->
-    dis = @distance c1,c2
-    r   = Math.floor(dis / 2)
-    dir = 0
-    if (c2.mapx - r) <= c1.mapx and c1.mapx <= (c2.mapx + r)
-      dir = 0 if c1.mapy > c2.mapy
-      dir = 3 if c1.mapy < c2.mapy
-    else if c1.mapx > c2.mapx # 左側
-      if c1.mapy == c2.mapy
-        dir = if c1.mapx % 2 == 0 then 5 else 4
-      else if c1.mapy > c2.mapy
-        dir = 5
-      else if c1.mapy < c2.mapy
-        dir = 4
-    else if c1.mapx < c2.mapx # 右側
-      if c1.mapy == c2.mapy
-        dir = if c1.mapx % 2 == 0 then 1 else 2
-      else if c1.mapy > c2.mapy
-        dir = 1
-      else if c1.mapy < c2.mapy
-        dir = 2
-    return dir
+  direction: nz.utils.direction
 
   findNearTarget: (c,targets) ->
     result = {
@@ -66,6 +40,7 @@ class nz.ai.SampleAI extends nz.ai.Base
   constructor: ->
     @rules = [
       {
+        # ターゲットと距離を計算
         cond: (param) ->
           {
             character
@@ -84,11 +59,13 @@ class nz.ai.SampleAI extends nz.ai.Base
           return false
       }
       {
+        # 距離が４以下の場合
         cond: (param) ->
           {
             distance
           } = param
           return distance <= 4
+        # 移動攻撃
         setup: (param) ->
           {
             character
@@ -99,14 +76,36 @@ class nz.ai.SampleAI extends nz.ai.Base
           route = @searchRoute(graph,character,target)
           character.setAttackCommand(turn)
           character.addMoveCommand(turn,route)
-          return
+          return true
       }
       {
+        # 距離が６以下の場合
+        cond: (param) ->
+          {
+            distance
+          } = param
+          return distance <= 6
+        # 移動射撃
+        setup: (param) ->
+          {
+            character
+            turn
+            graph
+            target
+          } = param
+          route = @searchRoute(graph,character,target)
+          character.setAttackCommand(turn)
+          character.addMoveCommand(turn,route)
+          return true
+      }
+      {
+        # 距離が７以上の場合
         cond: (param) ->
           {
             distance
           } = param
           return distance >= 7
+        # 近づく
         setup: (param) ->
           {
             character
@@ -116,7 +115,7 @@ class nz.ai.SampleAI extends nz.ai.Base
           } = param
           route = @searchRoute(graph,character,target)
           character.addMoveCommand(turn,route)
-          return
+          return false
       }
     ]
 

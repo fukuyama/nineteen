@@ -13,6 +13,8 @@ nz.system = {
   ai: {}
 }
 
+require('../../../../main/public/nz/System.coffee')
+require('../../../../main/public/nz/Utils.coffee')
 require('../../../../main/public/nz/ai/SampleAI.coffee')
 
 test_direction = (ai,s,data) ->

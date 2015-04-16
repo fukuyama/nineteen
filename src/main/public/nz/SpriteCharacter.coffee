@@ -82,11 +82,7 @@ tm.define 'nz.SpriteCharacter',
     return
 
   setMapPosition: (@mapx,@mapy) ->
-    w  = MAP_CHIP_W
-    h  = MAP_CHIP_H
-    @x = @mapx * w + w * @originX
-    @y = @mapy * h + h * @originY
-    @y += h * 0.5 if @mapx % 2 == 0
+    {@x,@y} = nz.utils.mapxy2screenxy(@)
     return @
 
   setDirection: (@direction) ->
@@ -100,14 +96,6 @@ tm.define 'nz.SpriteCharacter',
     for enemy,i in scene.characterSprites when @index != i
       @_updateAttack(enemy)
     return
-
-  calcRotation: (p) ->
-    r = Math.radToDeg(Math.atan2 p.y - @y, p.x - @x) - @body.rotation
-    if r > 180
-      r -= 360
-    else if r < -180
-      r += 360
-    return r
 
   ###* 座標方向確認。
   * キャラクターの向いている方向を考慮し、指定された座標が、キャラクターからみてどの方向にあるか確認する。
@@ -125,7 +113,7 @@ tm.define 'nz.SpriteCharacter',
       anticlockwise
       callback
     } = param
-    r = @calcRotation(param) unless r?
+    r = nz.utils.relativeRotation(@body.rotation,@,param) unless r?
     r1 = if anticlockwise then end   else start
     r2 = if anticlockwise then start else end
     res = false
@@ -233,11 +221,10 @@ tm.define 'nz.SpriteCharacter',
       @mapy
       speed
     } = param
-    w = MAP_CHIP_W
-    h = MAP_CHIP_H
-    x = @mapx * w + w * @originX
-    y = @mapy * h + h * @originY
-    y += h * 0.5 if @mapx % 2 == 0
+    {
+      x
+      y
+    } = nz.utils.mapxy2screenxy(@)
     @tweener.move(x,y,speed)
     return
 
