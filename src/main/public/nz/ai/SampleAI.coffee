@@ -23,6 +23,8 @@ class nz.ai.Base
 
   direction: nz.utils.direction
 
+  checkDirectionRange: nz.utils.checkDirectionRange
+
   findNearTarget: (c,targets) ->
     result = {
       target: null
@@ -66,6 +68,31 @@ class nz.ai.SampleAI extends nz.ai.Base
           } = param
           return distance <= 4
         # 移動攻撃
+        setup: (param) ->
+          {
+            character
+            turn
+            graph
+            target
+          } = param
+          route = @searchRoute(graph,character,target)
+          character.setAttackCommand(turn)
+          character.addMoveCommand(turn,route)
+          return true
+      }
+      {
+        # 距離が６以下の場合
+        cond: (param) ->
+          {
+            distance
+          } = param
+          data = {
+            source: character
+            target: target
+          }
+          data[k] = v for k,v of character.shot.range
+          return distance <= 6 and @checkDirectionRange(data)
+        # 移動射撃
         setup: (param) ->
           {
             character

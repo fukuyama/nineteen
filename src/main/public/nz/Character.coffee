@@ -31,13 +31,13 @@ tm.define 'nz.Character',
       weapon:
         height: 48
         width: 12
-        rotation:
+        range:
           start: 0
           end: 120
           anticlockwise: false
         speed: 600
       shot:
-        rotation:
+        range:
           start: 0
           end: -120
           anticlockwise: true

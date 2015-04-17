@@ -75,7 +75,7 @@ tm.define 'nz.SceneBattleShotCommand',
   _movePointer: (pointing) ->
     if @pointer?
       t    = @mapSprite.globalToLocal pointing
-      tcsr = @target.character.shot.rotation
+      tcsr = @target.character.shot.range
 
       @target.checkDirection(
         x:             t.x

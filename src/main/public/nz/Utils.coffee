@@ -69,6 +69,9 @@ class nz.Utils
       r += 360
     return r
 
+  linePositions: (p1,p2) ->
+    
+
   ###* 座標方向確認。
   * キャラクターの向いている方向を考慮し、指定された座標が、キャラクターからみてどの方向にあるか確認する。
   * @param {Object}   param
@@ -103,6 +106,8 @@ class nz.Utils
       unless res
         ra = r1 if r1 > r
         ra = r2 if r  > r2
+      else
+        ra = r
       callback(res,ra)
     return res
 

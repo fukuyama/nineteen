@@ -146,7 +146,7 @@ tm.define 'nz.SpriteCharacter',
     cw = @character.weapon
     distance = enemy.position.distance @position
     if distance < (cw.height + @body.width / 2)
-      p = enemy.position.clone().$extend cw.rotation
+      p = enemy.position.clone().$extend cw.range
       if @_checkAttackDirection(p)
         @attackAnimation()
         @attack = false
@@ -254,11 +254,11 @@ tm.define 'nz.SpriteCharacter',
     @tweener.pause()
     cw = @character.weapon
     @weapon.visible = true
-    @weapon.rotation = cw.rotation.start
+    @weapon.rotation = cw.range.start
     @weapon.tweener
         .clear()
         .wait 50
-        .rotate(cw.rotation.end,cw.speed)
+        .rotate(cw.range.end,cw.speed)
         .call finish,@,[]
 
   shotAnimation: (param) ->
