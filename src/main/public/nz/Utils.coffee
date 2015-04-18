@@ -70,6 +70,14 @@ class nz.Utils
     return r
 
   linePositions: (p1,p2) ->
+    ret = []
+    dx = Math.abs p1.mapx - p2.mapx
+    dy = Math.abs p1.mapy - p2.mapy
+    #if dx < dy
+    #  for y in [0 ... dy]
+
+
+    return ret
     
 
   ###* 座標方向確認。
