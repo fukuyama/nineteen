@@ -71,12 +71,25 @@ class nz.Utils
 
   linePositions: (p1,p2) ->
     ret = []
-    dx = Math.abs p1.mapx - p2.mapx
-    dy = Math.abs p1.mapy - p2.mapy
-    #if dx < dy
-    #  for y in [0 ... dy]
-
-
+    dx = p2.mapx - p1.mapx
+    dy = p2.mapy - p1.mapy
+    ax = Math.abs dx
+    ay = Math.abs dy
+    sx = if ay is 0 then 1 else dx / ay
+    sy = if ax is 0 then 1 else dy / ax
+    if ax < ay
+      for y in [0 .. ay]
+        ret.push {
+          mapx: p1.mapx + sx * y
+          mapy: p1.mapy + y
+        }
+    else
+      console.log "#{sx} #{sy}"
+      for x in [0 .. ax]
+        ret.push {
+          mapx: p1.mapx + x
+          mapy: p1.mapy + sy * x
+        }
     return ret
     
 
