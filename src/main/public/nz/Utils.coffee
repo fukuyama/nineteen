@@ -69,27 +69,46 @@ class nz.Utils
       r += 360
     return r
 
-  linePositions: (p1,p2) ->
-    ret = []
+  lineRoute: (p1,p2) ->
+    ret = [{
+      mapx: p1.mapx
+      mapy: p1.mapy
+    }]
     dx = p2.mapx - p1.mapx
     dy = p2.mapy - p1.mapy
     ax = Math.abs dx
     ay = Math.abs dy
-    sx = if ay is 0 then 1 else dx / ay
-    sy = if ax is 0 then 1 else dy / ax
     if ax < ay
-      for y in [0 .. ay]
-        ret.push {
+      sx = if ay is 0 then (if dx > 0 then -1 else 1) else dx / ay
+      sy = if dy < 0 then -1 else 1
+      for y in [1 .. ay]
+        p = {
           mapx: p1.mapx + sx * y
-          mapy: p1.mapy + y
+          mapy: p1.mapy + sy * y
         }
+        p.mapx = Math.round(p.mapx)
+        while @distance(ret[ret.length - 1],p) > 1
+          ret.push {
+            mapx: p.mapx - 1
+            mapy: p.mapy
+          }
+        ret.push p
     else
-      console.log "#{sx} #{sy}"
-      for x in [0 .. ax]
-        ret.push {
-          mapx: p1.mapx + x
+      sx = if dx < 0 then -1 else 1
+      sy = if ax is 0 then (if dy > 0 then -1 else 1) else dy / ax
+      for x in [1 .. ax]
+        p = {
+          mapx: p1.mapx + sx * x
           mapy: p1.mapy + sy * x
         }
+        p.mapy -= 0.5 if p.mapx % 2 == 0
+        p.mapy = Math.round(p.mapy)
+        while @distance(ret[ret.length - 1],p) > 1
+          ret.push {
+            mapx: p.mapx
+            mapy: p.mapy - 1
+          }
+        ret.push p
     return ret
     
 
