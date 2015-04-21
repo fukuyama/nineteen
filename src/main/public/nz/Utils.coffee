@@ -128,11 +128,13 @@ class nz.Utils
       rotation
       source
       target
+      callback
+    } = param
+    {
       start
       end
       anticlockwise
-      callback
-    } = param
+    } = param.range
     rotation = DIRECTIONS[source.direction].rotation unless rotation?
     r = @relativeRotation(rotation,source,target)
     r1 = if anticlockwise then end   else start

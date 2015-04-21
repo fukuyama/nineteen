@@ -85,12 +85,16 @@ class nz.ai.SampleAI extends nz.ai.Base
         cond: (param) ->
           {
             distance
+            character
+            target
           } = param
           data = {
             source: character
             target: target
+            range: character.shot.range
+            callback: (res,r) ->
+              param.rotation = r if res
           }
-          data[k] = v for k,v of character.shot.range
           return distance <= 6 and @checkDirectionRange(data)
         # 移動射撃
         setup: (param) ->
@@ -100,9 +104,6 @@ class nz.ai.SampleAI extends nz.ai.Base
             graph
             target
           } = param
-          route = @searchRoute(graph,character,target)
-          character.setAttackCommand(turn)
-          character.addMoveCommand(turn,route)
           return true
       }
       {
