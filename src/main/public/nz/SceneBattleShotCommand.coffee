@@ -18,12 +18,12 @@ tm.define 'nz.SceneBattleShotCommand',
     @costa = @target.character.getActionCost(@turn)
 
     #@on 'map.pointingstart', @_pointStart
-    @on 'map.pointingover', (e) ->
-      @mapSprite.clearBlink()
-      result = nz.utils.lineRoute(@target.character,e)
-      for p in result
-        @mapSprite.blink(p.mapx,p.mapy)
-      return
+    #@on 'map.pointingover', (e) ->
+    #  @mapSprite.clearBlink()
+    #  result = nz.utils.lineRoute(@target.character,e)
+    #  for p in result
+    #    @mapSprite.blink(p.mapx,p.mapy)
+    #  return
     @on 'map.pointingend',   @_pointEnd
     @_createPointer()
 

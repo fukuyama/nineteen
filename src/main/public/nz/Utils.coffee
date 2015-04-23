@@ -76,10 +76,12 @@ class nz.Utils
     }]
     dx = p2.mapx - p1.mapx
     dy = p2.mapy - p1.mapy
+    hx = if dx < 0 then -1 else 1
+    hy = if dy < 0 then -1 else 1
     ax = Math.abs dx
     ay = Math.abs dy
     if ax < ay
-      sx = if ay is 0 then (if dx > 0 then -1 else 1) else dx / ay
+      sx = if ay is 0 then hx else dx / ay
       sy = if dy < 0 then -1 else 1
       for y in [1 .. ay]
         p = {
@@ -89,13 +91,13 @@ class nz.Utils
         p.mapx = Math.round(p.mapx)
         while @distance(ret[ret.length - 1],p) > 1
           ret.push {
-            mapx: p.mapx - 1
+            mapx: p.mapx - hx
             mapy: p.mapy
           }
         ret.push p
     else
       sx = if dx < 0 then -1 else 1
-      sy = if ax is 0 then (if dy > 0 then -1 else 1) else dy / ax
+      sy = if ax is 0 then hy else dy / ax
       for x in [1 .. ax]
         p = {
           mapx: p1.mapx + sx * x
@@ -106,7 +108,7 @@ class nz.Utils
         while @distance(ret[ret.length - 1],p) > 1
           ret.push {
             mapx: p.mapx
-            mapy: p.mapy - 1
+            mapy: p.mapy - hy
           }
         ret.push p
     return ret
@@ -136,7 +138,7 @@ class nz.Utils
       anticlockwise
     } = param.range
     rotation = DIRECTIONS[source.direction].rotation unless rotation?
-    r = @relativeRotation(rotation,source,target)
+    r = nz.utils.relativeRotation(rotation,source,target)
     r1 = if anticlockwise then end   else start
     r2 = if anticlockwise then start else end
     res = false

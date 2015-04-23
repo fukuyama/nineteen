@@ -101,38 +101,15 @@ class nz.ai.SampleAI extends nz.ai.Base
           {
             character
             turn
-            graph
-            target
+            rotation
           } = param
+          character.addShotCommand(turn,rotation)
           return true
       }
       {
-        # 距離が６以下の場合
+        # どれでもない時
         cond: (param) ->
-          {
-            distance
-          } = param
-          return distance <= 6
-        # 移動射撃
-        setup: (param) ->
-          {
-            character
-            turn
-            graph
-            target
-          } = param
-          route = @searchRoute(graph,character,target)
-          character.setAttackCommand(turn)
-          character.addMoveCommand(turn,route)
           return true
-      }
-      {
-        # 距離が７以上の場合
-        cond: (param) ->
-          {
-            distance
-          } = param
-          return distance >= 7
         # 近づく
         setup: (param) ->
           {

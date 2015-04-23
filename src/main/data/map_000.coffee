@@ -8,7 +8,7 @@ mapdata =
   height: MAP_HEIGHT
   start:
     area: [
-      [[CENTER/2,12],[CENTER,11],[CENTER+CENTER/2,12]]
+      [[CENTER/2,12],[CENTER,11],[CENTER+CENTER/2,12],[CENTER,CENTER]]
       [[CENTER/2, 0],[CENTER, 0],[CENTER+CENTER/2, 0]]
     ]
   data: for y in [0 ... MAP_HEIGHT] then for x in [0 ... MAP_WIDTH] then 0

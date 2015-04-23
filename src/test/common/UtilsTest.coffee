@@ -31,8 +31,8 @@ lineRouteTest = (p1,p2,data ... ) ->
   for r,i in ret
     x = data[i][0]
     y = data[i][1]
-    r.mapx.should.equals x,"index #{i}[#{x},#{y}]: x #{x}"
-    r.mapy.should.equals y,"index #{i}[#{x},#{y}]: y #{y}"
+    r.mapx.should.equals x,"index #{i}[#{x},#{y}]: x #{x}: [#{r.mapx},#{r.mapy}]"
+    r.mapy.should.equals y,"index #{i}[#{x},#{y}]: y #{y}: [#{r.mapx},#{r.mapy}]"
   return
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
@@ -81,6 +81,6 @@ describe 'UtilsTest', () ->
     it '(5,5),(4,2)', ->
       lineRouteTest [5,5],[4,2],[5,5],[5,4],[4,3],[4,2]
     it '(5,5),(3,3)', ->
-      lineRouteTest [5,5],[3,3],[5,5],[4,4],[4,3],[3,3]
+      lineRouteTest [5,5],[3,3],[5,5],[4,4],[3,4],[3,3]
     it '(5,5),(6,7)', ->
       lineRouteTest [5,5],[6,7],[5,5],[5,6],[6,6],[6,7]
