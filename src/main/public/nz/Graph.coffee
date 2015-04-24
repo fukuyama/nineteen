@@ -90,6 +90,10 @@ class nz.Graph
 
       op.heuristic = nz.Graph.heuristic unless op.heuristic?
 
+      if op.grid?
+        for g of grid
+          @grid[g.x][g.y].options = g.options
+
       result = astar.search(@, start, end, op)
       for node in result
         route.push {
@@ -98,7 +102,9 @@ class nz.Graph
           direction: node.direction
           cost: node.g
         }
-      #@clear()
+      if op.grid?
+        for g of grid
+          @grid[g.x][g.y].options = undefined
     return route
 
 nz.Graph.heuristic = (node1,node2) ->
@@ -117,5 +123,5 @@ nz.Graph.heuristic = (node1,node2) ->
         hd = 0
   else
     hy -= hr
-  # console.log "#{hx} #{hy} #{hd} #{direction}"
+  #console.log "#{hx} #{hy} #{hd} #{direction}"
   hx + hy + hd

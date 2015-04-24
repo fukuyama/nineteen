@@ -11,6 +11,23 @@ DIRECTIONS = nz.system.character.directions
 
 class nz.Utils
 
+  ###* 経路探索
+  * @param {nz.Graph}     graph  グラフ（マップ情報）
+  * @param {nz.Character} source 開始位置のキャラクター
+  * @param {nz.Character} target 終了位置のキャラクター
+  * @param {Array}        characters nz.Character 配列
+  * @param {Object}       [options] オプション
+  * @param {boolean}      [options.closest] 到達できない場合に近くまで探索する場合 true
+  * @param {Object}       [options.grid] グリッドオプション
+  ###
+  searchRoute: (graph, source, target, characters, options = {closest:true})->
+    {direction,mapx,mapy} = source
+    return graph.searchRoute(direction, mapx, mapy, target.mapx, target.mapy, options)
+
+  ###* 対象の方向
+  * @param {Object|nz.Character} c1 元
+  * @param {Object|nz.Character} c2 対象
+  ###
   direction: (c1,c2) ->
     dis = @distance c1,c2
     r   = Math.floor(dis / 2)
@@ -34,6 +51,10 @@ class nz.Utils
         dir = 2
     return dir
 
+  ###* 距離
+  * @param {Object|nz.Character} c1 元
+  * @param {Object|nz.Character} c2 対象
+  ###
   distance: (c1,c2) ->
     hx = Math.abs(c1.mapx - c2.mapx)
     hy = Math.abs(c1.mapy - c2.mapy)

@@ -37,6 +37,9 @@ lineRouteTest = (p1,p2,data ... ) ->
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'UtilsTest', () ->
+  #describe 'searchRoute 1', () ->
+  #  it '', ->
+
   describe 'lineRoute 1', () ->
     it '(5,5),(5,6)', ->
       lineRouteTest [5,5],[5,6],[5,5],[5,6]

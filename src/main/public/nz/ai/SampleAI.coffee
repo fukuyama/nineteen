@@ -8,16 +8,8 @@ _g = undefined
 nz.ai = nz.ai ? {}
 
 class nz.ai.Base
-  ###* 経路探索
-  * @param {nz.Graph}     graph  グラフ（マップ情報）
-  * @param {nz.Character} source 開始位置のキャラクター
-  * @param {nz.Character} target 終了位置のキャラクター
-  * @param {Object}       [options] オプション
-  * @param {boolean}      [options.closest] 到達できない場合に近くまで探索する場合 true
-  ###
-  searchRoute: (graph, source, target, options = {closest:true})->
-    {direction,mapx,mapy} = source
-    return graph.searchRoute(direction, mapx, mapy, target.mapx, target.mapy, options)
+
+  searchRoute: nz.utils.searchRoute
 
   distance: nz.utils.distance
 
@@ -71,11 +63,12 @@ class nz.ai.SampleAI extends nz.ai.Base
         setup: (param) ->
           {
             character
+            characters
             turn
             graph
             target
           } = param
-          route = @searchRoute(graph,character,target)
+          route = @searchRoute(graph,character,target,characters)
           character.setAttackCommand(turn)
           character.addMoveCommand(turn,route)
           return true
@@ -114,11 +107,12 @@ class nz.ai.SampleAI extends nz.ai.Base
         setup: (param) ->
           {
             character
+            characters
             turn
             graph
             target
           } = param
-          route = @searchRoute(graph,character,target)
+          route = @searchRoute(graph,character,target,characters)
           character.addMoveCommand(turn,route)
           return false
       }

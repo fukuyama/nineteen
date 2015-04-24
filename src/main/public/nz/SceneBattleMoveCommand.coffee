@@ -18,16 +18,27 @@ tm.define 'nz.SceneBattleMoveCommand',
     @on 'map.pointingover', @_over
     @on 'map.pointingend', @_end
 
-  searchRoute : (emapx, emapy)->
+  searchRoute: (e)->
     {direction,mapx,mapy} = @target
-    @mapSprite.graph.searchRoute(direction, mapx, mapy, emapx, emapy)
+    @mapSprite.graph.searchRoute(direction, mapx, mapy, e.mapx, e.mapy)
+
+  _searchRoute: (e)->
+    console.log "#{@target.direction} #{@target.mapx},#{@target.mapy} #{e.mapx},#{e.mapy}"
+    r = nz.utils.searchRoute(
+      @mapSprite.graph
+      @target
+      e
+      @mapSprite.characters
+    )
+    console.log r
+    return r
 
   commandAp: ->
     @target.character.ap - @target.character.getActionCost(@turn)
 
   _end: (e) ->
     if @mapSprite.isBlink(e.mapx, e.mapy)
-      @callback @searchRoute(e.mapx, e.mapy)
+      @callback @searchRoute(e)
     @mapSprite.clearBlink()
     @one 'enterframe', -> @app.popScene()
     return
@@ -35,6 +46,6 @@ tm.define 'nz.SceneBattleMoveCommand',
   _over: (e) ->
     @mapSprite.clearBlink()
     ap = @commandAp()
-    route = @searchRoute(e.mapx, e.mapy)
+    route = @searchRoute(e)
     for r in route when r.cost <= ap
       @mapSprite.blink(r.mapx,r.mapy)
