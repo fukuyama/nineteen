@@ -227,7 +227,7 @@ describe 'AStarTest', () ->
           end.direction.should.equals r.dir,'direction'
           #graph.clear()
           return graph
-        it 'Debug 1', ->
+        it.skip 'Debug 1', ->
           console.log 'Debug1'
           route_search_test(
             {x:3,y:12,dir:0}
