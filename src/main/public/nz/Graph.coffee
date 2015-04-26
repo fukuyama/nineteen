@@ -48,19 +48,35 @@ class nz.Graph
     y = node.y
 
     if x % 2 == 0
-      ret.push(@grid[x  ][y-1]) if(@grid[x  ]?[y-1]?)
-      ret.push(@grid[x  ][y+1]) if(@grid[x  ]?[y+1]?)
-      ret.push(@grid[x-1][y  ]) if(@grid[x-1]?[y  ]?)
-      ret.push(@grid[x-1][y+1]) if(@grid[x-1]?[y+1]?)
-      ret.push(@grid[x+1][y  ]) if(@grid[x+1]?[y  ]?)
-      ret.push(@grid[x+1][y+1]) if(@grid[x+1]?[y+1]?)
+      if @options?.cost? and node.g is @options.cost
+        ret.push(@grid[x  ][y-1]) if(@grid[x  ]?[y-1]? and node.direction is 0)
+        ret.push(@grid[x  ][y+1]) if(@grid[x  ]?[y+1]? and node.direction is 3)
+        ret.push(@grid[x-1][y  ]) if(@grid[x-1]?[y  ]? and node.direction is 5)
+        ret.push(@grid[x-1][y+1]) if(@grid[x-1]?[y+1]? and node.direction is 4)
+        ret.push(@grid[x+1][y  ]) if(@grid[x+1]?[y  ]? and node.direction is 1)
+        ret.push(@grid[x+1][y+1]) if(@grid[x+1]?[y+1]? and node.direction is 2)
+      else
+        ret.push(@grid[x  ][y-1]) if(@grid[x  ]?[y-1]?)
+        ret.push(@grid[x  ][y+1]) if(@grid[x  ]?[y+1]?)
+        ret.push(@grid[x-1][y  ]) if(@grid[x-1]?[y  ]?)
+        ret.push(@grid[x-1][y+1]) if(@grid[x-1]?[y+1]?)
+        ret.push(@grid[x+1][y  ]) if(@grid[x+1]?[y  ]?)
+        ret.push(@grid[x+1][y+1]) if(@grid[x+1]?[y+1]?)
     else
-      ret.push(@grid[x  ][y-1]) if(@grid[x  ]?[y-1]?)
-      ret.push(@grid[x  ][y+1]) if(@grid[x  ]?[y+1]?)
-      ret.push(@grid[x-1][y  ]) if(@grid[x-1]?[y  ]?)
-      ret.push(@grid[x-1][y-1]) if(@grid[x-1]?[y-1]?)
-      ret.push(@grid[x+1][y  ]) if(@grid[x+1]?[y  ]?)
-      ret.push(@grid[x+1][y-1]) if(@grid[x+1]?[y-1]?)
+      if @options?.cost? node.g is @options.cost
+        ret.push(@grid[x  ][y-1]) if(@grid[x  ]?[y-1]? and node.direction is 0)
+        ret.push(@grid[x  ][y+1]) if(@grid[x  ]?[y+1]? and node.direction is 3)
+        ret.push(@grid[x-1][y  ]) if(@grid[x-1]?[y  ]? and node.direction is 5)
+        ret.push(@grid[x-1][y-1]) if(@grid[x-1]?[y-1]? and node.direction is 4)
+        ret.push(@grid[x+1][y  ]) if(@grid[x+1]?[y  ]? and node.direction is 1)
+        ret.push(@grid[x+1][y-1]) if(@grid[x+1]?[y-1]? and node.direction is 2)
+      else
+        ret.push(@grid[x  ][y-1]) if(@grid[x  ]?[y-1]?)
+        ret.push(@grid[x  ][y+1]) if(@grid[x  ]?[y+1]?)
+        ret.push(@grid[x-1][y  ]) if(@grid[x-1]?[y  ]?)
+        ret.push(@grid[x-1][y-1]) if(@grid[x-1]?[y-1]?)
+        ret.push(@grid[x+1][y  ]) if(@grid[x+1]?[y  ]?)
+        ret.push(@grid[x+1][y-1]) if(@grid[x+1]?[y-1]?)
 
     # nz なノードを返す（６こ）
     return ret
