@@ -20,7 +20,23 @@ class nz.Utils
   * @param {boolean}      [options.closest] 到達できない場合に近くまで探索する場合 true
   * @param {Object}       [options.grid] グリッドオプション
   ###
-  searchRoute: (graph, source, target, characters, options = {closest:true})->
+  searchRoute: (graph, source, target, characters, options = {})->
+    unless options.grid?
+      options.grid = []
+    for c in characters
+      options.grid.push {
+        x: c.mapx
+        y: c.mapy
+        options: {
+          isWall: true
+        }
+      }
+    unless options.graph?
+      options.graph = {
+        cost: source.ap
+      }
+    unless options.closest?
+      options.closest = true
     {direction,mapx,mapy} = source
     return graph.searchRoute(direction, mapx, mapy, target.mapx, target.mapy, options)
 

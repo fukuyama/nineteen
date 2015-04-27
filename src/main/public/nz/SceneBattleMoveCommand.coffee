@@ -13,24 +13,24 @@ tm.define 'nz.SceneBattleMoveCommand',
       @target
       @callback
       @mapSprite
+      @characters
     } = param
 
     @on 'map.pointingover', @_over
     @on 'map.pointingend', @_end
 
   searchRoute: (e)->
-    {direction,mapx,mapy} = @target
-    @mapSprite.graph.searchRoute(direction, mapx, mapy, e.mapx, e.mapy)
-
-  _searchRoute: (e)->
-    console.log "#{@target.direction} #{@target.mapx},#{@target.mapy} #{e.mapx},#{e.mapy}"
+    op = {
+      graph:
+        cost: @commandAp()
+    }
     r = nz.utils.searchRoute(
       @mapSprite.graph
       @target
       e
-      @mapSprite.characters
+      @characters
+      op
     )
-    console.log r
     return r
 
   commandAp: ->

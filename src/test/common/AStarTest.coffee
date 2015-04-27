@@ -254,7 +254,7 @@ describe 'AStarTest', () ->
           end.direction.should.equals r.dir,'direction'
           #graph.clear()
           return graph
-        it.skip 'Debug 1', ->
+        it 'Debug 1', ->
           console.log 'Debug1'
           route_search_test(
             {x:3,y:12,dir:0}
@@ -274,7 +274,6 @@ describe 'AStarTest', () ->
             undefined
             {closest:true}
           )
-      describe.skip 'ルート検索', ->
         it 'ほぼ真横の移動', ->
           # まだうまく行かない 2015/02/14
           route_search_test(

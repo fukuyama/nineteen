@@ -146,10 +146,11 @@ tm.define 'nz.SceneBattle',
     if @_selectGhost
       target = @selectCharacterSprite.ghost
     @_pushScene klass(
-      turn:      @turn
-      target:    target
-      callback:  callback
-      mapSprite: @mapSprite
+      turn:       @turn
+      target:     target
+      callback:   callback
+      mapSprite:  @mapSprite
+      characters: @characters
     )
     @one 'resume', @_checkCommandConf.bind @
     return

@@ -48,7 +48,7 @@ class nz.Graph
     y = node.y
 
     if x % 2 == 0
-      if @options?.cost? and node.g is @options.cost
+      if @options?.cost? and node.g is (@options.cost - 1)
         ret.push(@grid[x  ][y-1]) if(@grid[x  ]?[y-1]? and node.direction is 0)
         ret.push(@grid[x  ][y+1]) if(@grid[x  ]?[y+1]? and node.direction is 3)
         ret.push(@grid[x-1][y  ]) if(@grid[x-1]?[y  ]? and node.direction is 5)
@@ -63,7 +63,7 @@ class nz.Graph
         ret.push(@grid[x+1][y  ]) if(@grid[x+1]?[y  ]?)
         ret.push(@grid[x+1][y+1]) if(@grid[x+1]?[y+1]?)
     else
-      if @options?.cost? node.g is @options.cost
+      if @options?.cost? and node.g is (@options.cost - 1)
         ret.push(@grid[x  ][y-1]) if(@grid[x  ]?[y-1]? and node.direction is 0)
         ret.push(@grid[x  ][y+1]) if(@grid[x  ]?[y+1]? and node.direction is 3)
         ret.push(@grid[x-1][y  ]) if(@grid[x-1]?[y  ]? and node.direction is 5)
@@ -107,8 +107,10 @@ class nz.Graph
       op.heuristic = nz.Graph.heuristic unless op.heuristic?
 
       if op.grid?
-        for g of grid
+        for g in op.grid
           @grid[g.x][g.y].options = g.options
+      if op.graph?
+        @options = op.graph
 
       result = astar.search(@, start, end, op)
       for node in result
@@ -119,8 +121,9 @@ class nz.Graph
           cost: node.g
         }
       if op.grid?
-        for g of grid
+        for g in op.grid
           @grid[g.x][g.y].options = undefined
+      @options = undefined
     return route
 
 nz.Graph.heuristic = (node1,node2) ->

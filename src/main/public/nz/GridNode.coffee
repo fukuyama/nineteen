@@ -67,7 +67,7 @@ class nz.GridNode
   * 壁判定
   ###
   isWall: ->
-    return @weight == 0
+    return @weight == 0 or @options?.isWall
 
 nz.GridNode.calcDirection = (node1,node2) ->
   direction = 0
