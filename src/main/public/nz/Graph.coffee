@@ -42,41 +42,66 @@ class nz.Graph
     if @dirtyNodes.indexOf(node) < 0
       @dirtyNodes.push node
 
-  neighbors: (node) ->
+  _addWrap: (ret,x,y,d) ->
+    ret.push(new nz.GridNodeWrap(@grid[x][y],d)) if(@grid[x]?[y]?)
+
+  neighbors: (wrap) ->
     ret = []
-    x = node.x
-    y = node.y
+    x = wrap.mapx
+    y = wrap.mapy
 
     if x % 2 == 0
-      if @options?.cost? and node.g is (@options.cost - 1)
-        ret.push(@grid[x  ][y-1]) if(@grid[x  ]?[y-1]? and node.direction is 0)
-        ret.push(@grid[x  ][y+1]) if(@grid[x  ]?[y+1]? and node.direction is 3)
-        ret.push(@grid[x-1][y  ]) if(@grid[x-1]?[y  ]? and node.direction is 5)
-        ret.push(@grid[x-1][y+1]) if(@grid[x-1]?[y+1]? and node.direction is 4)
-        ret.push(@grid[x+1][y  ]) if(@grid[x+1]?[y  ]? and node.direction is 1)
-        ret.push(@grid[x+1][y+1]) if(@grid[x+1]?[y+1]? and node.direction is 2)
-      else
-        ret.push(@grid[x  ][y-1]) if(@grid[x  ]?[y-1]?)
-        ret.push(@grid[x  ][y+1]) if(@grid[x  ]?[y+1]?)
-        ret.push(@grid[x-1][y  ]) if(@grid[x-1]?[y  ]?)
-        ret.push(@grid[x-1][y+1]) if(@grid[x-1]?[y+1]?)
-        ret.push(@grid[x+1][y  ]) if(@grid[x+1]?[y  ]?)
-        ret.push(@grid[x+1][y+1]) if(@grid[x+1]?[y+1]?)
+      switch wrap.direction
+        when 0
+          @_addWrap ret,x,y-1,wrap.direction
+          @_addWrap ret,x,y,5
+          @_addWrap ret,x,y,1
+        when 1
+          @_addWrap ret,x+1,y,wrap.direction
+          @_addWrap ret,x,y,0
+          @_addWrap ret,x,y,2
+        when 2
+          @_addWrap ret,x+1,y+1,wrap.direction
+          @_addWrap ret,x,y,1
+          @_addWrap ret,x,y,3
+        when 3
+          @_addWrap ret,x,y+1,wrap.direction
+          @_addWrap ret,x,y,2
+          @_addWrap ret,x,y,4
+        when 4
+          @_addWrap ret,x-1,y+1,wrap.direction
+          @_addWrap ret,x,y,3
+          @_addWrap ret,x,y,5
+        when 5
+          @_addWrap ret,x-1,y,wrap.direction
+          @_addWrap ret,x,y,4
+          @_addWrap ret,x,y,0
     else
-      if @options?.cost? and node.g is (@options.cost - 1)
-        ret.push(@grid[x  ][y-1]) if(@grid[x  ]?[y-1]? and node.direction is 0)
-        ret.push(@grid[x  ][y+1]) if(@grid[x  ]?[y+1]? and node.direction is 3)
-        ret.push(@grid[x-1][y  ]) if(@grid[x-1]?[y  ]? and node.direction is 5)
-        ret.push(@grid[x-1][y-1]) if(@grid[x-1]?[y-1]? and node.direction is 4)
-        ret.push(@grid[x+1][y  ]) if(@grid[x+1]?[y  ]? and node.direction is 1)
-        ret.push(@grid[x+1][y-1]) if(@grid[x+1]?[y-1]? and node.direction is 2)
-      else
-        ret.push(@grid[x  ][y-1]) if(@grid[x  ]?[y-1]?)
-        ret.push(@grid[x  ][y+1]) if(@grid[x  ]?[y+1]?)
-        ret.push(@grid[x-1][y  ]) if(@grid[x-1]?[y  ]?)
-        ret.push(@grid[x-1][y-1]) if(@grid[x-1]?[y-1]?)
-        ret.push(@grid[x+1][y  ]) if(@grid[x+1]?[y  ]?)
-        ret.push(@grid[x+1][y-1]) if(@grid[x+1]?[y-1]?)
+      switch wrap.direction
+        when 0
+          @_addWrap ret,x,y-1,wrap.direction
+          @_addWrap ret,x,y,5
+          @_addWrap ret,x,y,1
+        when 1
+          @_addWrap ret,x+1,y-1,wrap.direction
+          @_addWrap ret,x,y,0
+          @_addWrap ret,x,y,2
+        when 2
+          @_addWrap ret,x+1,y,wrap.direction
+          @_addWrap ret,x,y,1
+          @_addWrap ret,x,y,3
+        when 3
+          @_addWrap ret,x,y+1,wrap.direction
+          @_addWrap ret,x,y,2
+          @_addWrap ret,x,y,4
+        when 4
+          @_addWrap ret,x-1,y,wrap.direction
+          @_addWrap ret,x,y,3
+          @_addWrap ret,x,y,5
+        when 5
+          @_addWrap ret,x-1,y-1,wrap.direction
+          @_addWrap ret,x,y,4
+          @_addWrap ret,x,y,0
 
     # nz なノードを返す（６こ）
     return ret
@@ -92,43 +117,35 @@ class nz.Graph
 
   searchRoute: (sd,sx,sy,ex,ey,op={closest:false}) ->
     route = []
-    start = @grid[sx][sy]
-    end   = @grid[ex][ey]
+    start = new nz.GridNodeWrap(@grid[sx][sy],sd)
+    end   = new nz.GridNodeWrap(@grid[ex][ey])
     # 壁じゃなかったら探索
     if (not end.isWall()) or op.closest
-      # search の中で、dirty node をクリアされるので
-      # 事前に開始位置だけ、dirty node から除外しておく
-      start.clean()
-      astar.cleanNode(start)
-      start.direction = sd # ノード検索時に向きが重要なので、開始位置の向きをクリアされると困る。
-      i = @dirtyNodes.indexOf start
-      @dirtyNodes.splice(i, 1) if i >= 0
-
       op.heuristic = nz.Graph.heuristic unless op.heuristic?
 
       if op.grid?
         for g in op.grid
-          @grid[g.x][g.y].options = g.options
+          @grid[g.mapx][g.mapy].options = g.options
       if op.graph?
         @options = op.graph
 
       result = astar.search(@, start, end, op)
       for node in result
         route.push {
-          mapx: node.x
-          mapy: node.y
+          mapx: node.mapx
+          mapy: node.mapy
           direction: node.direction
           cost: node.g
         }
       if op.grid?
         for g in op.grid
-          @grid[g.x][g.y].options = undefined
+          @grid[g.mapx][g.mapy].options = undefined
       @options = undefined
     return route
 
 nz.Graph.heuristic = (node1,node2) ->
-  hx = Math.abs(node1.x - node2.x)
-  hy = Math.abs(node1.y - node2.y)
+  hx = Math.abs(node1.mapx - node2.mapx)
+  hy = Math.abs(node1.mapy - node2.mapy)
   #hr = Math.floor(hx / 2)
   hr = Math.ceil(hx / 2)
   direction = node1.calcDirectionTo(node2)

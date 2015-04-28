@@ -11,6 +11,9 @@ DIRECTIONS = nz.system.character.directions
 
 class nz.Utils
 
+  calcDirectionCost: (direction1,direction2) ->
+    Math.abs(3 - Math.abs((direction2 - direction1 - 3) % 6))
+
   ###* 経路探索
   * @param {nz.Graph}     graph  グラフ（マップ情報）
   * @param {nz.Character} source 開始位置のキャラクター

@@ -37,6 +37,7 @@ describe 'AStarTest', () ->
       width:  15 # マップの幅
       height: 15 # マップの高さ
       data: for y in [0 ... 15] then for x in [0 ... 15] then 1
+
   describe 'オリジナル', ->
     it 'サンプル', ->
       graph = new Graph [
@@ -56,95 +57,21 @@ describe 'AStarTest', () ->
       result[2].y.should.equals 2
 
   describe '１９', ->
-    describe 'nz.GridNode', ->
-      it '方向転換のコスト計算1', ->
-        s = new nz.GridNode(0,0)
-        s.direction = 0 # 上
-        s.getDirectionCost(0).should.equals 0,'0'
-        s.getDirectionCost(1).should.equals 1,'1'
-        s.getDirectionCost(2).should.equals 2,'2'
-        s.getDirectionCost(3).should.equals 3,'3'
-        s.getDirectionCost(4).should.equals 2,'4'
-        s.getDirectionCost(5).should.equals 1,'5'
-      it '方向転換のコスト計算2', ->
-        s = new nz.GridNode(0,0)
-        s.direction = 1 # 右上
-        s.getDirectionCost(0).should.equals 1,'0'
-        s.getDirectionCost(1).should.equals 0,'1'
-        s.getDirectionCost(2).should.equals 1,'2'
-        s.getDirectionCost(3).should.equals 2,'3'
-        s.getDirectionCost(4).should.equals 3,'4'
-        s.getDirectionCost(5).should.equals 2,'5'
-        s.direction = 5 # 左上
-        s.getDirectionCost(0).should.equals 1,'0`'
-        s.getDirectionCost(1).should.equals 2,'1`'
-        s.getDirectionCost(2).should.equals 3,'2`'
-        s.getDirectionCost(3).should.equals 2,'3`'
-        s.getDirectionCost(4).should.equals 1,'4`'
-        s.getDirectionCost(5).should.equals 0,'5`'
-      it '方向転換のコスト計算3', ->
-        s = new nz.GridNode(0,0)
-        s.direction = 2 # 右下
-        s.getDirectionCost(0).should.equals 2,'0'
-        s.getDirectionCost(1).should.equals 1,'1'
-        s.getDirectionCost(2).should.equals 0,'2'
-        s.getDirectionCost(3).should.equals 1,'3'
-        s.getDirectionCost(4).should.equals 2,'4'
-        s.getDirectionCost(5).should.equals 3,'5'
-        s.direction = 4 # 左下
-        s.getDirectionCost(0).should.equals 2,'0`'
-        s.getDirectionCost(1).should.equals 3,'1`'
-        s.getDirectionCost(2).should.equals 2,'2`'
-        s.getDirectionCost(3).should.equals 1,'3`'
-        s.getDirectionCost(4).should.equals 0,'4`'
-        s.getDirectionCost(5).should.equals 1,'5`'
-      it '方向転換のコスト計算4', ->
-        s = new nz.GridNode(0,0)
-        s.direction = 3 # 下
-        s.getDirectionCost(0).should.equals 3,'0'
-        s.getDirectionCost(1).should.equals 2,'1'
-        s.getDirectionCost(2).should.equals 1,'2'
-        s.getDirectionCost(3).should.equals 0,'3'
-        s.getDirectionCost(4).should.equals 1,'4'
-        s.getDirectionCost(5).should.equals 2,'5'
 
-      it '隣接ノードの方向1', ->
-        x = 2
-        y = 2
-        s = new nz.GridNode(x,y)
-        s.calcDirection(new nz.GridNode(x  ,y-1)).should.equals 0
-        s.calcDirection(new nz.GridNode(x  ,y+1)).should.equals 3
-        s.calcDirection(new nz.GridNode(x-1,y  )).should.equals 5
-        s.calcDirection(new nz.GridNode(x-1,y+1)).should.equals 4
-        s.calcDirection(new nz.GridNode(x+1,y  )).should.equals 1
-        s.calcDirection(new nz.GridNode(x+1,y+1)).should.equals 2
-
-        s = new nz.GridNode(0,0)
-        s.calcDirection(new nz.GridNode(1  ,1  )).should.equals 2
-      it '隣接ノードの方向2', ->
-        x = 3
-        y = 2
-        s = new nz.GridNode(x,y)
-        s.calcDirection(new nz.GridNode(x  ,y-1)).should.equals 0
-        s.calcDirection(new nz.GridNode(x  ,y+1)).should.equals 3
-        s.calcDirection(new nz.GridNode(x-1,y-1)).should.equals 5
-        s.calcDirection(new nz.GridNode(x-1,y  )).should.equals 4
-        s.calcDirection(new nz.GridNode(x+1,y-1)).should.equals 1
-        s.calcDirection(new nz.GridNode(x+1,y  )).should.equals 2
-
-    describe 'nz.GridNode', ->
+    describe 'nz.GridNodeWrap', ->
+      it 'mapx,mapy', ->
+        node = new nz.GridNode(8,9,weight:1)
+        wrap = new nz.GridNodeWrap(node)
+        wrap.mapx.should.equals 8
+        wrap.mapy.should.equals 9
       it '指定ノードへのコスト計算1', ->
         x = 2
         y = 2
-        s = new nz.GridNode(x  ,y  ,weight:1)
-        e = new nz.GridNode(x  ,y-1,weight:1)
-        s.direction = 0
-        direction = s.calcDirection(e)
-        direction.should.equals 0,'direction'
-        s.getDirectionCost(direction).should.equals 0,'direction cost'
+        s = new nz.GridNodeWrap(x  ,y  ,weight:1)
+        e = new nz.GridNodeWrap(x  ,y-1,weight:1)
         e.getCost(s).should.equals 1,'cost'
 
-    describe 'nz.Graph', ->
+    describe.skip 'nz.Graph', ->
       describe 'ヒューリスティック関数', ->
         it 'ヒューリスティック関数1', ->
           s = new nz.GridNode(5,5,weight:1)
@@ -255,7 +182,6 @@ describe 'AStarTest', () ->
           #graph.clear()
           return graph
         it 'Debug 1', ->
-          console.log 'Debug1'
           route_search_test(
             {x:3,y:12,dir:0}
             {x:7,y:9}
