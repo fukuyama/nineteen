@@ -71,10 +71,11 @@ describe 'AStarTest', () ->
         e = new nz.GridNodeWrap(x  ,y-1,weight:1)
         e.getCost(s).should.equals 1,'cost'
 
-    describe.skip 'nz.Graph', ->
+    describe 'nz.Graph', ->
       describe 'ヒューリスティック関数', ->
         it 'ヒューリスティック関数1', ->
-          s = new nz.GridNode(5,5,weight:1)
+          n = new nz.GridNode(5,5,weight:1)
+          s = new nz.GridNodeWrap n
           data = [
             [5,4,1]
             [6,4,2]
@@ -85,11 +86,13 @@ describe 'AStarTest', () ->
           ]
           s.direction = 0
           for d,i in data
-            e = new nz.GridNode(d[0],d[1],weight:1)
+            n = new nz.GridNode(d[0],d[1],weight:1)
+            e = new nz.GridNodeWrap n
             result = nz.Graph.heuristic(s,e)
             result.should.equals d[2], "a #{i}=#{d[2]}"
         it 'ヒューリスティック関数1-1', ->
-          s = new nz.GridNode(5,4,weight:1)
+          n = new nz.GridNode(5,4,weight:1)
+          s = new nz.GridNodeWrap n
           data = [
             [5,3,2]
             [6,3,1]
@@ -100,72 +103,91 @@ describe 'AStarTest', () ->
           ]
           s.direction = 1
           for d,i in data
-            e = new nz.GridNode(d[0],d[1],weight:1)
+            n = new nz.GridNode(d[0],d[1],weight:1)
+            e = new nz.GridNodeWrap n
             result = nz.Graph.heuristic(s,e)
             result.should.equals d[2], "a #{i}=#{d[2]}"
         it 'ヒューリスティック関数2', ->
-          s = new nz.GridNode(0,0,weight:1)
+          n = new nz.GridNode(0,0,weight:1)
+          s = new nz.GridNodeWrap n
           s.direction = 0
-          e = new nz.GridNode(0,1,weight:1)
+          n = new nz.GridNode(0,1,weight:1)
+          e = new nz.GridNodeWrap n
           result = nz.Graph.heuristic(s,e)
           result.should.equals 4
         it 'ヒューリスティック関数3', ->
-          s = new nz.GridNode(10,10,weight:1)
+          n = new nz.GridNode(10,10,weight:1)
+          s = new nz.GridNodeWrap n
           s.direction = 5
-          e = new nz.GridNode(9,10,weight:1)
+          n = new nz.GridNode(9,10,weight:1)
+          e = new nz.GridNodeWrap n
           result = nz.Graph.heuristic(s,e)
           result.should.equals 1
         it 'ヒューリスティック関数4', ->
-          s = new nz.GridNode(10,10,weight:1)
+          n = new nz.GridNode(10,10,weight:1)
+          s = new nz.GridNodeWrap n
           s.direction = 5
-          e = new nz.GridNode(4,7,weight:1)
+          n = new nz.GridNode(4,7,weight:1)
+          e = new nz.GridNodeWrap n
           result = nz.Graph.heuristic(s,e)
           result.should.equals 6
         it 'ヒューリスティック関数5', ->
-          s = new nz.GridNode(10,6,weight:1)
+          n = new nz.GridNode(10,6,weight:1)
+          s = new nz.GridNodeWrap n
           s.direction = 5
-          e = new nz.GridNode(7,7,weight:1)
+          n = new nz.GridNode(7,7,weight:1)
+          e = new nz.GridNodeWrap n
           result = nz.Graph.heuristic(s,e)
           result.should.equals 4
         it 'ヒューリスティック関数5-1', ->
-          s = new nz.GridNode(9,6,weight:1)
+          n = new nz.GridNode(9,6,weight:1)
+          s = new nz.GridNodeWrap n
           s.direction = 5
-          e = new nz.GridNode(7,7,weight:1)
+          n = new nz.GridNode(7,7,weight:1)
+          e = new nz.GridNodeWrap n
           result = nz.Graph.heuristic(s,e)
           result.should.equals 3
         it 'ヒューリスティック関数5-2', ->
-          s = new nz.GridNode(9,7,weight:1)
+          n = new nz.GridNode(9,7,weight:1)
+          s = new nz.GridNodeWrap n
           s.direction = 5
-          e = new nz.GridNode(7,7,weight:1)
-          result = s.calcDirection(e)
+          n = new nz.GridNode(7,7,weight:1)
+          e = new nz.GridNodeWrap n
+          result = s.node.calcDirection(e)
           result.should.equals 4,'calcDirection'
           result = nz.Graph.heuristic(s,e)
           result.should.equals 3,'heuristic'
         it 'ヒューリスティック関数6', ->
-          s = new nz.GridNode(13,8,weight:1)
+          n = new nz.GridNode(13,8,weight:1)
+          s = new nz.GridNodeWrap n
           s.direction = 5
-          e = new nz.GridNode(7,7,weight:1)
+          n = new nz.GridNode(7,7,weight:1)
+          e = new nz.GridNodeWrap n
           result = nz.Graph.heuristic(s,e)
           result.should.equals 7
         it 'ヒューリスティック関数7', ->
-          s = new nz.GridNode(3,9,weight:1)
+          n = new nz.GridNode(3,9,weight:1)
+          s = new nz.GridNodeWrap n
           s.direction = 2
-          e = new nz.GridNode(7,6,weight:1)
+          n = new nz.GridNode(7,6,weight:1)
+          e = new nz.GridNodeWrap n
           result = nz.Graph.heuristic(s,e)
           result.should.equals 6
         it 'ヒューリスティック関数8', ->
-          s = new nz.GridNode(3,8,weight:1)
+          n = new nz.GridNode(3,8,weight:1)
+          s = new nz.GridNodeWrap n
           s.direction = 2
-          e = new nz.GridNode(7,5,weight:1)
+          n = new nz.GridNode(7,5,weight:1)
+          e = new nz.GridNodeWrap n
           result = nz.Graph.heuristic(s,e)
           result.should.equals 6
 
-      describe '隣接ノード', ->
+      describe.skip '隣接ノード', ->
         it '角', ->
           graph = new nz.Graph(testdata)
           result = graph.neighbors graph.grid[0][0]
           result.length.should.equals 3, 'length'
-      describe 'ルート検索', ->
+      describe.skip 'ルート検索', ->
         route_search_test = (s,e,r,graph,op={}) ->
           graph = new nz.Graph(testdata) unless graph?
           result = graph.searchRoute(s.dir,s.x,s.y,e.x,e.y,op)

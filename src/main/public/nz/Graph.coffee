@@ -143,13 +143,13 @@ class nz.Graph
       @options = undefined
     return route
 
-nz.Graph.heuristic = (node1,node2) ->
-  hx = Math.abs(node1.mapx - node2.mapx)
-  hy = Math.abs(node1.mapy - node2.mapy)
+nz.Graph.heuristic = (wrap1,wrap2) ->
+  hx = Math.abs(wrap1.mapx - wrap2.mapx)
+  hy = Math.abs(wrap1.mapy - wrap2.mapy)
   #hr = Math.floor(hx / 2)
   hr = Math.ceil(hx / 2)
-  direction = node1.calcDirectionTo(node2)
-  hd = node1.getDirectionCost(direction)
+  direction = wrap1.node.calcDirectionTo(wrap2)
+  hd = nz.utils.calcDirectionCost(wrap1.direction,direction)
   if hy == hr
     hy = 0
   else if hy < hr
