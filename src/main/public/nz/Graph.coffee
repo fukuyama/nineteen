@@ -27,28 +27,52 @@ class nz.Graph
     @clear()
 
   clear: ->
+    @cleanWrap()
     for node in @nodes
       node.clean()
-      astar.cleanNode(node)
-    @dirtyNodes = []
+      # astar.cleanNode(node)
+    #@dirtyNodes = []
 
   cleanDirty: ->
-    for node in @dirtyNodes
-      node.clean()
-      astar.cleanNode(node)
-    @dirtyNodes = []
+    #for node in @dirtyNodes
+    #  node.clean()
+    #  astar.cleanNode(node)
+    #@dirtyNodes = []
 
   markDirty: (node) ->
-    if @dirtyNodes.indexOf(node) < 0
-      @dirtyNodes.push node
+    #if @dirtyNodes.indexOf(node) < 0
+    #  @dirtyNodes.push node
+
+  cleanWrap: ->
+    @wrapNodes = {}
+
+  createWrap: (x,y,d) ->
+    key = "#{x}-#{y}"
+    if @wrapNodes[key]?
+      return @wrapNodes[key]
+    unless d?
+      key = "#{x}-#{y}"
+      unless @wrapNodes[key]?
+        @wrapNodes[key] = new nz.GridNodeWrap(@grid[x][y])
+        astar.cleanNode(@wrapNodes[key])
+    else
+      key = "#{x}-#{y}-#{d}"
+      unless @wrapNodes[key]?
+        @wrapNodes[key] = new nz.GridNodeWrap(@grid[x][y],d)
+        astar.cleanNode(@wrapNodes[key])
+    @wrapNodes[key]
+
 
   _addWrap: (ret,x,y,d) ->
-    ret.push(new nz.GridNodeWrap(@grid[x][y],d)) if(@grid[x]?[y]?)
+    if(@grid[x]?[y]?)
+      ret.push @createWrap(x,y,d)
+    return
 
   neighbors: (wrap) ->
     ret = []
     x = wrap.mapx
     y = wrap.mapy
+    #console.log "neighbors #{x},#{y},#{wrap.direction}"
 
     if x % 2 == 0
       switch wrap.direction
@@ -116,9 +140,11 @@ class nz.Graph
     return graphString.join("\n")
 
   searchRoute: (sd,sx,sy,ex,ey,op={closest:false}) ->
+    if sx == 6 and sy == 6 and ex == 6 and ey == 5
+      console.log 'debug'
     route = []
-    start = new nz.GridNodeWrap(@grid[sx][sy],sd)
-    end   = new nz.GridNodeWrap(@grid[ex][ey])
+    start = @createWrap sx,sy,sd
+    end   = @createWrap ex,ey
     # 壁じゃなかったら探索
     if (not end.isWall()) or op.closest
       op.heuristic = nz.Graph.heuristic unless op.heuristic?
@@ -130,17 +156,20 @@ class nz.Graph
         @options = op.graph
 
       result = astar.search(@, start, end, op)
+      pd = sd
       for node in result
         route.push {
           mapx: node.mapx
           mapy: node.mapy
-          direction: node.direction
+          direction: if node.direction < 0 then pd else node.direction
           cost: node.g
         }
+        pd = node.direction
       if op.grid?
         for g in op.grid
           @grid[g.mapx][g.mapy].options = undefined
       @options = undefined
+    @cleanWrap()
     return route
 
 nz.Graph.heuristic = (wrap1,wrap2) ->

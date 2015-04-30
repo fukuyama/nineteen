@@ -28,8 +28,8 @@ class nz.Utils
       options.grid = []
     for c in characters
       options.grid.push {
-        x: c.mapx
-        y: c.mapy
+        mapx: c.mapx
+        mapy: c.mapy
         options: {
           isWall: true
         }

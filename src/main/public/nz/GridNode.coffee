@@ -20,12 +20,10 @@ class nz.GridNodeWrap
   * @param wrap {GridNodeWrap} 移動元ノード
   ###
   getCost: (wrap) ->
+    cost = @node.weight
     if @x is wrap.mapx and @y is wrap.mapy
       # 方向転換のコスト（１づつ方向転換するからコストは1）
       cost = 1
-    else
-      # 違う場所の場合は、基本コストのみ
-      cost = @node.weight
     return cost
   isWall: -> @node.isWall()
 

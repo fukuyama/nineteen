@@ -73,18 +73,6 @@ tm.define 'nz.SpriteStatus',
           color:       'blue'
           bgColor:     @bgColor
           borderColor: gaugebBrderColor
-        mpGauge:
-          type:        'tm.ui.FlatGauge'
-          x:           8
-          y:           40
-          width:       @width - 16
-          height:      4
-          originX:     @originX
-          originY:     @originY
-          borderWidth: 1
-          color:       'green'
-          bgColor:     @bgColor
-          borderColor: gaugebBrderColor
         spGauge:
           type:        'tm.ui.FlatGauge'
           x:           8
@@ -97,21 +85,37 @@ tm.define 'nz.SpriteStatus',
           color:       'Cyan'
           bgColor:     @bgColor
           borderColor: gaugebBrderColor
+        apGauge:
+          type:          'tm.ui.GlossyGauge'
+          x:             8
+          y:             40
+          width:         @width - 16
+          height:        4
+          originX:       @originX
+          originY:       @originY
+          borderWidth:   1
+          color:         'red'
+          bgColor:       @bgColor
+          borderColor:   gaugebBrderColor
+          animationFlag: false
+          _maxValue:     @character.ap
 
-    
     #
     @on 'refreshStatus', (e) ->
       {
         turn
       } = e
-      text = '行動: '
+      ap = @character.ap - @character.getActionCost(turn)
+      text = 'Action: '
       if @detail
         actions = []
         actions.push 'Attack' if @character.isAttackAction(turn)
         actions.push 'Shot'   if @character.isShotAction(turn)
         actions.push 'Move'   if @character.isMoveAction(turn)
         text += actions.join(' & ')
-        text += " (#{@character.ap - @character.getActionCost(turn)})"
+        text += " (#{ap})"
       else
-        text += '？？？'
+        text += '???'
       @action.text = text
+      @apGauge.value = ap
+      # / @character.ap * 100

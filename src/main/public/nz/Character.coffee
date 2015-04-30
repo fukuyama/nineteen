@@ -122,9 +122,10 @@ tm.define 'nz.Character',
       if direction != r.direction
         @addRotateCommand i, direction, DIRECTIONS[direction].rotateIndex[r.direction]
         direction = r.direction
-      r.speed = @move.speed
-      command.actions.push
-        move: r
+      else
+        r.speed = @move.speed
+        command.actions.push
+          move: r
       cost = r.cost
     command.cost = prev + cost
     return @

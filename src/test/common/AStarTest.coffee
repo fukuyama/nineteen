@@ -182,78 +182,84 @@ describe 'AStarTest', () ->
           result = nz.Graph.heuristic(s,e)
           result.should.equals 6
 
-      describe.skip '隣接ノード', ->
+      describe '隣接ノード', ->
         it '角', ->
           graph = new nz.Graph(testdata)
-          result = graph.neighbors graph.grid[0][0]
-          result.length.should.equals 3, 'length'
-      describe.skip 'ルート検索', ->
+          result = graph.neighbors new nz.GridNodeWrap(graph.grid[0][0],0)
+          result.length.should.equals 2, 'length'
+          result[0].mapx.should.equals 0
+          result[0].mapy.should.equals 0
+          result[0].direction.should.equals 5
+          result[1].mapx.should.equals 0
+          result[1].mapy.should.equals 0
+          result[1].direction.should.equals 1
+      describe 'ルート検索', ->
         route_search_test = (s,e,r,graph,op={}) ->
           graph = new nz.Graph(testdata) unless graph?
           result = graph.searchRoute(s.dir,s.x,s.y,e.x,e.y,op)
-          #start = graph.grid[s.x][s.y]
-          end = graph.grid[e.x][e.y]
-          #start.direction = s.dir
-          #result = astar.search(graph, start, end, options)
           result.length.should.equals r.len,'length'
           for pos,i in r.route
             chkmapxy result[i],pos[0],pos[1],i
+            result[i].direction.should.equals pos[2], 'r dir' if pos[2]?
             result[i].cost.should.equals r.costs[i],'costs' if r.costs?[i]?
-          end.g.should.equals r.cost,'cost'
-          end.direction.should.equals r.dir,'direction'
-          #graph.clear()
+          if result.length != 0
+            end = result[r.len - 1]
+            end.cost.should.equals r.cost, 'end cost'
+            end.direction.should.equals r.dir, 'end dir'
           return graph
         it 'Debug 1', ->
           route_search_test(
             {x:3,y:12,dir:0}
             {x:7,y:9}
             {
-              len: 5
+              len: 6
               cost: 6
               dir: 1
+              costs: [1,2,3,4,5,6]
               route: [
-                [3,11]
-                [4,10]
-                [5,10]
-                [6,9]
-                [7,9]
+                [3,11,0]
+                [3,11,1]
+                [4,10,1]
+                [5,10,1]
+                [6,9,1]
+                [7,9,1]
               ]
             }
             undefined
             {closest:true}
           )
         it 'ほぼ真横の移動', ->
-          # まだうまく行かない 2015/02/14
           route_search_test(
             {x:13,y:8,dir:5}
             {x:7,y:7}
             {
-              len: 6
+              len: 7
               cost: 7
               dir: 4
               route: [
-                [12,7]
-                [11,7]
-                [10,6]
-                [9,6]
-                [8,6]
-                [7,7]
+                [12,7,5]
+                [11,7,5]
+                [10,6,5]
+                [9,6,5]
+                [9,6,4]
+                [8,6,4]
+                [7,7,4]
               ]
             }
           )
         it 'ほぼ真横の移動切り出し', ->
-          # まだうまく行かない 2015/02/14
           route_search_test(
             {x:10,y:6,dir:5}
             {x:7,y:7}
             {
-              len: 3
+              len: 4
               cost: 4
               dir: 4
               route: [
-                [9,6]
-                [8,6]
-                [7,7]
+                [9,6,5]
+                [9,6,4]
+                [8,6,4]
+                [7,7,4]
               ]
             }
           )
@@ -267,11 +273,11 @@ describe 'AStarTest', () ->
               costs: [1,2,3,4,5]
               dir: 0
               route: [
-                [10,9]
-                [10,8]
-                [10,7]
-                [10,6]
-                [10,5]
+                [10,9,0]
+                [10,8,0]
+                [10,7,0]
+                [10,6,0]
+                [10,5,0]
               ]
             }
           )
@@ -280,17 +286,18 @@ describe 'AStarTest', () ->
             {x:10,y:10,dir:0}
             {x:9,y:5}
             {
-              len: 6
+              len: 7
               cost: 7
-              costs: [1,2,3,4,5,7]
+              costs: [1,2,3,4,5,6,7]
               dir: 5
               route: [
-                [10,9]
-                [10,8]
-                [10,7]
-                [10,6]
-                [10,5]
-                [9,5]
+                [10,9,0]
+                [10,8,0]
+                [10,7,0]
+                [10,6,0]
+                [10,5,0]
+                [10,5,5]
+                [9,5,5]
               ]
             }
           )
@@ -299,17 +306,18 @@ describe 'AStarTest', () ->
             {x:10,y:10,dir:0}
             {x:9,y:4}
             {
-              len: 7
+              len: 8
               cost: 8
               dir: 5
               route: [
-                [10,9]
-                [10,8]
-                [10,7]
-                [10,6]
-                [10,5]
-                [10,4]
-                [9,4]
+                [10,9,0]
+                [10,8,0]
+                [10,7,0]
+                [10,6,0]
+                [10,5,0]
+                [10,4,0]
+                [10,4,5]
+                [9,4,5]
               ]
             }
           )
@@ -322,7 +330,7 @@ describe 'AStarTest', () ->
               cost: 1
               dir: 3
               route: [
-                [0,1]
+                [0,1,3]
               ]
             }
           )
@@ -334,8 +342,8 @@ describe 'AStarTest', () ->
               cost: 2
               dir: 3
               route: [
-                [0,1]
-                [0,2]
+                [0,1,3]
+                [0,2,3]
               ]
             }
             graph
@@ -345,11 +353,12 @@ describe 'AStarTest', () ->
             {x:0,y:0,dir:3}
             {x:1,y:1}
             {
-              len: 1
+              len: 2
               cost: 2
               dir: 2
               route: [
-                [1,1]
+                [0,0,2]
+                [1,1,2]
               ]
             }
           )
@@ -357,12 +366,13 @@ describe 'AStarTest', () ->
             {x:0,y:0,dir:3}
             {x:1,y:2}
             {
-              len: 2
+              len: 3
               cost: 3
               dir: 2
               route: [
-                [0,1]
-                [1,2]
+                [0,1,3]
+                [0,1,2]
+                [1,2,2]
               ]
             }
             graph
@@ -371,12 +381,13 @@ describe 'AStarTest', () ->
             {x:0,y:0,dir:2}
             {x:1,y:2}
             {
-              len: 2
+              len: 3
               cost: 3
               dir: 3
               route: [
-                [1,1]
-                [1,2]
+                [1,1,2]
+                [1,1,3]
+                [1,2,3]
               ]
             }
             graph
@@ -385,12 +396,13 @@ describe 'AStarTest', () ->
             {x:0,y:0,dir:2}
             {x:1,y:2}
             {
-              len: 2
+              len: 3
               cost: 3
               dir: 3
               route: [
-                [1,1]
-                [1,2]
+                [1,1,2]
+                [1,1,3]
+                [1,2,3]
               ]
             }
             graph
@@ -403,7 +415,7 @@ describe 'AStarTest', () ->
               cost: 1
               dir: 2
               route: [
-                [2,0]
+                [2,0,2]
               ]
             }
             graph
@@ -412,11 +424,12 @@ describe 'AStarTest', () ->
             {x:1,y:0,dir:3}
             {x:2,y:0}
             {
-              len: 1
+              len: 2
               cost: 2
               dir: 2
               route: [
-                [2,0]
+                [1,0,2]
+                [2,0,2]
               ]
             }
             graph
@@ -425,12 +438,13 @@ describe 'AStarTest', () ->
             {x:1,y:0,dir:3}
             {x:2,y:1}
             {
-              len: 2
+              len: 3
               cost: 3
               dir: 2
               route: [
-                [1,1]
-                [2,1]
+                [1,1,3]
+                [1,1,2]
+                [2,1,2]
               ]
             }
             graph
@@ -439,12 +453,13 @@ describe 'AStarTest', () ->
             {x:1,y:0,dir:2}
             {x:2,y:1}
             {
-              len: 2
+              len: 3
               cost: 3
               dir: 3
               route: [
-                [2,0]
-                [2,1]
+                [2,0,2]
+                [2,0,3]
+                [2,1,3]
               ]
             }
             graph
@@ -476,4 +491,34 @@ describe 'AStarTest', () ->
             }
             graph
           )
-          graph.dirtyNodes.length.should.equals 0
+        it '真後ろの１', ->
+          route_search_test(
+            {x:4,y:4,dir:0}
+            {x:4,y:5}
+            {
+              len: 4
+              cost: 4
+              dir: 3
+              route: [
+                [4,4,5]
+                [4,4,4]
+                [4,4,3]
+                [4,5,3]
+              ]
+            }
+          )
+          route_search_test(
+            {x:6,y:6,dir:3}
+            {x:6,y:5}
+            {
+              len: 4
+              cost: 4
+              dir: 0
+              route: [
+                [6,6,2]
+                [6,6,1]
+                [6,6,0]
+                [6,5,0]
+              ]
+            }
+          )
