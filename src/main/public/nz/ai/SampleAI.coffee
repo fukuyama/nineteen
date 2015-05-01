@@ -53,6 +53,29 @@ class nz.ai.SampleAI extends nz.ai.Base
           return false
       }
       {
+        # 距離が１以下の場合
+        cond: (param) ->
+          {
+            distance
+          } = param
+          return distance <= 1
+        # 移動攻撃して１歩下がる
+        setup: (param) ->
+          ###
+          {
+            character
+            characters
+            turn
+            graph
+            target
+          } = param
+          route = @searchRoute(graph,character,target,characters)
+          character.setAttackCommand(turn)
+          character.addMoveCommand(turn,route)
+          ###
+          return true
+      }
+      {
         # 距離が４以下の場合
         cond: (param) ->
           {
@@ -74,7 +97,7 @@ class nz.ai.SampleAI extends nz.ai.Base
           return true
       }
       {
-        # 距離が６以下の場合
+        # 距離が６以下で射撃範囲に敵がいる場合
         cond: (param) ->
           {
             distance
@@ -119,21 +142,21 @@ class nz.ai.SampleAI extends nz.ai.Base
     ]
 
   setupBattlePosition: (param) ->
-    console.log 'setupBattlePosition'
     {
       character
       members
       area
     } = param
+    console.log 'setupBattlePosition ' + character.name
     i = members.indexOf character
     return area[i]
 
   setupAction: (param) ->
-    console.log 'setupAction'
     {
       character
       characters
     } = param
+    console.log 'setupAction ' + character.name
     friends = []
     targets = []
     for c in characters when c.name != character.name

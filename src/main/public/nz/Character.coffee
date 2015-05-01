@@ -124,6 +124,8 @@ tm.define 'nz.Character',
         direction = r.direction
       else
         r.speed = @move.speed
+        if r.back
+          r.speed *= 2
         command.actions.push
           move: r
       cost = r.cost

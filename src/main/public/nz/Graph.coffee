@@ -72,7 +72,7 @@ class nz.Graph
     ret = []
     x = wrap.mapx
     y = wrap.mapy
-    #console.log "neighbors #{x},#{y},#{wrap.direction}"
+    # console.log "neighbors #{x},#{y},#{wrap.direction}"
 
     if x % 2 == 0
       switch wrap.direction
@@ -80,52 +80,64 @@ class nz.Graph
           @_addWrap ret,x,y-1,wrap.direction
           @_addWrap ret,x,y,5
           @_addWrap ret,x,y,1
+          @_addWrap ret,x,y+1,wrap.direction
         when 1
           @_addWrap ret,x+1,y,wrap.direction
           @_addWrap ret,x,y,0
           @_addWrap ret,x,y,2
+          @_addWrap ret,x-1,y+1,wrap.direction
         when 2
           @_addWrap ret,x+1,y+1,wrap.direction
           @_addWrap ret,x,y,1
           @_addWrap ret,x,y,3
+          @_addWrap ret,x-1,y,wrap.direction
         when 3
           @_addWrap ret,x,y+1,wrap.direction
           @_addWrap ret,x,y,2
           @_addWrap ret,x,y,4
+          @_addWrap ret,x,y-1,wrap.direction
         when 4
           @_addWrap ret,x-1,y+1,wrap.direction
           @_addWrap ret,x,y,3
           @_addWrap ret,x,y,5
+          @_addWrap ret,x+1,y,wrap.direction
         when 5
           @_addWrap ret,x-1,y,wrap.direction
           @_addWrap ret,x,y,4
           @_addWrap ret,x,y,0
+          @_addWrap ret,x+1,y+1,wrap.direction
     else
       switch wrap.direction
         when 0
           @_addWrap ret,x,y-1,wrap.direction
           @_addWrap ret,x,y,5
           @_addWrap ret,x,y,1
+          @_addWrap ret,x,y+1,wrap.direction
         when 1
           @_addWrap ret,x+1,y-1,wrap.direction
           @_addWrap ret,x,y,0
           @_addWrap ret,x,y,2
+          @_addWrap ret,x-1,y,wrap.direction
         when 2
           @_addWrap ret,x+1,y,wrap.direction
           @_addWrap ret,x,y,1
           @_addWrap ret,x,y,3
+          @_addWrap ret,x-1,y-1,wrap.direction
         when 3
           @_addWrap ret,x,y+1,wrap.direction
           @_addWrap ret,x,y,2
           @_addWrap ret,x,y,4
+          @_addWrap ret,x,y-1,wrap.direction
         when 4
           @_addWrap ret,x-1,y,wrap.direction
           @_addWrap ret,x,y,3
           @_addWrap ret,x,y,5
+          @_addWrap ret,x+1,y-1,wrap.direction
         when 5
           @_addWrap ret,x-1,y-1,wrap.direction
           @_addWrap ret,x,y,4
           @_addWrap ret,x,y,0
+          @_addWrap ret,x+1,y,wrap.direction
 
     # nz なノードを返す（６こ）
     return ret
@@ -140,8 +152,6 @@ class nz.Graph
     return graphString.join("\n")
 
   searchRoute: (sd,sx,sy,ex,ey,op={closest:false}) ->
-    if sx == 6 and sy == 6 and ex == 6 and ey == 5
-      console.log 'debug'
     route = []
     start = @createWrap sx,sy,sd
     end   = @createWrap ex,ey
@@ -157,14 +167,15 @@ class nz.Graph
 
       result = astar.search(@, start, end, op)
       pd = sd
-      for node in result
+      for wrap in result
         route.push {
-          mapx: node.mapx
-          mapy: node.mapy
-          direction: if node.direction < 0 then pd else node.direction
-          cost: node.g
+          mapx: wrap.mapx
+          mapy: wrap.mapy
+          cost: wrap.g
+          back: wrap.back
+          direction: if wrap.direction < 0 then pd else wrap.direction
         }
-        pd = node.direction
+        pd = wrap.direction
       if op.grid?
         for g in op.grid
           @grid[g.mapx][g.mapy].options = undefined
@@ -188,5 +199,5 @@ nz.Graph.heuristic = (wrap1,wrap2) ->
         hd = 0
   else
     hy -= hr
-  #console.log "#{hx} #{hy} #{hd} #{direction}"
+  #console.log "#{wrap1.mapx} #{wrap1.mapy} #{wrap2.mapx} #{wrap2.mapy} #{hx} #{hy} #{hd} #{direction}"
   hx + hy + hd

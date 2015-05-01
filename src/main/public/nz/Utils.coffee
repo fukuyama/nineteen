@@ -11,6 +11,10 @@ DIRECTIONS = nz.system.character.directions
 
 class nz.Utils
 
+  ###* 方向転換にかかるコストを計算
+  * @param {number} direction1 方向1
+  * @param {number} direction2 方向2
+  ###
   calcDirectionCost: (direction1,direction2) ->
     Math.abs(3 - Math.abs((direction2 - direction1 - 3) % 6))
 
@@ -26,7 +30,7 @@ class nz.Utils
   searchRoute: (graph, source, target, characters, options = {})->
     unless options.grid?
       options.grid = []
-    for c in characters
+    for c in characters when source.mapx != c.mapx or source.mapy != c.mapy
       options.grid.push {
         mapx: c.mapx
         mapy: c.mapy

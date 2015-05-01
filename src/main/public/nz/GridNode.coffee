@@ -12,6 +12,7 @@ class nz.GridNodeWrap
   constructor: (node, direction=-1) ->
     @node      = node
     @direction = direction
+    @back      = false
 
   clean: -> @node.clean()
 
@@ -21,9 +22,12 @@ class nz.GridNodeWrap
   ###
   getCost: (wrap) ->
     cost = @node.weight
-    if @x is wrap.mapx and @y is wrap.mapy
+    if @mapx is wrap.mapx and @mapy is wrap.mapy
       # 方向転換のコスト（１づつ方向転換するからコストは1）
       cost = 1
+    else if nz.utils.direction(@,wrap) is wrap.direction
+      cost += 1
+      @back = true
     return cost
   isWall: -> @node.isWall()
 

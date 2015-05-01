@@ -20,6 +20,21 @@ describe 'AStarTest', () ->
     node.mapx.should.equals x,"x #{i}"
     node.mapy.should.equals y,"y #{i}"
     return
+  route_search_test = (s,e,r,graph,op={}) ->
+    graph = new nz.Graph(testdata) unless graph?
+    result = graph.searchRoute(s.dir,s.x,s.y,e.x,e.y,op)
+    result.length.should.equals r.len,'length'
+    for pos,i in r.route
+      [mapx,mapy,dir,back] = pos
+      chkmapxy result[i],mapx,mapy,i
+      result[i].direction.should.equals dir, 'r dir' if dir?
+      result[i].back.should.equals back, 'r back' if back?
+      result[i].cost.should.equals r.costs[i],'costs' if r.costs?[i]?
+    if result.length != 0
+      end = result[r.len - 1]
+      end.cost.should.equals r.cost, 'end cost'
+      end.direction.should.equals r.dir, 'end dir'
+    return graph
 
   nz.astar = astar
   options =
@@ -186,27 +201,17 @@ describe 'AStarTest', () ->
         it '角', ->
           graph = new nz.Graph(testdata)
           result = graph.neighbors new nz.GridNodeWrap(graph.grid[0][0],0)
-          result.length.should.equals 2, 'length'
+          result.length.should.equals 3, 'length'
           result[0].mapx.should.equals 0
           result[0].mapy.should.equals 0
           result[0].direction.should.equals 5
           result[1].mapx.should.equals 0
           result[1].mapy.should.equals 0
           result[1].direction.should.equals 1
+          result[2].mapx.should.equals 0
+          result[2].mapy.should.equals 1
+          result[2].direction.should.equals 0
       describe 'ルート検索', ->
-        route_search_test = (s,e,r,graph,op={}) ->
-          graph = new nz.Graph(testdata) unless graph?
-          result = graph.searchRoute(s.dir,s.x,s.y,e.x,e.y,op)
-          result.length.should.equals r.len,'length'
-          for pos,i in r.route
-            chkmapxy result[i],pos[0],pos[1],i
-            result[i].direction.should.equals pos[2], 'r dir' if pos[2]?
-            result[i].cost.should.equals r.costs[i],'costs' if r.costs?[i]?
-          if result.length != 0
-            end = result[r.len - 1]
-            end.cost.should.equals r.cost, 'end cost'
-            end.direction.should.equals r.dir, 'end dir'
-          return graph
         it 'Debug 1', ->
           route_search_test(
             {x:3,y:12,dir:0}
@@ -217,12 +222,12 @@ describe 'AStarTest', () ->
               dir: 1
               costs: [1,2,3,4,5,6]
               route: [
-                [3,11,0]
-                [3,11,1]
-                [4,10,1]
-                [5,10,1]
-                [6,9,1]
-                [7,9,1]
+                [3,11,0,false]
+                [3,11,1,false]
+                [4,10,1,false]
+                [5,10,1,false]
+                [6,9,1,false]
+                [7,9,1,false]
               ]
             }
             undefined
@@ -491,34 +496,62 @@ describe 'AStarTest', () ->
             }
             graph
           )
-        it '真後ろの１', ->
+        it '真後ろの1-1', ->
           route_search_test(
             {x:4,y:4,dir:0}
             {x:4,y:5}
             {
-              len: 4
-              cost: 4
-              dir: 3
+              len: 1
+              cost: 2
+              dir: 0
               route: [
-                [4,4,5]
-                [4,4,4]
-                [4,4,3]
-                [4,5,3]
+                [4,5,0,true]
               ]
             }
           )
+        it '真後ろの1-1', ->
           route_search_test(
             {x:6,y:6,dir:3}
             {x:6,y:5}
             {
-              len: 4
+              len: 1
+              cost: 2
+              dir: 3
+              route: [
+                [6,5,3,true]
+              ]
+            }
+          )
+        it '真後ろの2-1', ->
+          route_search_test(
+            {x:4,y:4,dir:0}
+            {x:4,y:6}
+            {
+              len: 2
               cost: 4
               dir: 0
               route: [
-                [6,6,2]
-                [6,6,1]
-                [6,6,0]
-                [6,5,0]
+                [4,5,0,true]
+                [4,6,0,true]
+              ]
+            }
+          )
+        it '真後ろの3-1 バックしないほうが早くなる', ->
+          # 実際には同じぽいけど…
+          route_search_test(
+            {x:4,y:4,dir:0}
+            {x:4,y:7}
+            {
+              len: 6
+              cost: 6
+              dir: 3
+              route: [
+                [4,4,5,false]
+                [4,4,4,false]
+                [4,4,3,false]
+                [4,5,3,false]
+                [4,6,3,false]
+                [4,7,3,false]
               ]
             }
           )
