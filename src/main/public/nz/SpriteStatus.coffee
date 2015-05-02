@@ -62,7 +62,7 @@ tm.define 'nz.SpriteStatus',
           originY:   @originY
           fontSize:  8
         hpGauge:
-          type:        'tm.ui.FlatGauge'
+          type:        'tm.ui.GlossyGauge'
           x:           8
           y:           32
           width:       @width - 16
@@ -73,8 +73,9 @@ tm.define 'nz.SpriteStatus',
           color:       'blue'
           bgColor:     @bgColor
           borderColor: gaugebBrderColor
+          _maxValue:   @character.hp
         spGauge:
-          type:        'tm.ui.FlatGauge'
+          type:        'tm.ui.GlossyGauge'
           x:           8
           y:           48
           width:       @width - 16
@@ -118,4 +119,5 @@ tm.define 'nz.SpriteStatus',
         text += '???'
       @action.text = text
       @apGauge.value = ap
+      @hpGauge.value = @character.hp
       # / @character.ap * 100

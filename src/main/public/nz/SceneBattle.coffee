@@ -330,6 +330,7 @@ tm.define 'nz.SceneBattle',
   _resetAction: ->
     @selectCharacter.clearAction()
     @selectCharacterSprite.clearGhost()
+    @refreshStatus()
     return
 
 nz.SceneBattle.prototype.getter 'characterSprites', -> @mapSprite.characterSprites
