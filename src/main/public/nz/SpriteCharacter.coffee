@@ -303,4 +303,5 @@ tm.define 'nz.SpriteCharacter',
 
   _hitWeapon: (attacker) ->
     console.log "hit weapon #{@character.name}"
+    @character.hp -= @character.armor.defense - attacker.weapon.attack
     return

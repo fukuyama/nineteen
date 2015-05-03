@@ -73,7 +73,7 @@ tm.define 'nz.SpriteStatus',
           color:       'blue'
           bgColor:     @bgColor
           borderColor: gaugebBrderColor
-          _maxValue:   @character.hp
+          _maxValue:   @character.maxhp
         spGauge:
           type:        'tm.ui.GlossyGauge'
           x:           8

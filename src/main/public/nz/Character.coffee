@@ -20,6 +20,7 @@ tm.define 'nz.Character',
       ai:
         name: 'SampleAI'
         src: 'nz/ai/SampleAI.js'
+      maxhp: 10
       hp: 10
       sp: 10
       ap: 6
@@ -28,7 +29,10 @@ tm.define 'nz.Character',
       direction: 0
       move:
         speed: 300
+      armor:
+        defense: 5
       weapon:
+        attack: 10
         height: 48
         width: 12
         range:
