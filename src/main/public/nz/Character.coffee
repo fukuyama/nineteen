@@ -20,9 +20,9 @@ tm.define 'nz.Character',
       ai:
         name: 'SampleAI'
         src: 'nz/ai/SampleAI.js'
-      maxhp: 10
-      hp: 10
-      sp: 10
+      maxhp: 100
+      hp: 100
+      sp: 100
       ap: 6
       mapx: -1
       mapy: -1
@@ -30,9 +30,9 @@ tm.define 'nz.Character',
       move:
         speed: 300
       armor:
-        defense: 5
+        defense: 20
       weapon:
-        attack: 10
+        damage: 50
         height: 48
         width: 12
         range:
@@ -41,6 +41,7 @@ tm.define 'nz.Character',
           anticlockwise: false
         speed: 600
       shot:
+        damage: 30
         range:
           start: 0
           end: -120

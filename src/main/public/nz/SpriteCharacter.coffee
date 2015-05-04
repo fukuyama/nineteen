@@ -299,9 +299,10 @@ tm.define 'nz.SpriteCharacter',
 
   _hitBallet: (shooter,ballet) ->
     console.log "hit ballet #{@character.name}"
+    @character.hp -= @character.armor.defense - attacker.shot.damage
     return
 
   _hitWeapon: (attacker) ->
     console.log "hit weapon #{@character.name}"
-    @character.hp -= @character.armor.defense - attacker.weapon.attack
+    @character.hp -= @character.armor.defense - attacker.weapon.damage
     return
