@@ -17,6 +17,44 @@ class nz.ai.Base
 
   checkDirectionRange: nz.utils.checkDirectionRange
 
+  backPosition: (graph,character,characters) ->
+    ret =
+      mapx: character.mapx
+      mapy: character.mapy
+    if character.mapx % 2 == 0
+      switch character.direction
+        when 0
+          ret.mapy += 1
+        when 1
+          ret.mapx -= 1
+          ret.mapy += 1
+        when 2
+          ret.mapx -= 1
+        when 3
+          ret.mapy -= 1
+        when 4
+          ret.mapx += 1
+        when 5
+          ret.mapx += 1
+          ret.mapy += 1
+    else
+      switch character.direction
+        when 0
+          ret.mapy += 1
+        when 1
+          ret.mapx -= 1
+        when 2
+          ret.mapx -= 1
+          ret.mapy -= 1
+        when 3
+          ret.mapy -= 1
+        when 4
+          ret.mapx += 1
+          ret.mapy -= 1
+        when 5
+          ret.mapx += 1
+    return ret
+
   findNearTarget: (c,targets) ->
     result = {
       target: null
@@ -61,7 +99,6 @@ class nz.ai.SampleAI extends nz.ai.Base
           return distance <= 1
         # 移動攻撃して１歩下がる
         setup: (param) ->
-          ###
           {
             character
             characters
@@ -69,10 +106,10 @@ class nz.ai.SampleAI extends nz.ai.Base
             graph
             target
           } = param
-          route = @searchRoute(graph,character,target,characters)
+          back = @backPosition(graph,character,characters)
+          route = @searchRoute(graph,character,back,characters)
           character.setAttackCommand(turn)
           character.addMoveCommand(turn,route)
-          ###
           return true
       }
       {

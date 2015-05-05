@@ -21,11 +21,12 @@ class nz.Utils
   ###* 経路探索
   * @param {nz.Graph}     graph  グラフ（マップ情報）
   * @param {nz.Character} source 開始位置のキャラクター
-  * @param {nz.Character} target 終了位置のキャラクター
+  * @param {nz.Character|Object} target 終了位置のキャラクターか位置情報({mapx,mapy})
   * @param {Array}        characters nz.Character 配列
   * @param {Object}       [options] オプション
   * @param {boolean}      [options.closest] 到達できない場合に近くまで探索する場合 true
   * @param {Object}       [options.grid] グリッドオプション
+  * @return {Array}       ルート情報
   ###
   searchRoute: (graph, source, target, characters, options = {})->
     unless options.grid?
