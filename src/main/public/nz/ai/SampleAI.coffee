@@ -53,6 +53,8 @@ class nz.ai.Base
           ret.mapy -= 1
         when 5
           ret.mapx += 1
+    unless graph.grid[ret.mapx][ret.mapy]?
+      return null
     return ret
 
   findNearTarget: (c,targets) ->
