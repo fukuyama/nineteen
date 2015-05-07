@@ -25,10 +25,11 @@ class nz.GridNodeWrap
     if @mapx is wrap.mapx and @mapy is wrap.mapy
       # 方向転換のコスト（１づつ方向転換するからコストは1）
       cost = 1
-    else if nz.utils.direction(@,wrap) is wrap.direction
+    else if nz.Graph.direction(@,wrap) is wrap.direction
       cost += 1
       @back = true
     return cost
+
   isWall: -> @node.isWall()
 
 Object.defineProperty nz.GridNodeWrap.prototype,'mapx',
@@ -67,9 +68,9 @@ class nz.GridNode
   * 指定されたノードが、自分から見てどの方向にあるか
   * @param node {GridNode|GridNodeWrap} 調査対象ノード
   ###
-  calcDirection: (node) -> nz.utils.direction(@,node)
-  calcDirectionTo: (node) -> nz.utils.direction(@,node)
-  calcDirectionBy: (node) -> nz.utils.direction(node,@)
+  calcDirection: (node) -> nz.Graph.direction(@,node)
+  calcDirectionTo: (node) -> nz.Graph.direction(@,node)
+  calcDirectionBy: (node) -> nz.Graph.direction(node,@)
 
   ###*
   * 壁判定

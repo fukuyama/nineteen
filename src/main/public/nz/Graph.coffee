@@ -151,17 +151,22 @@ class nz.Graph
       graphString.push(rowDebug.join(" "))
     return graphString.join("\n")
 
-  searchRoute: (sd,sx,sy,ex,ey,op={closest:false}) ->
+  searchRoute: (sd,sx,sy,ex,ey,op={}) ->
     route = []
     start = @createWrap sx,sy,sd
     end   = @createWrap ex,ey
     # 壁じゃなかったら探索
     if (not end.isWall()) or op.closest
-      op.heuristic = nz.Graph.heuristic unless op.heuristic?
 
-      if op.grid?
-        for g in op.grid
-          @grid[g.mapx][g.mapy].options = g.options
+      unless op.closest?
+        op.closest = false
+      unless op.heuristic?
+        op.heuristic = nz.Graph.heuristic
+      unless op.grid?
+        op.grid = []
+
+      for g in op.grid
+        @grid[g.mapx][g.mapy].options = g.options
       if op.graph?
         @options = op.graph
 
@@ -176,9 +181,8 @@ class nz.Graph
           direction: if wrap.direction < 0 then pd else wrap.direction
         }
         pd = wrap.direction
-      if op.grid?
-        for g in op.grid
-          @grid[g.mapx][g.mapy].options = undefined
+      for g in op.grid
+        @grid[g.mapx][g.mapy].options = undefined
       @options = undefined
     @cleanWrap()
     return route
@@ -189,7 +193,7 @@ nz.Graph.heuristic = (wrap1,wrap2) ->
   #hr = Math.floor(hx / 2)
   hr = Math.ceil(hx / 2)
   direction = wrap1.node.calcDirectionTo(wrap2)
-  hd = nz.utils.calcDirectionCost(wrap1.direction,direction)
+  hd = nz.Graph.directionCost(wrap1.direction,direction)
   if hy == hr
     hy = 0
   else if hy < hr
@@ -201,3 +205,105 @@ nz.Graph.heuristic = (wrap1,wrap2) ->
     hy -= hr
   #console.log "#{wrap1.mapx} #{wrap1.mapy} #{wrap2.mapx} #{wrap2.mapy} #{hx} #{hy} #{hd} #{direction}"
   hx + hy + hd
+
+###* 対象の方向
+* @param {Object} c1 元
+* @param {Object} c2 対象
+###
+nz.Graph.direction = (c1,c2) ->
+  dis = nz.Graph.distance c1,c2
+  r   = Math.floor(dis / 2)
+  dir = 0
+  if (c2.mapx - r) <= c1.mapx and c1.mapx <= (c2.mapx + r)
+    dir = 0 if c1.mapy > c2.mapy
+    dir = 3 if c1.mapy < c2.mapy
+  else if c1.mapx > c2.mapx # 左側
+    if c1.mapy == c2.mapy
+      dir = if c1.mapx % 2 == 0 then 5 else 4
+    else if c1.mapy > c2.mapy
+      dir = 5
+    else if c1.mapy < c2.mapy
+      dir = 4
+  else if c1.mapx < c2.mapx # 右側
+    if c1.mapy == c2.mapy
+      dir = if c1.mapx % 2 == 0 then 1 else 2
+    else if c1.mapy > c2.mapy
+      dir = 1
+    else if c1.mapy < c2.mapy
+      dir = 2
+  return dir
+
+###* 距離
+* @param {Object} c1 元
+* @param {Object} c2 対象
+###
+nz.Graph.distance = (c1,c2) ->
+  hx = Math.abs(c1.mapx - c2.mapx)
+  hy = Math.abs(c1.mapy - c2.mapy)
+  hr = Math.ceil(hx / 2)
+  return hx if hy < hr
+  if hx % 2 == 1
+    if c1.mapx % 2 == 1
+      if c1.mapy <= c2.mapy
+        hy += 1
+    else
+      if c1.mapy >= c2.mapy
+        hy += 1
+  return hx + hy - hr
+
+###* 方向転換にかかるコストを計算
+* @param {number} direction1 方向1
+* @param {number} direction2 方向2
+###
+nz.Graph.directionCost = (direction1,direction2) ->
+  Math.abs(3 - Math.abs((direction2 - direction1 - 3) % 6))
+
+###* 方向に対する後ろの座標を取得する
+* @param {number|Object} mapx X座標
+* @param {number}        mapy Y座標
+* @param {number}        direction 方向
+###
+nz.Graph.backPosition = (mapx,mapy,direction) ->
+  if typeof mapx is 'object'
+    {
+      mapx
+      mapy
+      direction
+    } = mapx
+  if mapx % 2 == 0
+    switch direction
+      when 0
+        mapy += 1
+      when 1
+        mapx -= 1
+        mapy += 1
+      when 2
+        mapx -= 1
+      when 3
+        mapy -= 1
+      when 4
+        mapx += 1
+      when 5
+        mapx += 1
+        mapy += 1
+  else
+    switch direction
+      when 0
+        mapy += 1
+      when 1
+        mapx -= 1
+      when 2
+        mapx -= 1
+        mapy -= 1
+      when 3
+        mapy -= 1
+      when 4
+        mapx += 1
+        mapy -= 1
+      when 5
+        mapx += 1
+  return {
+    mapx:      mapx
+    mapy:      mapy
+    direction: direction
+  }

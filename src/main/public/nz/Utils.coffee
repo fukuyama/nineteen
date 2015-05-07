@@ -11,26 +11,28 @@ DIRECTIONS = nz.system.character.directions
 
 class nz.Utils
 
-  ###* 方向転換にかかるコストを計算
-  * @param {number} direction1 方向1
-  * @param {number} direction2 方向2
-  ###
-  calcDirectionCost: (direction1,direction2) ->
-    Math.abs(3 - Math.abs((direction2 - direction1 - 3) % 6))
+  distance: nz.Graph.distance
 
   ###* 経路探索
-  * @param {nz.Graph}     graph  グラフ（マップ情報）
-  * @param {nz.Character} source 開始位置のキャラクター
-  * @param {nz.Character|Object} target 終了位置のキャラクターか位置情報({mapx,mapy})
-  * @param {Array}        characters nz.Character 配列
-  * @param {Object}       [options] オプション
-  * @param {boolean}      [options.closest] 到達できない場合に近くまで探索する場合 true
-  * @param {Object}       [options.grid] グリッドオプション
-  * @return {Array}       ルート情報
+  * @param {nz.Graph} graph  グラフ（マップ情報）
+  * @param {Object}   source 開始位置のキャラクター({mapx,mapy,direction})
+  * @param {Object}   target 終了位置のキャラクターか位置情報({mapx,mapy})
+  * @param {Array}    characters 配列({mapx,mapy})
+  * @param {Object}   [options] オプション
+  * @param {boolean}  [options.closest] 到達できない場合に近くまで探索する場合 true
+  * @param {Object}   [options.grid] グリッドオプション
+  * @return {Array}   ルート情報
   ###
   searchRoute: (graph, source, target, characters, options = {})->
     unless options.grid?
       options.grid = []
+    unless options.graph?
+      options.graph = {
+        cost: source.ap
+      }
+    unless options.closest?
+      options.closest = true
+
     for c in characters when source.mapx != c.mapx or source.mapy != c.mapy
       options.grid.push {
         mapx: c.mapx
@@ -39,59 +41,9 @@ class nz.Utils
           isWall: true
         }
       }
-    unless options.graph?
-      options.graph = {
-        cost: source.ap
-      }
-    unless options.closest?
-      options.closest = true
+
     {direction,mapx,mapy} = source
     return graph.searchRoute(direction, mapx, mapy, target.mapx, target.mapy, options)
-
-  ###* 対象の方向
-  * @param {Object|nz.Character} c1 元
-  * @param {Object|nz.Character} c2 対象
-  ###
-  direction: (c1,c2) ->
-    dis = @distance c1,c2
-    r   = Math.floor(dis / 2)
-    dir = 0
-    if (c2.mapx - r) <= c1.mapx and c1.mapx <= (c2.mapx + r)
-      dir = 0 if c1.mapy > c2.mapy
-      dir = 3 if c1.mapy < c2.mapy
-    else if c1.mapx > c2.mapx # 左側
-      if c1.mapy == c2.mapy
-        dir = if c1.mapx % 2 == 0 then 5 else 4
-      else if c1.mapy > c2.mapy
-        dir = 5
-      else if c1.mapy < c2.mapy
-        dir = 4
-    else if c1.mapx < c2.mapx # 右側
-      if c1.mapy == c2.mapy
-        dir = if c1.mapx % 2 == 0 then 1 else 2
-      else if c1.mapy > c2.mapy
-        dir = 1
-      else if c1.mapy < c2.mapy
-        dir = 2
-    return dir
-
-  ###* 距離
-  * @param {Object|nz.Character} c1 元
-  * @param {Object|nz.Character} c2 対象
-  ###
-  distance: (c1,c2) ->
-    hx = Math.abs(c1.mapx - c2.mapx)
-    hy = Math.abs(c1.mapy - c2.mapy)
-    hr = Math.ceil(hx / 2)
-    return hx if hy < hr
-    if hx % 2 == 1
-      if c1.mapx % 2 == 1
-        if c1.mapy <= c2.mapy
-          hy += 1
-      else
-        if c1.mapy >= c2.mapy
-          hy += 1
-    return hx + hy - hr
 
   mapxy2screenxy: (p) ->
     if arguments.length == 2

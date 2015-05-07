@@ -11,59 +11,96 @@ class nz.ai.Base
 
   searchRoute: nz.utils.searchRoute
 
-  distance: nz.utils.distance
+  distance: nz.Graph.distance
 
-  direction: nz.utils.direction
+  direction: nz.Graph.direction
 
   checkDirectionRange: nz.utils.checkDirectionRange
 
-  backPosition: (graph,character,characters) ->
-    ret =
-      mapx: character.mapx
-      mapy: character.mapy
-    if character.mapx % 2 == 0
-      switch character.direction
-        when 0
-          ret.mapy += 1
-        when 1
-          ret.mapx -= 1
-          ret.mapy += 1
-        when 2
-          ret.mapx -= 1
-        when 3
-          ret.mapy -= 1
-        when 4
-          ret.mapx += 1
-        when 5
-          ret.mapx += 1
-          ret.mapy += 1
-    else
-      switch character.direction
-        when 0
-          ret.mapy += 1
-        when 1
-          ret.mapx -= 1
-        when 2
-          ret.mapx -= 1
-          ret.mapy -= 1
-        when 3
-          ret.mapy -= 1
-        when 4
-          ret.mapx += 1
-          ret.mapy -= 1
-        when 5
-          ret.mapx += 1
-    unless graph.grid[ret.mapx][ret.mapy]?
-      return null
-    return ret
+  checkShotRange: (param) ->
+    {
+      character
+      target
+    } = param
+    data = {
+      source: character
+      target: target
+      range: character.shot.range
+      callback: (res,r) ->
+        param.rotation = r if res
+    }
+    return @checkDirectionRange(data)
 
-  findNearTarget: (c,targets) ->
+  checkBackPosition: (param) ->
+    {
+      graph
+      character
+      characters
+    } = param
+    r = nz.Graph.backPosition character
+    node = graph.grid[r.mapx][r.mapy]
+    unless node?
+      return false
+    if node.isWall()
+      return false
+    for c in characters
+      if c.mapx is r.mapx and c.mapy is r.mapy
+        return false
+    return true
+
+  backPosition: (param) ->
+    return nz.Graph.backPosition param.character
+
+  setMoveCommand: (param) ->
+    {
+      character
+      characters
+      turn
+      graph
+      target
+    } = param
+    route = @searchRoute(graph,character,target,characters)
+    character.addMoveCommand(turn,route)
+    return
+
+  setAttackCommand: (param) ->
+    {
+      character
+      characters
+      turn
+      graph
+      target
+    } = param
+    route = @searchRoute(graph,character,target,characters)
+    character.setAttackCommand(turn)
+    character.addMoveCommand(turn,route)
+    return
+
+  setShotCommand: (param) ->
+    {
+      character
+      characters
+      turn
+      graph
+      target
+      rotation
+    } = param
+    route = @searchRoute(graph,character,target,characters)
+    character.addShotCommand(turn,rotation)
+    character.addMoveCommand(turn,route)
+    return
+
+  findNearTarget: (param) ->
+    {
+      character
+      targets
+    } = param
     result = {
       target: null
       distance: 99
     }
     for t in targets
-      d = @distance(c,t)
+      d = @distance(character,t)
       if d < result.distance
         result.distance = d
         result.target = t
@@ -76,89 +113,37 @@ class nz.ai.SampleAI extends nz.ai.Base
       {
         # ターゲットと距離を計算
         cond: (param) ->
-          {
-            character
-            characters
-            graph
-            friends
-            targets
-            turn
-          } = param
-          {
-            target
-            distance
-          } = @findNearTarget character, targets
-          param.target = target
-          param.distance = distance
+          r = @findNearTarget param
+          param.target   = r.target
+          param.distance = r.distance
           return false
       }
       {
-        # 距離が１以下の場合
+        # 距離が１以下で後ろに移動ができる場合
         cond: (param) ->
-          {
-            distance
-          } = param
-          return distance <= 1
-        # 移動攻撃して１歩下がる
+          return param.distance <= 1 and @checkBackPosition param
+        # １歩下がりつつ攻撃
         setup: (param) ->
-          {
-            character
-            characters
-            turn
-            graph
-            target
-          } = param
-          back = @backPosition(graph,character,characters)
-          route = @searchRoute(graph,character,back,characters)
-          character.setAttackCommand(turn)
-          character.addMoveCommand(turn,route)
+          param.target = @backPosition param
+          @setAttackCommand param
           return true
       }
       {
         # 距離が４以下の場合
         cond: (param) ->
-          {
-            distance
-          } = param
-          return distance <= 4
-        # 移動攻撃
+          return param.distance <= 4
+        # ターゲットに移動攻撃
         setup: (param) ->
-          {
-            character
-            characters
-            turn
-            graph
-            target
-          } = param
-          route = @searchRoute(graph,character,target,characters)
-          character.setAttackCommand(turn)
-          character.addMoveCommand(turn,route)
+          @setAttackCommand param
           return true
       }
       {
-        # 距離が６以下で射撃範囲に敵がいる場合
+        # 距離が６以下で射撃範囲にターゲットがいる場合
         cond: (param) ->
-          {
-            distance
-            character
-            target
-          } = param
-          data = {
-            source: character
-            target: target
-            range: character.shot.range
-            callback: (res,r) ->
-              param.rotation = r if res
-          }
-          return distance <= 6 and @checkDirectionRange(data)
+          return param.distance <= 6 and @checkShotRange param
         # 移動射撃
         setup: (param) ->
-          {
-            character
-            turn
-            rotation
-          } = param
-          character.addShotCommand(turn,rotation)
+          @setShotCommand param
           return true
       }
       {
@@ -167,16 +152,8 @@ class nz.ai.SampleAI extends nz.ai.Base
           return true
         # 近づく
         setup: (param) ->
-          {
-            character
-            characters
-            turn
-            graph
-            target
-          } = param
-          route = @searchRoute(graph,character,target,characters)
-          character.addMoveCommand(turn,route)
-          return false
+          @setMoveCommand param
+          return true
       }
     ]
 
