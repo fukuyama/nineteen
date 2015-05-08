@@ -11,8 +11,6 @@ DIRECTIONS = nz.system.character.directions
 
 class nz.Utils
 
-  distance: nz.Graph.distance
-
   ###* 経路探索
   * @param {nz.Graph} graph  グラフ（マップ情報）
   * @param {Object}   source 開始位置のキャラクター({mapx,mapy,direction})
@@ -86,7 +84,7 @@ class nz.Utils
           mapy: p1.mapy + sy * y
         }
         p.mapx = Math.round(p.mapx)
-        while @distance(ret[ret.length - 1],p) > 1
+        while nz.Graph.distance(ret[ret.length - 1],p) > 1
           ret.push {
             mapx: p.mapx - hx
             mapy: p.mapy
@@ -102,7 +100,7 @@ class nz.Utils
         }
         p.mapy -= 0.5 if p.mapx % 2 == 0
         p.mapy = Math.round(p.mapy)
-        while @distance(ret[ret.length - 1],p) > 1
+        while nz.Graph.distance(ret[ret.length - 1],p) > 1
           ret.push {
             mapx: p.mapx
             mapy: p.mapy - hy

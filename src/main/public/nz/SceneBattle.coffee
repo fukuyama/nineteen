@@ -239,7 +239,7 @@ tm.define 'nz.SceneBattle',
     @data.turn += 1
     characters = (c.createAiInfo() for c in @characters)
     for c,i in characters when not (@controlTeam.contains c.team)
-      nz.system.ai[c.ai.name]?.setupAction(
+      nz.system.ai[c.ai.name]?.setupAction new nz.ai.Param(
         character: c
         characters: characters
         graph: @mapSprite.graph

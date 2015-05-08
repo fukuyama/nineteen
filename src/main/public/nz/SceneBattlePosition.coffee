@@ -34,17 +34,17 @@ tm.define 'nz.SceneBattlePosition',
     # CPU側の位置設定
     for team in @otherTeam
       area    = @teamArea[team]
-      members = (m.character for m in @members[team])
-      for member,i in @members[team]
-        c = member.character
+      friends = (m.character for m in @members[team])
+      for m,i in @members[team]
+        c = m.character
         p = nz.system.ai[c.ai.name]?.setupBattlePosition(
           character: c
-          members:   members
+          friends:   friends
           area:      area
         )
         p = area[i] unless p?
-        @_setBattlePosition(member,p[0],p[1])
-        member.applyPosition()
+        @_setBattlePosition(m,p[0],p[1])
+        m.applyPosition()
 
     @on 'map.pointingover', @_mapPointingover
     @on 'map.pointingend',  @_mapPointingend

@@ -28,11 +28,13 @@ module.exports = (grunt) ->
 
   # 公開用スクリプト
   public_sections = [
+
     'nz/System'
     'nz/Utils'
 
     'nz/Graph'
     'nz/GridNode'
+
     'nz/Character'
 
     'nz/SpriteBattleMap'
@@ -47,6 +49,8 @@ module.exports = (grunt) ->
     'nz/SceneBattleShotCommand'
     'nz/SceneBattleDirectionCommand'
     'nz/SceneBattleTurn'
+
+    'nz/ai/Param'
 
     'main'
   ]
@@ -160,6 +164,8 @@ module.exports = (grunt) ->
     (target_gen_dir + public_path + sec + '.js' for sec in public_sections)
   ]
 
+  docs = [sources,'README.md']
+
   aifiles = [
     (sec + '.js' for sec in ai_scripts)
   ]
@@ -185,10 +191,10 @@ module.exports = (grunt) ->
         files: uglify_files
     jsdoc:
       dist:
-        src: sources
+        src: docs
         options:
           destination: doc_dir
-          configure: 'jsdoc.json'
+          configure: 'jsdoc.json' # 参考: https://blog.agektmr.com/2014/02/jsdocbootstrap.html
     copy:
       express:
         expand: true
@@ -241,6 +247,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'server', ['express:dev', 'watch']
   grunt.registerTask 'test', ['coffeelint','simplemocha:all']
   grunt.registerTask 'createdata', ['execute:createdata']
+  grunt.registerTask 'doc', ['coffeelint','coffee','jsdoc']
   grunt.registerTask 'default', [
     'coffeelint','coffee', 'simplemocha:all'
     'concat', 'uglify', 'copy', 'createdata'

@@ -7,185 +7,75 @@ _g = undefined
 
 nz.ai = nz.ai ? {}
 
-class nz.ai.Base
-
-  searchRoute: nz.utils.searchRoute
-
-  distance: nz.Graph.distance
-
-  direction: nz.Graph.direction
-
-  checkDirectionRange: nz.utils.checkDirectionRange
-
-  checkShotRange: (param) ->
-    {
-      character
-      target
-    } = param
-    data = {
-      source: character
-      target: target
-      range: character.shot.range
-      callback: (res,r) ->
-        param.rotation = r if res
-    }
-    return @checkDirectionRange(data)
-
-  checkBackPosition: (param) ->
-    {
-      graph
-      character
-      characters
-    } = param
-    r = nz.Graph.backPosition character
-    node = graph.grid[r.mapx][r.mapy]
-    unless node?
-      return false
-    if node.isWall()
-      return false
-    for c in characters
-      if c.mapx is r.mapx and c.mapy is r.mapy
-        return false
-    return true
-
-  backPosition: (param) ->
-    return nz.Graph.backPosition param.character
-
-  setMoveCommand: (param) ->
-    {
-      character
-      characters
-      turn
-      graph
-      target
-    } = param
-    route = @searchRoute(graph,character,target,characters)
-    character.addMoveCommand(turn,route)
-    return
-
-  setAttackCommand: (param) ->
-    {
-      character
-      characters
-      turn
-      graph
-      target
-    } = param
-    route = @searchRoute(graph,character,target,characters)
-    character.setAttackCommand(turn)
-    character.addMoveCommand(turn,route)
-    return
-
-  setShotCommand: (param) ->
-    {
-      character
-      characters
-      turn
-      graph
-      target
-      rotation
-    } = param
-    route = @searchRoute(graph,character,target,characters)
-    character.addShotCommand(turn,rotation)
-    character.addMoveCommand(turn,route)
-    return
-
-  findNearTarget: (param) ->
-    {
-      character
-      targets
-    } = param
-    result = {
-      target: null
-      distance: 99
-    }
-    for t in targets
-      d = @distance(character,t)
-      if d < result.distance
-        result.distance = d
-        result.target = t
-    return result
-
-class nz.ai.SampleAI extends nz.ai.Base
+class nz.ai.SampleAI
 
   constructor: ->
     @rules = [
       {
-        # ターゲットと距離を計算
         cond: (param) ->
-          r = @findNearTarget param
-          param.target   = r.target
-          param.distance = r.distance
-          return false
-      }
-      {
-        # 距離が１以下で後ろに移動ができる場合
-        cond: (param) ->
-          return param.distance <= 1 and @checkBackPosition param
-        # １歩下がりつつ攻撃
+          # 距離が１以下で後ろに移動ができる場合
+          return param.distance <= 1 and param.checkBackPosition()
         setup: (param) ->
-          param.target = @backPosition param
-          @setAttackCommand param
+          # １歩下がりつつ攻撃
+          param.target = param.backPosition
+          param.setAttackCommand()
           return true
       }
       {
-        # 距離が４以下の場合
         cond: (param) ->
+          # 距離が４以下の場合
           return param.distance <= 4
-        # ターゲットに移動攻撃
         setup: (param) ->
-          @setAttackCommand param
+          # ターゲットに移動攻撃
+          param.setAttackCommand()
           return true
       }
       {
-        # 距離が６以下で射撃範囲にターゲットがいる場合
         cond: (param) ->
-          return param.distance <= 6 and @checkShotRange param
-        # 移動射撃
+          # 距離が６以下で射撃範囲にターゲットがいる場合
+          return param.distance <= 6 and param.checkShotRange()
         setup: (param) ->
-          @setShotCommand param
+          # 移動射撃
+          param.setShotCommand()
           return true
       }
       {
-        # どれでもない時
         cond: (param) ->
+          # どれでもない時
           return true
-        # 近づく
         setup: (param) ->
-          @setMoveCommand param
+          # 近づく
+          param.setMoveCommand()
           return true
       }
     ]
 
+  ###* 戦闘開始位置設定
+  * @param  {Object}         param           設定用パラメータ
+  * @param  {nz.Character}   param.character 設定対象のキャラクター
+  * @param  {nz.Character[]} param.friends   設定対象を含む味方のキャラクター配列
+  * @param  {Object[]}       param.area      開始位置情報の配列(mapdata.start.area)
+  * @return {Object[]}       対象キャラクターの位置を、param.area の配列から１つ選択し返す
+  ###
   setupBattlePosition: (param) ->
     {
       character
-      members
+      friends
       area
     } = param
     console.log 'setupBattlePosition ' + character.name
-    i = members.indexOf character
+    i = friends.indexOf character
     return area[i]
 
+  ###* 戦闘行動設定
+  * @param　{nz.ai.Param} param 設定用パラメータ
+  ###
   setupAction: (param) ->
-    {
-      character
-      characters
-    } = param
-    console.log 'setupAction ' + character.name
-    friends = []
-    targets = []
-    for c in characters when c.name != character.name
-      if character.team == c.team
-        friends.push c
-      else
-        targets.push c
-    param.friends = friends
-    param.targets = targets
+    console.log 'setupAction ' + param.character.name
     for r in @rules
       if r.cond.call(@,param)
         if r.setup?.call(@,param)
           break
-    return character
+    return
 
 nz.system.addAI 'SampleAI', new nz.ai.SampleAI()

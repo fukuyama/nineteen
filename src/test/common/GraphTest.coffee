@@ -30,6 +30,9 @@ describe 'GraphTest', () ->
       height: 15 # マップの高さ
       data: for y in [0 ... 15] then for x in [0 ... 15] then 1
 
+  test_direction = (s,data) ->
+    for d in data
+      nz.Graph.direction(s,{mapx:d[0],mapy:d[1]}).should.equals d[2], "#{s.mapx}#{s.mapy},#{d[0]}#{d[1]}=#{d[2]}"
   chkmapxy = (node,x,y,i) ->
     node.mapx.should.equals x,"x #{i}"
     node.mapy.should.equals y,"y #{i}"
@@ -50,6 +53,153 @@ describe 'GraphTest', () ->
       end.direction.should.equals r.dir, 'end dir'
     return graph
   describe 'nz.Graph', ->
+    describe 'Distance', ->
+      it 'Distance1 (55)', ->
+        s = {mapx:5,mapy:5}
+        nz.Graph.distance(s,{mapx:5,mapy:3}).should.equals 2,'53'
+        nz.Graph.distance(s,{mapx:5,mapy:4}).should.equals 1,'54'
+        nz.Graph.distance(s,{mapx:5,mapy:5}).should.equals 0,'55'
+        nz.Graph.distance(s,{mapx:5,mapy:6}).should.equals 1,'56'
+        nz.Graph.distance(s,{mapx:5,mapy:7}).should.equals 2,'57'
+
+        nz.Graph.distance(s,{mapx:4,mapy:6}).should.equals 2,'46'
+        nz.Graph.distance(s,{mapx:4,mapy:5}).should.equals 1,'45'
+        nz.Graph.distance(s,{mapx:4,mapy:4}).should.equals 1,'44'
+        nz.Graph.distance(s,{mapx:4,mapy:3}).should.equals 2,'43'
+
+        nz.Graph.distance(s,{mapx:6,mapy:6}).should.equals 2,'66'
+        nz.Graph.distance(s,{mapx:6,mapy:5}).should.equals 1,'65'
+        nz.Graph.distance(s,{mapx:6,mapy:4}).should.equals 1,'64'
+        nz.Graph.distance(s,{mapx:6,mapy:3}).should.equals 2,'63'
+
+      it 'Distance1 (65)', ->
+        s = {mapx:6,mapy:5}
+        nz.Graph.distance(s,{mapx:6,mapy:3}).should.equals 2,'63'
+        nz.Graph.distance(s,{mapx:6,mapy:4}).should.equals 1,'64'
+        nz.Graph.distance(s,{mapx:6,mapy:5}).should.equals 0,'65'
+        nz.Graph.distance(s,{mapx:6,mapy:6}).should.equals 1,'66'
+        nz.Graph.distance(s,{mapx:6,mapy:7}).should.equals 2,'67'
+
+        nz.Graph.distance(s,{mapx:5,mapy:7}).should.equals 2,'57'
+        nz.Graph.distance(s,{mapx:5,mapy:6}).should.equals 1,'56'
+        nz.Graph.distance(s,{mapx:5,mapy:5}).should.equals 1,'55'
+        nz.Graph.distance(s,{mapx:5,mapy:4}).should.equals 2,'54'
+
+        nz.Graph.distance(s,{mapx:7,mapy:7}).should.equals 2,'77'
+        nz.Graph.distance(s,{mapx:7,mapy:6}).should.equals 1,'76'
+        nz.Graph.distance(s,{mapx:7,mapy:5}).should.equals 1,'75'
+        nz.Graph.distance(s,{mapx:7,mapy:4}).should.equals 2,'74'
+
+      it 'Distance2', ->
+        s = {mapx:5,mapy:5}
+        nz.Graph.distance(s,{mapx:5,mapy:2}).should.equals 3,'52'
+        nz.Graph.distance(s,{mapx:5,mapy:3}).should.equals 2,'53'
+        nz.Graph.distance(s,{mapx:5,mapy:7}).should.equals 2,'57'
+        nz.Graph.distance(s,{mapx:5,mapy:8}).should.equals 3,'58'
+
+        nz.Graph.distance(s,{mapx:4,mapy:7}).should.equals 3,'47'
+        nz.Graph.distance(s,{mapx:4,mapy:6}).should.equals 2,'46'
+        nz.Graph.distance(s,{mapx:4,mapy:3}).should.equals 2,'43'
+        nz.Graph.distance(s,{mapx:4,mapy:2}).should.equals 3,'42'
+
+        nz.Graph.distance(s,{mapx:6,mapy:7}).should.equals 3,'67'
+        nz.Graph.distance(s,{mapx:6,mapy:6}).should.equals 2,'66'
+        nz.Graph.distance(s,{mapx:6,mapy:3}).should.equals 2,'63'
+        nz.Graph.distance(s,{mapx:6,mapy:2}).should.equals 3,'62'
+
+        nz.Graph.distance(s,{mapx:3,mapy:7}).should.equals 3,'37'
+        nz.Graph.distance(s,{mapx:3,mapy:6}).should.equals 2,'36'
+        nz.Graph.distance(s,{mapx:3,mapy:5}).should.equals 2,'35'
+        nz.Graph.distance(s,{mapx:3,mapy:4}).should.equals 2,'34'
+        nz.Graph.distance(s,{mapx:3,mapy:3}).should.equals 3,'33'
+
+        nz.Graph.distance(s,{mapx:7,mapy:7}).should.equals 3,'77'
+        nz.Graph.distance(s,{mapx:7,mapy:6}).should.equals 2,'76'
+        nz.Graph.distance(s,{mapx:7,mapy:5}).should.equals 2,'75'
+        nz.Graph.distance(s,{mapx:7,mapy:4}).should.equals 2,'74'
+        nz.Graph.distance(s,{mapx:7,mapy:3}).should.equals 3,'73'
+
+      it 'Distance3 (55)', ->
+        s = {mapx:5,mapy:5}
+        nz.Graph.distance(s,{mapx:5,mapy:1}).should.equals 4,'51'
+        nz.Graph.distance(s,{mapx:5,mapy:2}).should.equals 3,'52'
+        nz.Graph.distance(s,{mapx:5,mapy:8}).should.equals 3,'58'
+        nz.Graph.distance(s,{mapx:5,mapy:9}).should.equals 4,'59'
+
+        nz.Graph.distance(s,{mapx:4,mapy:8}).should.equals 4,'48'
+        nz.Graph.distance(s,{mapx:4,mapy:7}).should.equals 3,'47'
+        nz.Graph.distance(s,{mapx:4,mapy:2}).should.equals 3,'42'
+        nz.Graph.distance(s,{mapx:4,mapy:1}).should.equals 4,'41'
+
+        nz.Graph.distance(s,{mapx:6,mapy:8}).should.equals 4,'68'
+        nz.Graph.distance(s,{mapx:6,mapy:7}).should.equals 3,'67'
+        nz.Graph.distance(s,{mapx:6,mapy:2}).should.equals 3,'62'
+        nz.Graph.distance(s,{mapx:6,mapy:1}).should.equals 4,'61'
+
+        nz.Graph.distance(s,{mapx:3,mapy:8}).should.equals 4,'38'
+        nz.Graph.distance(s,{mapx:3,mapy:7}).should.equals 3,'37'
+        nz.Graph.distance(s,{mapx:3,mapy:3}).should.equals 3,'33'
+        nz.Graph.distance(s,{mapx:3,mapy:2}).should.equals 4,'32'
+
+        nz.Graph.distance(s,{mapx:7,mapy:8}).should.equals 4,'78'
+        nz.Graph.distance(s,{mapx:7,mapy:7}).should.equals 3,'77'
+        nz.Graph.distance(s,{mapx:7,mapy:3}).should.equals 3,'73'
+        nz.Graph.distance(s,{mapx:7,mapy:2}).should.equals 4,'72'
+
+        nz.Graph.distance(s,{mapx:2,mapy:7}).should.equals 4,'27'
+        nz.Graph.distance(s,{mapx:2,mapy:6}).should.equals 3,'26'
+        nz.Graph.distance(s,{mapx:2,mapy:5}).should.equals 3,'25'
+        nz.Graph.distance(s,{mapx:2,mapy:4}).should.equals 3,'24'
+        nz.Graph.distance(s,{mapx:2,mapy:3}).should.equals 3,'23'
+        nz.Graph.distance(s,{mapx:2,mapy:2}).should.equals 4,'22'
+
+        nz.Graph.distance(s,{mapx:8,mapy:7}).should.equals 4,'87'
+        nz.Graph.distance(s,{mapx:8,mapy:6}).should.equals 3,'86'
+        nz.Graph.distance(s,{mapx:8,mapy:5}).should.equals 3,'85'
+        nz.Graph.distance(s,{mapx:8,mapy:4}).should.equals 3,'84'
+        nz.Graph.distance(s,{mapx:8,mapy:3}).should.equals 3,'83'
+        nz.Graph.distance(s,{mapx:8,mapy:2}).should.equals 4,'82'
+
+      it 'Distance3 (65)', ->
+        s = {mapx:6,mapy:5}
+        nz.Graph.distance(s,{mapx:6,mapy:1}).should.equals 4,'61'
+        nz.Graph.distance(s,{mapx:6,mapy:2}).should.equals 3,'62'
+        nz.Graph.distance(s,{mapx:6,mapy:8}).should.equals 3,'68'
+        nz.Graph.distance(s,{mapx:6,mapy:9}).should.equals 4,'69'
+
+        nz.Graph.distance(s,{mapx:5,mapy:9}).should.equals 4,'59'
+        nz.Graph.distance(s,{mapx:5,mapy:8}).should.equals 3,'58'
+        nz.Graph.distance(s,{mapx:5,mapy:3}).should.equals 3,'53'
+        nz.Graph.distance(s,{mapx:5,mapy:2}).should.equals 4,'52'
+
+        nz.Graph.distance(s,{mapx:7,mapy:9}).should.equals 4,'79'
+        nz.Graph.distance(s,{mapx:7,mapy:8}).should.equals 3,'78'
+        nz.Graph.distance(s,{mapx:7,mapy:3}).should.equals 3,'73'
+        nz.Graph.distance(s,{mapx:7,mapy:2}).should.equals 4,'72'
+
+        nz.Graph.distance(s,{mapx:4,mapy:8}).should.equals 4,'48'
+        nz.Graph.distance(s,{mapx:4,mapy:7}).should.equals 3,'47'
+        nz.Graph.distance(s,{mapx:4,mapy:3}).should.equals 3,'43'
+        nz.Graph.distance(s,{mapx:4,mapy:2}).should.equals 4,'42'
+
+        nz.Graph.distance(s,{mapx:8,mapy:8}).should.equals 4,'88'
+        nz.Graph.distance(s,{mapx:8,mapy:7}).should.equals 3,'87'
+        nz.Graph.distance(s,{mapx:8,mapy:3}).should.equals 3,'83'
+        nz.Graph.distance(s,{mapx:8,mapy:2}).should.equals 4,'82'
+
+        nz.Graph.distance(s,{mapx:3,mapy:8}).should.equals 4,'38'
+        nz.Graph.distance(s,{mapx:3,mapy:7}).should.equals 3,'37'
+        nz.Graph.distance(s,{mapx:3,mapy:6}).should.equals 3,'36'
+        nz.Graph.distance(s,{mapx:3,mapy:5}).should.equals 3,'35'
+        nz.Graph.distance(s,{mapx:3,mapy:4}).should.equals 3,'34'
+        nz.Graph.distance(s,{mapx:3,mapy:3}).should.equals 4,'33'
+
+        nz.Graph.distance(s,{mapx:9,mapy:8}).should.equals 4,'98'
+        nz.Graph.distance(s,{mapx:9,mapy:7}).should.equals 3,'97'
+        nz.Graph.distance(s,{mapx:9,mapy:6}).should.equals 3,'96'
+        nz.Graph.distance(s,{mapx:9,mapy:5}).should.equals 3,'95'
+        nz.Graph.distance(s,{mapx:9,mapy:4}).should.equals 3,'94'
+        nz.Graph.distance(s,{mapx:9,mapy:3}).should.equals 4,'93'
     describe 'backPosition', ->
       it '5,5,0', ->
         r = nz.Graph.backPosition(5,5,0)
@@ -110,7 +260,6 @@ describe 'GraphTest', () ->
         r.mapx.should.equals 7,'7'
         r.mapy.should.equals 5,'5'
         r.direction.should.equals 4,'4'
-
     describe 'directionCost', ->
       it '方向転換のコスト計算1', ->
         nz.Graph.directionCost(0,0).should.equals 0,'0'
@@ -153,6 +302,62 @@ describe 'GraphTest', () ->
         nz.Graph.directionCost(3,4).should.equals 1,'4'
         nz.Graph.directionCost(3,5).should.equals 2,'5'
     describe 'direction', ->
+      it 'Direction1 (55)', ->
+        s = {mapx:5,mapy:5}
+        nz.Graph.direction(s,{mapx:5,mapy:4}).should.equals 0, '55,54'
+        nz.Graph.direction(s,{mapx:6,mapy:4}).should.equals 1, '55.64'
+        nz.Graph.direction(s,{mapx:6,mapy:5}).should.equals 2, '55,65'
+        nz.Graph.direction(s,{mapx:5,mapy:6}).should.equals 3, '55.56'
+        nz.Graph.direction(s,{mapx:4,mapy:5}).should.equals 4, '55.45'
+        nz.Graph.direction(s,{mapx:4,mapy:4}).should.equals 5, '55,44'
+      it 'Direction1 (65)', ->
+        s = {mapx:6,mapy:5}
+        nz.Graph.direction(s,{mapx:6,mapy:4}).should.equals 0, '65,64'
+        nz.Graph.direction(s,{mapx:7,mapy:5}).should.equals 1, '65.75'
+        nz.Graph.direction(s,{mapx:7,mapy:6}).should.equals 2, '65,76'
+        nz.Graph.direction(s,{mapx:6,mapy:6}).should.equals 3, '65.66'
+        nz.Graph.direction(s,{mapx:5,mapy:6}).should.equals 4, '65.56'
+        nz.Graph.direction(s,{mapx:5,mapy:5}).should.equals 5, '65,55'
+      it 'Direction2 (55)', ->
+        s = {mapx:5,mapy:5}
+        data = [
+          [5,3,0]
+          [6,3,0]
+          [7,4,1]
+          [7,5,2]
+          [7,6,2]
+          [6,6,3]
+          [5,7,3]
+          [4,6,3]
+          [3,6,4]
+          [3,5,4]
+          [3,4,5]
+          [4,3,0]
+        ]
+        test_direction(s,data)
+      it 'Direction3 (55)', ->
+        s = {mapx:5,mapy:5}
+        data = [
+          [5,2,0]
+          [6,2,0]
+          [7,3,1]
+          [8,3,1]
+          [8,4,1]
+          [8,5,2]
+          [8,6,2]
+          [7,7,2]
+          [6,7,3]
+          [5,8,3]
+          [4,7,3]
+          [3,7,4]
+          [2,6,4]
+          [2,5,4]
+          [2,4,5]
+          [2,3,5]
+          [3,3,5]
+          [4,2,0]
+        ]
+        test_direction(s,data)
       it '隣接ノードの方向0', ->
         node = new nz.GridNode(0,0)
         nz.Graph.direction(node,new nz.GridNode(1  ,1  )).should.equals 2
@@ -285,7 +490,6 @@ describe 'GraphTest', () ->
         e = new nz.GridNodeWrap n
         result = nz.Graph.heuristic(s,e)
         result.should.equals 6
-
     describe '隣接ノード', ->
       it '角', ->
         graph = new nz.Graph(testdata)
