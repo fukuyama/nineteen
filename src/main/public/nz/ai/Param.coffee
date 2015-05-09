@@ -70,13 +70,14 @@ class nz.ai.Param
   ###
   checkDirectionRange: nz.utils.checkDirectionRange
 
-  ###*
+  ###* 後ろの座標を取得する
   * @memberof nz.ai.Param#
   * @method backPosition
+  * @param {Object} character 基準になる位置情報
   ###
   backPosition: nz.Graph.backPosition
 
-  ###*
+  ###* 近くの敵をターゲットとして検索する
   * @memberof nz.ai.Param#
   * @method findNearTarget
   ###
@@ -116,7 +117,7 @@ class nz.ai.Param
     @distance = r.distance
     return
 
-  ###*
+  ###* 射撃葉ににターゲットがいるか確認する
   * @memberof nz.ai.Param#
   * @method checkShotRange
   ###
@@ -131,7 +132,7 @@ class nz.ai.Param
     }
     return @checkDirectionRange(data)
 
-  ###*
+  ###* 後ろに移動できるか確認する
   * @memberof nz.ai.Param#
   * @method checkBackPosition
   ###
@@ -147,7 +148,7 @@ class nz.ai.Param
         return false
     return true
 
-  ###*
+  ###* 移動コマンドを設定する
   * @memberof nz.ai.Param#
   * @method setMoveCommand
   ###
@@ -156,7 +157,7 @@ class nz.ai.Param
     @character.addMoveCommand @turn,route
     return
 
-  ###*
+  ###* 攻撃コマンドを設定する
   * @memberof nz.ai.Param#
   * @method setAttackCommand
   ###
@@ -166,7 +167,7 @@ class nz.ai.Param
     @character.addMoveCommand @turn,route
     return
 
-  ###*
+  ###* 射撃コマンドを設定する
   * @memberof nz.ai.Param#
   * @method setShotCommand
   ###
