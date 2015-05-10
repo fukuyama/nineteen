@@ -3,12 +3,21 @@
 * A*用グラフクラス
 ###
 
+###* nineteen namespace.
+* @namespace nz
+###
+
 # node.js と ブラウザでの this.nz を同じインスタンスにする
 _g = window ? global
 nz = _g.nz = _g.nz ? {}
 _g = undefined
 
 class nz.Graph
+
+  ###* コンストラクタ.
+  * @classdesc A*用グラフクラス
+  * @constructor nz.Graph
+  ###
   constructor: (param = {}) ->
     {
       mapdata
@@ -26,26 +35,38 @@ class nz.Graph
           @nodes.push(node)
     @clear()
 
+  ###* クリア ###
   clear: ->
     @cleanWrap()
     for node in @nodes
       node.clean()
       # astar.cleanNode(node)
     #@dirtyNodes = []
+    return
 
+  ###* ダーティノードの削除 ###
   cleanDirty: ->
     #for node in @dirtyNodes
     #  node.clean()
     #  astar.cleanNode(node)
     #@dirtyNodes = []
+    return
 
+  ###* ダーティノードのマーク ###
   markDirty: (node) ->
     #if @dirtyNodes.indexOf(node) < 0
     #  @dirtyNodes.push node
+    return
 
+  ###* ラップクラスの削除 ###
   cleanWrap: ->
     @wrapNodes = {}
+    return
 
+  ###* ラップクラスの作成
+  * @memberof nz.ai.Param#
+  * @method findNearTarget
+  ###
   createWrap: (x,y,d) ->
     key = "#{x}-#{y}"
     if @wrapNodes[key]?
