@@ -6,14 +6,14 @@
 DIRECTIONS = nz.system.character.directions
 ACTION_COST = nz.system.character.action_cost
 
-tm.define 'nz.Character',
+class nz.Character
 
   ###* 初期化
   * @classdesc キャラクタークラス
   * @constructor nz.Character
   ###
-  init: (param = {}) ->
-    @.$extend {
+  constructor: (param = {}) ->
+    nz.utils.marge @, {
       name: 'テストキャラクター'
       spriteSheet: 'character_001'
       team: 'teamA'
@@ -48,8 +48,9 @@ tm.define 'nz.Character',
           anticlockwise: true
         distance: 32 * 8
         speed: 100
-      commands: [] # 戦闘コマンドリスト
-    }.$extend param
+    }
+    nz.utils.marge @, param
+    @commands = [] # 戦闘コマンドリスト
     return
 
   _command: (i) ->
@@ -74,10 +75,12 @@ tm.define 'nz.Character',
       weapon:    JSON.parse(JSON.stringify(@weapon))
       shot:      JSON.parse(JSON.stringify(@shot  ))
     }
-    return nz.Character info
+    return new nz.Character(info)
 
   ###* アクション削除
   * @param {number} i 戦闘ターン数
+  * @memberof nz.Character#
+  * @method clearAction
   ###
   clearAction: (i) ->
     command = @_command i
@@ -85,6 +88,12 @@ tm.define 'nz.Character',
     command.actions = []
     command.cost = 0
     return
+
+  ###* 移動アクション削除
+  * @param {number} i 戦闘ターン数
+  * @memberof nz.Character#
+  * @method clearMoveAction
+  ###
   clearMoveAction: (i) ->
     command = @_command i
     command.actions = []
@@ -92,6 +101,12 @@ tm.define 'nz.Character',
     if @isAttackAction(i)
       command.cost += ACTION_COST.attack
     return
+
+  ###* 射撃アクション削除
+  * @param {number} i 戦闘ターン数
+  * @memberof nz.Character#
+  * @method clearShotAction
+  ###
   clearShotAction: (i) ->
     command = @_command i
     actions = []

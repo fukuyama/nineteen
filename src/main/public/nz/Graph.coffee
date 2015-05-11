@@ -35,44 +35,48 @@ class nz.Graph
           @nodes.push(node)
     @clear()
 
-  ###* クリア ###
+  ###* クリア
+  * @memberof nz.Graph#
+  * @method clear
+  ###
   clear: ->
     @cleanWrap()
     for node in @nodes
       node.clean()
-      # astar.cleanNode(node)
-    #@dirtyNodes = []
     return
 
-  ###* ダーティノードの削除 ###
+  ###* ダーティノードの削除
+  * @memberof nz.Graph#
+  * @method cleanDirty
+  ###
   cleanDirty: ->
-    #for node in @dirtyNodes
-    #  node.clean()
-    #  astar.cleanNode(node)
-    #@dirtyNodes = []
     return
 
-  ###* ダーティノードのマーク ###
+  ###* ダーティノードのマーク
+  * @memberof nz.Graph#
+  * @method markDirty
+  * @param {Object} node
+  ###
   markDirty: (node) ->
-    #if @dirtyNodes.indexOf(node) < 0
-    #  @dirtyNodes.push node
     return
 
-  ###* ラップクラスの削除 ###
+  ###* ラップクラスの削除
+  * @memberof nz.Graph#
+  * @method cleanWrap
+  ###
   cleanWrap: ->
     @wrapNodes = {}
     return
 
-  ###* ラップクラスの作成
-  * @memberof nz.ai.Param#
-  * @method findNearTarget
+  ###* ラップクラスの取得
+  * @memberof nz.Graph#
+  * @method getWrap
   ###
-  createWrap: (x,y,d) ->
+  getWrap: (x,y,d) ->
     key = "#{x}-#{y}"
     if @wrapNodes[key]?
       return @wrapNodes[key]
     unless d?
-      key = "#{x}-#{y}"
       unless @wrapNodes[key]?
         @wrapNodes[key] = new nz.GridNodeWrap(@grid[x][y])
         astar.cleanNode(@wrapNodes[key])
@@ -86,7 +90,7 @@ class nz.Graph
 
   _addWrap: (ret,x,y,d) ->
     if(@grid[x]?[y]?)
-      ret.push @createWrap(x,y,d)
+      ret.push @getWrap(x,y,d)
     return
 
   neighbors: (wrap) ->
@@ -174,8 +178,8 @@ class nz.Graph
 
   searchRoute: (sd,sx,sy,ex,ey,op={}) ->
     route = []
-    start = @createWrap sx,sy,sd
-    end   = @createWrap ex,ey
+    start = @getWrap sx,sy,sd
+    end   = @getWrap ex,ey
     # 壁じゃなかったら探索
     if (not end.isWall()) or op.closest
 
@@ -279,6 +283,12 @@ nz.Graph.distance = (c1,c2) ->
 nz.Graph.directionCost = (direction1,direction2) ->
   Math.abs(3 - Math.abs((direction2 - direction1 - 3) % 6))
 
+
+_BACK_POS = [
+  [[ 0, 1],[-1, 1],[-1, 0],[ 0,-1],[ 1, 0],[ 1, 1]]
+  [[ 0, 1],[-1, 0],[-1,-1],[ 0,-1],[ 1,-1],[ 1, 0]]
+]
+
 ###* 方向に対する後ろの座標を取得する
 * @param {number|Object} mapx X座標
 * @param {number}        mapy Y座標
@@ -291,40 +301,9 @@ nz.Graph.backPosition = (mapx,mapy,direction) ->
       mapy
       direction
     } = mapx
-  if mapx % 2 == 0
-    switch direction
-      when 0
-        mapy += 1
-      when 1
-        mapx -= 1
-        mapy += 1
-      when 2
-        mapx -= 1
-      when 3
-        mapy -= 1
-      when 4
-        mapx += 1
-      when 5
-        mapx += 1
-        mapy += 1
-  else
-    switch direction
-      when 0
-        mapy += 1
-      when 1
-        mapx -= 1
-      when 2
-        mapx -= 1
-        mapy -= 1
-      when 3
-        mapy -= 1
-      when 4
-        mapx += 1
-        mapy -= 1
-      when 5
-        mapx += 1
+  t = mapx % 2
   return {
-    mapx:      mapx
-    mapy:      mapy
+    mapx:      mapx + _BACK_POS[t][direction][0]
+    mapy:      mapy + _BACK_POS[t][direction][1]
     direction: direction
   }

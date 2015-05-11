@@ -16,9 +16,9 @@ class nz.ai.SampleAI
           # 距離が１以下で後ろに移動ができる場合
           return param.distance <= 1 and param.checkBackPosition()
         setup: (param) ->
-          # １歩下がりつつ攻撃
-          param.target = param.backPosition
+          # 下がりつつ攻撃
           param.setAttackCommand()
+          param.setBackCommand(10)
           return true
       }
       {
@@ -28,6 +28,7 @@ class nz.ai.SampleAI
         setup: (param) ->
           # ターゲットに移動攻撃
           param.setAttackCommand()
+          param.setMoveCommand()
           return true
       }
       {
@@ -37,6 +38,7 @@ class nz.ai.SampleAI
         setup: (param) ->
           # 移動射撃
           param.setShotCommand()
+          param.setMoveCommand()
           return true
       }
       {

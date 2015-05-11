@@ -11,6 +11,20 @@ DIRECTIONS = nz.system.character.directions
 
 class nz.Utils
 
+  ###* オブジェクトマージ
+  * @param {Object} r 受け側オブジェクト
+  * @param {Object} o マージオブジェクト
+  ###
+  marge: (r,o) ->
+    for k,v of o
+      if typeof v is 'object'
+        r[k] = {} unless r[k]?
+        @marge r[k], v
+      else
+        r[k] = v
+    return r
+
+
   ###* 経路探索
   * @param {nz.Graph} graph  グラフ（マップ情報）
   * @param {Object}   source 開始位置のキャラクター({mapx,mapy,direction})

@@ -58,12 +58,12 @@ tm.define 'nz.SceneTitleMenu',
       mapId: 1
       controlTeam: ['teamA']
       characters: [
-        nz.Character(name:'キャラクター1',team:'teamA')
-        nz.Character(name:'キャラクター2',team:'teamA')
-        nz.Character(name:'キャラクター3',team:'teamA')
-        nz.Character(name:'キャラクター4',team:'teamB')
-        nz.Character(name:'キャラクター5',team:'teamB')
-        nz.Character(name:'キャラクター6',team:'teamB')
+        new nz.Character(name:'キャラクター1',team:'teamA')
+        new nz.Character(name:'キャラクター2',team:'teamA')
+        new nz.Character(name:'キャラクター3',team:'teamA')
+        new nz.Character(name:'キャラクター4',team:'teamB')
+        new nz.Character(name:'キャラクター5',team:'teamB')
+        new nz.Character(name:'キャラクター6',team:'teamB')
       ]
     )
     return
@@ -90,12 +90,12 @@ tm.define 'nz.SceneTitleMenu',
       mapId: 0
       controlTeam: ['teamA']
       characters: [
-        nz.Character(name:'キャラクター1',team:'teamA',spriteSheet:'character_test')
-        nz.Character(name:'キャラクター2',team:'teamA',spriteSheet:'character_test')
-        nz.Character(name:'キャラクター3',team:'teamA',spriteSheet:'character_test')
-        nz.Character(name:'キャラクター4',team:'teamB',spriteSheet:'character_test')
-        nz.Character(name:'キャラクター5',team:'teamB',spriteSheet:'character_test')
-        nz.Character(name:'キャラクター6',team:'teamB',spriteSheet:'character_test')
+        new nz.Character(name:'キャラクター1',team:'teamA',spriteSheet:'character_test')
+        new nz.Character(name:'キャラクター2',team:'teamA',spriteSheet:'character_test')
+        new nz.Character(name:'キャラクター3',team:'teamA',spriteSheet:'character_test')
+        new nz.Character(name:'キャラクター4',team:'teamB',spriteSheet:'character_test')
+        new nz.Character(name:'キャラクター5',team:'teamB',spriteSheet:'character_test')
+        new nz.Character(name:'キャラクター6',team:'teamB',spriteSheet:'character_test')
       ]
     )
     return

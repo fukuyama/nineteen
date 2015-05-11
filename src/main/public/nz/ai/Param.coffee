@@ -27,6 +27,18 @@ class nz.ai.Param
   ###* 設定対象を含む戦闘に参加しているキャラクターの配列
   * @var {Array<nz.Character>} nz.ai.Param#characters
   ###
+  ###* 設定対象を含まない味方キャラクターの配列
+  * @var {Array<nz.Character>} nz.ai.Param#friends
+  ###
+  ###* 敵キャラクターの配列
+  * @var {Array<nz.Character>} nz.ai.Param#targets
+  ###
+  ###* 対象キャラクター／場所。主にアクション設定時の対象として使用される。初期値は一番近い敵キャラクター。
+  * @var {Array<nz.Character|Object>} nz.ai.Param#target
+  ###
+  ###* 対象キャラクター／場所までの距離。初期値は一番近い敵キャラクターまでの距離。
+  * @var {Array<nz.Character|Object>} nz.ai.Param#distance
+  ###
   ###* マップ情報
   * @var {nz.Graph} nz.ai.Param#graph
   ###
@@ -52,31 +64,6 @@ class nz.ai.Param
   ###
   searchRoute: nz.utils.searchRoute
 
-  ###*
-  * @memberof nz.ai.Param#
-  * @method distance
-  ###
-  distance: nz.Graph.distance
-
-  ###*
-  * @memberof nz.ai.Param#
-  * @method direction
-  ###
-  direction: nz.Graph.direction
-
-  ###*
-  * @memberof nz.ai.Param#
-  * @method checkDirectionRange
-  ###
-  checkDirectionRange: nz.utils.checkDirectionRange
-
-  ###* 後ろの座標を取得する
-  * @memberof nz.ai.Param#
-  * @method backPosition
-  * @param {Object} character 基準になる位置情報
-  ###
-  backPosition: nz.Graph.backPosition
-
   ###* 近くの敵をターゲットとして検索する
   * @memberof nz.ai.Param#
   * @method findNearTarget
@@ -87,7 +74,7 @@ class nz.ai.Param
       distance: 99
     }
     for t in @targets
-      d = @distance(@character,t)
+      d = nz.Graph.distance(@character,t)
       if d < result.distance
         result.distance = d
         result.target = t
@@ -130,14 +117,14 @@ class nz.ai.Param
       callback: (res,r) ->
         self.rotation = r if res
     }
-    return @checkDirectionRange(data)
+    return nz.utils.checkDirectionRange(data)
 
-  ###* 後ろに移動できるか確認する
+  ###* 後ろに移動できるか確認する(コスト計算含む)
   * @memberof nz.ai.Param#
   * @method checkBackPosition
   ###
   checkBackPosition: ->
-    r = @backPosition @character
+    r = nz.Graph.backPosition @character
     node = @graph.grid[r.mapx][r.mapy]
     unless node?
       return false
@@ -146,6 +133,8 @@ class nz.ai.Param
     for c in @characters
       if c.mapx is r.mapx and c.mapy is r.mapy
         return false
+    if @character.getRemnantAp() < node.getCost(r)
+      return false
     return true
 
   ###* 移動コマンドを設定する
@@ -162,9 +151,7 @@ class nz.ai.Param
   * @method setAttackCommand
   ###
   setAttackCommand: ->
-    route = @searchRoute @graph,@character,@target,@characters
     @character.setAttackCommand @turn
-    @character.addMoveCommand @turn,route
     return
 
   ###* 射撃コマンドを設定する
@@ -172,7 +159,24 @@ class nz.ai.Param
   * @method setShotCommand
   ###
   setShotCommand: ->
-    route = @searchRoute @graph,@character,@target,@characters
     @character.addShotCommand @turn,@rotation
-    @character.addMoveCommand @turn,route
+    return
+
+  ###* 後ろに移動するコマンドを設定する
+  * @memberof nz.ai.Param#
+  * @method setBackCommand
+  * @param {number} num 後退する歩数
+  ###
+  setBackCommand: (num=1) ->
+    pos = nz.Graph.backPosition @character
+    for i in [0 .. num]
+      if @checkBackPosition()
+        route = {
+          mapx: pos.mapx
+          mapy: pos.mapy
+          cost: cost
+          back: true
+          direction: pos.direction
+        }
+        @character.addMoveCommand @turn, [route]
     return
