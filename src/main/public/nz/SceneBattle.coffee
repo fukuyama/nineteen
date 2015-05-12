@@ -196,8 +196,8 @@ tm.define 'nz.SceneBattle',
           name: 'Direction'
           func: @_addRotateCommand.bind @
       if rap >= ACTION_COST.attack
-        attack = sc.isAttackAction(@turn)
-        shot   = sc.isShotAction(@turn)
+        attack = sc.isAttackCommand(@turn)
+        shot   = sc.isShotCommand(@turn)
         if not attack and not shot
           menu.push
             name: 'Attack'

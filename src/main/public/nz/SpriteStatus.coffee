@@ -22,7 +22,7 @@ tm.define 'nz.SpriteStatus',
     @interactive    = true
     @checkHierarchy = true
 
-    @bgColor = 'blanchedalmond'
+    @bgColor         = 'blanchedalmond'
     gaugebBrderColor = 'gray'
 
     @fromJSON
@@ -101,23 +101,23 @@ tm.define 'nz.SpriteStatus',
           animationFlag: false
           _maxValue:     @character.ap
 
-    #
-    @on 'refreshStatus', (e) ->
-      {
-        turn
-      } = e
-      ap = @character.ap - @character.getActionCost(turn)
-      text = 'Action: '
-      if @detail
-        actions = []
-        actions.push 'Attack' if @character.isAttackAction(turn)
-        actions.push 'Shot'   if @character.isShotAction(turn)
-        actions.push 'Move'   if @character.isMoveAction(turn)
-        text += actions.join(' & ')
-        text += " (#{ap})"
-      else
-        text += '???'
-      @action.text = text
-      @apGauge.value = ap
-      @hpGauge.value = @character.hp
-      # / @character.ap * 100
+    @on 'refreshStatus', @refreshStatus
+
+  refreshStatus: (param) ->
+    {
+      turn
+    } = param
+    ap = @character.ap - @character.getActionCost(turn)
+    text = 'Action: '
+    if @detail
+      actions = []
+      actions.push 'Attack' if @character.isAttackCommand(turn)
+      actions.push 'Shot'   if @character.isShotCommand(turn)
+      actions.push 'Move'   if @character.isMoveCommand(turn)
+      text += actions.join(' & ')
+      text += " (#{ap})"
+    else
+      text += '???'
+    @action.text = text
+    @apGauge.value = ap
+    @hpGauge.value = @character.hp

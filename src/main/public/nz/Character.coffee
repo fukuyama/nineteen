@@ -3,6 +3,15 @@
 * キャラクター情報
 ###
 
+###* nineteen namespace.
+* @namespace nz
+###
+
+# node.js と ブラウザでの this.nz を同じインスタンスにする
+_g = window ? global
+nz = _g.nz = _g.nz ? {}
+_g = undefined
+
 DIRECTIONS = nz.system.character.directions
 ACTION_COST = nz.system.character.action_cost
 
@@ -60,8 +69,13 @@ class nz.Character
       @clearAction i
     @commands[i]
 
+  ###* AI用キャラクター情報
+  * @param {number} i 戦闘ターン数
+  * @return {nz.Character} AI用のキャラクターインスタンス
+  * @memberof nz.Character#
+  * @method createAiInfo
+  ###
   createAiInfo: (i) ->
-    # nz.Character JSON.parse(JSON.stringify(c)
     info = {
       name:      @name
       hp:        @hp
@@ -71,10 +85,10 @@ class nz.Character
       mapy:      @mapy
       direction: @direction
       team:      @team
-      move:      JSON.parse(JSON.stringify(@move  ))
-      weapon:    JSON.parse(JSON.stringify(@weapon))
-      shot:      JSON.parse(JSON.stringify(@shot  ))
     }
+    nz.utils.marge info.move, @move
+    nz.utils.marge info.weapon, @weapon
+    nz.utils.marge info.shot, @shot
     return new nz.Character(info)
 
   ###* アクション削除
@@ -98,11 +112,11 @@ class nz.Character
     command = @_command i
     command.actions = []
     command.cost = 0
-    if @isAttackAction(i)
+    if @isAttackCommand(i)
       command.cost += ACTION_COST.attack
     return
 
-  ###* 射撃アクション削除
+  ###* 射撃アクションを削除
   * @param {number} i 戦闘ターン数
   * @memberof nz.Character#
   * @method clearShotAction
@@ -117,19 +131,25 @@ class nz.Character
     command.actions = actions
     return
 
-  ###* アクションコストの取得
+  ###* アクションコストを取得
   * @param {number} i 戦闘ターン数
+  * @memberof nz.Character#
+  * @method getActionCost
   ###
   getActionCost: (i) -> @_command(i).cost
 
-  ###* 残りのアクションポイント
+  ###* 残りのアクションポイントを取得
   * @param {number} i 戦闘ターン数
+  * @memberof nz.Character#
+  * @method getRemnantAp
   ###
   getRemnantAp: (i) -> @ap - @getActionCost(i)
 
-  ###* 移動ルートの追加
+  ###* 移動コマンドを追加
   * @param {number} i 戦闘ターン数
   * @param {Array} route 移動ルート
+  * @memberof nz.Character#
+  * @method addMoveCommand
   ###
   addMoveCommand: (i,route) ->
     command = @_command i
@@ -152,10 +172,12 @@ class nz.Character
     command.cost = prev + cost
     return @
 
-  ###* 方向転換の追加
+  ###* 方向転換コマンドを追加
   * @param {number} i 戦闘ターン数
   * @param {number} direction1 元の向き
   * @param {number} rotateIndex 方向転換する量(マイナスは反時計回り)
+  * @memberof nz.Character#
+  * @method addRotateCommand
   ###
   addRotateCommand:  (i,direction1,rotateIndex) ->
     command = @_command i
@@ -167,9 +189,11 @@ class nz.Character
       command.cost += ACTION_COST.rotate
     return @
 
-  ###* 攻撃モードの設定
+  ###* 攻撃コマンドを設定
   * @param {number}  i    戦闘ターン数
   * @param {boolean} flag 攻撃する場合 true
+  * @memberof nz.Character#
+  * @method setAttackCommand
   ###
   setAttackCommand: (i,flag = true) ->
     if @ap >= ACTION_COST.attack
@@ -182,9 +206,11 @@ class nz.Character
         command.attack = flag
     return @
 
-  ###* 射撃角度の追加
+  ###* 射撃コマンドを追加
   * @param {number} i        戦闘ターン数
   * @param {number} rotation 射撃角度
+  * @memberof nz.Character#
+  * @method addShotCommand
   ###
   addShotCommand: (i,rotation) ->
     command = @_command i
@@ -196,29 +222,35 @@ class nz.Character
     command.cost += ACTION_COST.shot
     return @
 
-  ###* 射撃アクションを行っているかどうか
+  ###* 射撃コマンドを行っているかどうか
   * @param {number} i 戦闘ターン数
   * @return {boolean} 射撃アクションを設定していたら true
+  * @memberof nz.Character#
+  * @method isShotCommand
   ###
-  isShotAction: (i) ->
+  isShotCommand: (i) ->
     command = @_command i
     for action in command.actions when action.shot?
       return true
     return false
 
-  ###* 攻撃アクションを行っているかどうか
+  ###* 攻撃コマンドを行っているかどうか
   * @param {number} i 戦闘ターン数
   * @return {boolean} 攻撃アクションを設定していたら true
+  * @memberof nz.Character#
+  * @method isAttackCommand
   ###
-  isAttackAction: (i) ->
+  isAttackCommand: (i) ->
     command = @_command i
     return command.attack
 
-  ###* 移動アクションを行っているかどうか
+  ###* 移動コマンドを行っているかどうか
   * @param {number} i 戦闘ターン数
   * @return {boolean} 移動アクションを設定していたら true
+  * @memberof nz.Character#
+  * @method isMoveCommand
   ###
-  isMoveAction: (i) ->
+  isMoveCommand: (i) ->
     command = @_command i
     for action in command.actions when action.move?
       return true
