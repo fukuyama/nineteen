@@ -196,14 +196,16 @@ class nz.Character
   * @method setAttackCommand
   ###
   setAttackCommand: (i,flag = true) ->
-    if @ap >= ACTION_COST.attack
-      command = @_command i
-      if command.attack != flag
-        if flag
-          command.cost += ACTION_COST.attack
-        else
-          command.cost -= ACTION_COST.attack
-        command.attack = flag
+    if command.attack == flag
+      return @
+    command = @_command i
+    if flag
+      if @ap >= ACTION_COST.attack
+        command.cost += ACTION_COST.attack
+        command.attack = true
+    else
+      command.cost -= ACTION_COST.attack
+      command.attack = false
     return @
 
   ###* 射撃コマンドを追加
@@ -222,9 +224,9 @@ class nz.Character
     command.cost += ACTION_COST.shot
     return @
 
-  ###* 射撃コマンドを行っているかどうか
+  ###* 射撃コマンドが設定されているかどうか
   * @param {number} i 戦闘ターン数
-  * @return {boolean} 射撃アクションを設定していたら true
+  * @return {boolean} 射撃コマンドを設定していたら true
   * @memberof nz.Character#
   * @method isShotCommand
   ###
@@ -234,9 +236,9 @@ class nz.Character
       return true
     return false
 
-  ###* 攻撃コマンドを行っているかどうか
+  ###* 攻撃コマンドが設定されているかどうか
   * @param {number} i 戦闘ターン数
-  * @return {boolean} 攻撃アクションを設定していたら true
+  * @return {boolean} 攻撃コマンドを設定していたら true
   * @memberof nz.Character#
   * @method isAttackCommand
   ###
@@ -244,9 +246,9 @@ class nz.Character
     command = @_command i
     return command.attack
 
-  ###* 移動コマンドを行っているかどうか
+  ###* 移動コマンドが設定されているかどうか
   * @param {number} i 戦闘ターン数
-  * @return {boolean} 移動アクションを設定していたら true
+  * @return {boolean} 移動コマンドを設定していたら true
   * @memberof nz.Character#
   * @method isMoveCommand
   ###

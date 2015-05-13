@@ -46,6 +46,11 @@ class nz.ai.Param
   ###* コンストラクタ.
   * @classdesc AIパラメータ.
   * @constructor nz.ai.Param
+  * @param {Object}              param            初期化パラメータ
+  * @param {nz.Character}        param.character  AI対象キャラクター
+  * @param {Array<nz.Character>} param.characters AI対象外の戦闘参加キャラクター
+  * @param {nz.Graph}            param.graph      マップ情報
+  * @param {number}              param.turn       現在の戦闘ターン数
   ###
   constructor: (param) ->
     {
@@ -58,11 +63,9 @@ class nz.ai.Param
     @setNearTarget()
     return
 
-  ###*
-  * @memberof nz.ai.Param#
-  * @method findNearTarget
-  ###
-  searchRoute: nz.utils.searchRoute
+  findTarget: (key,len=1) ->
+    result = null
+    return result
 
   ###* 近くの敵をターゲットとして検索する
   * @memberof nz.ai.Param#
@@ -142,7 +145,7 @@ class nz.ai.Param
   * @method setMoveCommand
   ###
   setMoveCommand: ->
-    route = @searchRoute @graph,@character,@target,@characters
+    route = nz.utils.searchRoute @graph,@character,@target,@characters
     @character.addMoveCommand @turn,route
     return
 
