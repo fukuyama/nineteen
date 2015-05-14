@@ -283,27 +283,65 @@ nz.Graph.distance = (c1,c2) ->
 nz.Graph.directionCost = (direction1,direction2) ->
   Math.abs(3 - Math.abs((direction2 - direction1 - 3) % 6))
 
-
-_BACK_POS = [
-  [[ 0, 1],[-1, 1],[-1, 0],[ 0,-1],[ 1, 0],[ 1, 1]]
-  [[ 0, 1],[-1, 0],[-1,-1],[ 0,-1],[ 1,-1],[ 1, 0]]
+# mapx = _FRONT_POS[mapx % 2][direction][0]
+# mapy = _FRONT_POS[mapx % 2][direction][1]
+_FRONT_POS = [
+  [[ 0,-1],[ 1, 0],[ 1, 1],[ 0, 1],[-1, 1],[-1, 0]]
+  [[ 0,-1],[ 1,-1],[ 1, 0],[ 0, 1],[-1, 0],[-1,-1]]
 ]
 
-###* 方向に対する後ろの座標を取得する
-* @param {number|Object} mapx X座標
-* @param {number}        mapy Y座標
-* @param {number}        direction 方向
+###* 向いている目の前の座標を取得する
+* @param {Object} p           パラメータ
+* @param {number} p.mapx      X座標
+* @param {number} p.mapy      Y座標
+* @param {number} p.direction 方向
 ###
-nz.Graph.backPosition = (mapx,mapy,direction) ->
-  if typeof mapx is 'object'
-    {
-      mapx
-      mapy
-      direction
-    } = mapx
-  t = mapx % 2
+nz.Graph.frontPosition = (p) ->
+  t = p.mapx % 2
   return {
-    mapx:      mapx + _BACK_POS[t][direction][0]
-    mapy:      mapy + _BACK_POS[t][direction][1]
-    direction: direction
+    mapx:      p.mapx + _FRONT_POS[t][p.direction][0]
+    mapy:      p.mapy + _FRONT_POS[t][p.direction][1]
+    direction: p.direction
   }
+
+###* 向いている方向に対する後ろの座標を取得する
+* @param {Object} p           パラメータ
+* @param {number} p.mapx      X座標
+* @param {number} p.mapy      Y座標
+* @param {number} p.direction 方向
+###
+nz.Graph.backPosition = (p) ->
+  r = nz.Graph.frontPosition {
+    mapx: p.mapx
+    mapy: p.mapy
+    direction: (p.direction + 3) % 6
+  }
+  r.direction = p.direction
+  return r
+
+###* ヘックス状のライン座標を取得する
+* @param {Object} p           パラメータ
+* @param {number} p.mapx      X座標
+* @param {number} p.mapy      Y座標
+* @param {number} p.direction 方向
+* @param {number} p.distance  距離
+* @return {Array<Object>} 座標配列
+###
+nz.Graph.hexLine = (p) ->
+  ret = []
+  for n in [0 .. p.distance]
+    ret.push p
+    p = @frontPosition(p)
+  return ret
+
+###* 方向に対する座標エリアを取得する。
+* 左右１方向と設定された距離の扇形範囲座標。
+* @param {Object} p           パラメータ
+* @param {number} p.mapx      X座標
+* @param {number} p.mapy      Y座標
+* @param {number} p.direction 方向
+* @param {number} p.distance  距離
+* @return {Array<Object>} 座標配列
+###
+nz.Graph.frontArea = (p) ->
+  return

@@ -200,12 +200,69 @@ describe 'GraphTest', () ->
         nz.Graph.distance(s,{mapx:9,mapy:5}).should.equals 3,'95'
         nz.Graph.distance(s,{mapx:9,mapy:4}).should.equals 3,'94'
         nz.Graph.distance(s,{mapx:9,mapy:3}).should.equals 4,'93'
-    describe 'backPosition', ->
+    describe 'frontPosition', ->
       it '5,5,0', ->
-        r = nz.Graph.backPosition(5,5,0)
+        r = nz.Graph.frontPosition direction:0,mapx:5,mapy:5
+        r.mapx.should.equals 5,'5'
+        r.mapy.should.equals 4,'4'
+        r.direction.should.equals 0,'0'
+      it '6,5,0', ->
+        r = nz.Graph.frontPosition direction:0,mapx:6,mapy:5
+        r.mapx.should.equals 6,'6'
+        r.mapy.should.equals 4,'4'
+        r.direction.should.equals 0,'0'
+      it '5,5,1', ->
+        r = nz.Graph.frontPosition direction:1,mapx:5,mapy:5
+        r.mapx.should.equals 6,'6'
+        r.mapy.should.equals 4,'4'
+        r.direction.should.equals 1,'1'
+      it '6,5,1', ->
+        r = nz.Graph.frontPosition direction:1,mapx:6,mapy:5
+        r.mapx.should.equals 7,'7'
+        r.mapy.should.equals 5,'5'
+        r.direction.should.equals 1,'1'
+      it '5,5,2', ->
+        r = nz.Graph.frontPosition direction:2,mapx:5,mapy:5
+        r.mapx.should.equals 6,'6'
+        r.mapy.should.equals 5,'5'
+        r.direction.should.equals 2,'2'
+      it '6,5,2', ->
+        r = nz.Graph.frontPosition direction:2,mapx:6,mapy:5
+        r.mapx.should.equals 7,'7'
+        r.mapy.should.equals 6,'6'
+        r.direction.should.equals 2,'2'
+      it '5,5,3', ->
+        r = nz.Graph.frontPosition direction:3,mapx:5,mapy:5
         r.mapx.should.equals 5,'5'
         r.mapy.should.equals 6,'6'
-        r.direction.should.equals 0,'0'
+        r.direction.should.equals 3,'3'
+      it '6,5,3', ->
+        r = nz.Graph.frontPosition direction:3,mapx:6,mapy:5
+        r.mapx.should.equals 6,'6'
+        r.mapy.should.equals 6,'6'
+        r.direction.should.equals 3,'3'
+      it '5,5,4', ->
+        r = nz.Graph.frontPosition direction:4,mapx:5,mapy:5
+        r.mapx.should.equals 4,'4'
+        r.mapy.should.equals 5,'5'
+        r.direction.should.equals 4,'4'
+      it '6,5,4', ->
+        r = nz.Graph.frontPosition direction:4,mapx:6,mapy:5
+        r.mapx.should.equals 5,'5'
+        r.mapy.should.equals 6,'6'
+        r.direction.should.equals 4,'4'
+      it '5,5,5', ->
+        r = nz.Graph.frontPosition direction:5,mapx:5,mapy:5
+        r.mapx.should.equals 4,'4'
+        r.mapy.should.equals 4,'4'
+        r.direction.should.equals 5,'5'
+      it '6,5,5', ->
+        r = nz.Graph.frontPosition direction:5,mapx:6,mapy:5
+        r.mapx.should.equals 5,'5'
+        r.mapy.should.equals 5,'5'
+        r.direction.should.equals 5,'5'
+    describe 'backPosition', ->
+      it '5,5,0', ->
         r = nz.Graph.backPosition direction:0,mapx:5,mapy:5
         r.mapx.should.equals 5,'5'
         r.mapy.should.equals 6,'6'
@@ -848,3 +905,18 @@ describe 'GraphTest', () ->
             ]
           }
         )
+    describe 'hexLine', ->
+      it '5,5,0,1', ->
+        r = nz.Graph.hexLine mapx:5,mapy:5,direction:0,distance:1
+        r.length.should.equals 2
+        for a,i in [[5,5,0],[5,4,0]]
+          r[i].mapx.should.equals      a[0],"#{i},#{a[0]}"
+          r[i].mapy.should.equals      a[1],"#{i},#{a[1]}"
+          r[i].direction.should.equals a[2],"#{i},#{a[2]}"
+      it '5,5,0,2', ->
+        r = nz.Graph.hexLine mapx:5,mapy:5,direction:0,distance:2
+        r.length.should.equals 3
+        for a,i in [[5,5,0],[5,4,0],[5,3,0]]
+          r[i].mapx.should.equals      a[0],"#{i},#{a[0]}"
+          r[i].mapy.should.equals      a[1],"#{i},#{a[1]}"
+          r[i].direction.should.equals a[2],"#{i},#{a[2]}"
