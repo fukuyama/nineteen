@@ -12,6 +12,25 @@ _g = window ? global
 nz = _g.nz = _g.nz ? {}
 _g = undefined
 
+_NEIGHBORS = [
+  [
+    [[ 0,-1, 0],[ 0, 0, 5],[ 0, 0, 1],[ 0, 1, 0]]
+    [[ 1, 0, 1],[ 0, 0, 0],[ 0, 0, 2],[-1, 1, 1]]
+    [[ 1, 1, 2],[ 0, 0, 1],[ 0, 0, 3],[-1, 0, 2]]
+    [[ 0, 1, 3],[ 0, 0, 2],[ 0, 0, 4],[ 0,-1, 3]]
+    [[-1, 1, 4],[ 0, 0, 3],[ 0, 0, 5],[ 1, 0, 4]]
+    [[-1, 0, 5],[ 0, 0, 4],[ 0, 0, 0],[ 1, 1, 5]]
+  ]
+  [
+    [[ 0,-1, 0],[ 0, 0, 5],[ 0, 0, 1],[ 0, 1, 0]]
+    [[ 1,-1, 1],[ 0, 0, 0],[ 0, 0, 2],[-1, 0, 1]]
+    [[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 3],[-1,-1, 2]]
+    [[ 0, 1, 3],[ 0, 0, 2],[ 0, 0, 4],[ 0,-1, 3]]
+    [[-1, 0, 4],[ 0, 0, 3],[ 0, 0, 5],[ 1,-1, 4]]
+    [[-1,-1, 5],[ 0, 0, 4],[ 0, 0, 0],[ 1, 0, 5]]
+  ]
+]
+
 class nz.Graph
 
   ###* コンストラクタ.
@@ -88,83 +107,13 @@ class nz.Graph
     @wrapNodes[key]
 
 
-  _addWrap: (ret,x,y,d) ->
-    if(@grid[x]?[y]?)
-      ret.push @getWrap(x,y,d)
-    return
-
   neighbors: (wrap) ->
     ret = []
-    x = wrap.mapx
-    y = wrap.mapy
-    # console.log "neighbors #{x},#{y},#{wrap.direction}"
-
-    if x % 2 == 0
-      switch wrap.direction
-        when 0
-          @_addWrap ret,x,y-1,wrap.direction
-          @_addWrap ret,x,y,5
-          @_addWrap ret,x,y,1
-          @_addWrap ret,x,y+1,wrap.direction
-        when 1
-          @_addWrap ret,x+1,y,wrap.direction
-          @_addWrap ret,x,y,0
-          @_addWrap ret,x,y,2
-          @_addWrap ret,x-1,y+1,wrap.direction
-        when 2
-          @_addWrap ret,x+1,y+1,wrap.direction
-          @_addWrap ret,x,y,1
-          @_addWrap ret,x,y,3
-          @_addWrap ret,x-1,y,wrap.direction
-        when 3
-          @_addWrap ret,x,y+1,wrap.direction
-          @_addWrap ret,x,y,2
-          @_addWrap ret,x,y,4
-          @_addWrap ret,x,y-1,wrap.direction
-        when 4
-          @_addWrap ret,x-1,y+1,wrap.direction
-          @_addWrap ret,x,y,3
-          @_addWrap ret,x,y,5
-          @_addWrap ret,x+1,y,wrap.direction
-        when 5
-          @_addWrap ret,x-1,y,wrap.direction
-          @_addWrap ret,x,y,4
-          @_addWrap ret,x,y,0
-          @_addWrap ret,x+1,y+1,wrap.direction
-    else
-      switch wrap.direction
-        when 0
-          @_addWrap ret,x,y-1,wrap.direction
-          @_addWrap ret,x,y,5
-          @_addWrap ret,x,y,1
-          @_addWrap ret,x,y+1,wrap.direction
-        when 1
-          @_addWrap ret,x+1,y-1,wrap.direction
-          @_addWrap ret,x,y,0
-          @_addWrap ret,x,y,2
-          @_addWrap ret,x-1,y,wrap.direction
-        when 2
-          @_addWrap ret,x+1,y,wrap.direction
-          @_addWrap ret,x,y,1
-          @_addWrap ret,x,y,3
-          @_addWrap ret,x-1,y-1,wrap.direction
-        when 3
-          @_addWrap ret,x,y+1,wrap.direction
-          @_addWrap ret,x,y,2
-          @_addWrap ret,x,y,4
-          @_addWrap ret,x,y-1,wrap.direction
-        when 4
-          @_addWrap ret,x-1,y,wrap.direction
-          @_addWrap ret,x,y,3
-          @_addWrap ret,x,y,5
-          @_addWrap ret,x+1,y-1,wrap.direction
-        when 5
-          @_addWrap ret,x-1,y-1,wrap.direction
-          @_addWrap ret,x,y,4
-          @_addWrap ret,x,y,0
-          @_addWrap ret,x+1,y,wrap.direction
-
-    # nz なノードを返す（６こ）
+    for [x,y,d] in _NEIGHBORS[wrap.mapx % 2][wrap.direction]
+      x += wrap.mapx
+      y += wrap.mapy
+      if @grid[x]?[y]?
+        ret.push @getWrap(x,y,d)
     return ret
 
   toString: ->
@@ -295,13 +244,15 @@ _FRONT_POS = [
 * @param {number} p.mapx      X座標
 * @param {number} p.mapy      Y座標
 * @param {number} p.direction 方向
+* @return {Object} 目の前の座標
 ###
 nz.Graph.frontPosition = (p) ->
+  d = (p.direction + 6) % 6
   t = p.mapx % 2
   return {
-    mapx:      p.mapx + _FRONT_POS[t][p.direction][0]
-    mapy:      p.mapy + _FRONT_POS[t][p.direction][1]
-    direction: p.direction
+    mapx:      p.mapx + _FRONT_POS[t][d][0]
+    mapy:      p.mapy + _FRONT_POS[t][d][1]
+    direction: d
   }
 
 ###* 向いている方向に対する後ろの座標を取得する
@@ -309,12 +260,13 @@ nz.Graph.frontPosition = (p) ->
 * @param {number} p.mapx      X座標
 * @param {number} p.mapy      Y座標
 * @param {number} p.direction 方向
+* @return {Object} 後ろの座標
 ###
 nz.Graph.backPosition = (p) ->
   r = nz.Graph.frontPosition {
     mapx: p.mapx
     mapy: p.mapy
-    direction: (p.direction + 3) % 6
+    direction: p.direction + 3
   }
   r.direction = p.direction
   return r
@@ -328,14 +280,13 @@ nz.Graph.backPosition = (p) ->
 * @return {Array<Object>} 座標配列
 ###
 nz.Graph.hexLine = (p) ->
-  ret = []
-  for n in [0 .. p.distance]
-    ret.push p
-    p = @frontPosition(p)
-  return ret
+  r = []
+  for n in [0 ... p.distance]
+    r.push (p = @frontPosition(p))
+  return r
 
 ###* 方向に対する座標エリアを取得する。
-* 左右１方向と設定された距離の扇形範囲座標。
+* 時計まわりに３０度のエリアを探す。
 * @param {Object} p           パラメータ
 * @param {number} p.mapx      X座標
 * @param {number} p.mapy      Y座標
@@ -344,4 +295,10 @@ nz.Graph.hexLine = (p) ->
 * @return {Array<Object>} 座標配列
 ###
 nz.Graph.frontArea = (p) ->
-  return
+  r = []
+  for a,i in @hexLine(p)
+    r.push a
+    a.direction += 2
+    a.distance = i + 1
+    Array.prototype.push.apply r, @hexLine(a)
+  return r

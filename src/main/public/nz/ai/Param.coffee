@@ -63,9 +63,44 @@ class nz.ai.Param
     @setNearTarget()
     return
 
-  findTarget: (key,len=1) ->
-    result = null
-    return result
+  _searchCharacters: (rotatedir, distance, characters, character = @character) ->
+    {
+      mapx
+      mapy
+      direction
+    } = character
+    nodes = nz.Graph.frontArea(
+      mapx:      mapx
+      mapy:      mapy
+      direction: direction + rotatedir
+      distance:  distance
+    )
+    r = []
+    for n in nodes
+      for c in characters
+        if n.mapx is c.mapx and n.mapy is c.mapy
+          r.push c
+    return r
+
+  ###* 敵の範囲検索
+  * @memberof nz.ai.Param#
+  * @method searchTargets
+  * @param {number} rotatedir 向いている方向に対する検索する回転方向
+  * @param {number} distance  検索距離
+  * @return {Array<nz.Character>} 見つかったキャラクター配列
+  ###
+  searchTargets: (rotatedir,distance) ->
+    return @_searchCharacters rotatedir,distance,@targets
+
+  ###* 味方の範囲検索
+  * @memberof nz.ai.Param#
+  * @method searchFriends
+  * @param {number} rotatedir 向いている方向に対する検索する回転方向
+  * @param {number} distance  検索距離
+  * @return {Array<nz.Character>} 見つかったキャラクター配列
+  ###
+  searchFriends: (rotatedir,distance) ->
+    return @_searchCharacters rotatedir,distance,@friends
 
   ###* 近くの敵をターゲットとして検索する
   * @memberof nz.ai.Param#
