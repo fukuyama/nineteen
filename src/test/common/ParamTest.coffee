@@ -34,7 +34,7 @@ describe 'nz.ai.ParamTest', () ->
   graph = new nz.Graph(mapdata)
   # ---
 
-  describe.skip 'findTarget', ->
+  describe.skip 'searchTargets', ->
     it 'front', ->
       characters[0].mapx = 5
       characters[0].mapy = 6
@@ -44,6 +44,6 @@ describe 'nz.ai.ParamTest', () ->
         graph:      graph
         turn:       1
       )
-      r = param.findTarget('front')
+      r = param.searchTargets(0,6)
       r.direction.should.equals 0
 
