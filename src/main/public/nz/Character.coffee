@@ -86,9 +86,9 @@ class nz.Character
       direction: @direction
       team:      @team
     }
-    nz.utils.marge info.move, @move
-    nz.utils.marge info.weapon, @weapon
-    nz.utils.marge info.shot, @shot
+    info.move   = nz.utils.marge {}, @move
+    info.weapon = nz.utils.marge {}, @weapon
+    info.shot   = nz.utils.marge {}, @shot
     return new nz.Character(info)
 
   ###* アクション削除
