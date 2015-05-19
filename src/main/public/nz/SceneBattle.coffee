@@ -134,9 +134,14 @@ tm.define 'nz.SceneBattle',
     return
 
   _pushScene: (scene) ->
-    @one 'pause',  -> @mapSprite.addChildTo scene
-    @one 'resume', -> @mapSprite.addChildTo @
+    @one 'pause',  ->
+      @mapSprite.addChildTo scene
+      @status.addChildTo scene
+    @one 'resume', ->
+      @mapSprite.addChildTo @
+      @status.addChildTo @
     @mapSprite.remove()
+    @status.remove()
     @app.pushScene scene
     return
 
@@ -255,6 +260,7 @@ tm.define 'nz.SceneBattle',
         start: @turn
         end: @turn
         mapSprite: @mapSprite
+        status: @status
       )
     )
     @one 'resume', -> @_startInputPhase()

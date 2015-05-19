@@ -29,9 +29,9 @@ class nz.Character
       ai:
         name: 'SampleAI'
         src: 'nz/ai/SampleAI.js'
-      maxhp: 100
-      hp: 100
-      sp: 100
+      maxhp: 10
+      hp: 10
+      sp: 10
       ap: 6
       mapx: -1
       mapy: -1
@@ -39,9 +39,9 @@ class nz.Character
       move:
         speed: 300
       armor:
-        defense: 20
+        defense: 1
       weapon:
-        damage: 50
+        damage: 4
         height: 48
         width: 12
         range:
@@ -50,7 +50,7 @@ class nz.Character
           anticlockwise: false
         speed: 600
       shot:
-        damage: 30
+        damage: 2
         range:
           start: 0
           end: -120
@@ -196,9 +196,9 @@ class nz.Character
   * @method setAttackCommand
   ###
   setAttackCommand: (i,flag = true) ->
+    command = @_command i
     if command.attack == flag
       return @
-    command = @_command i
     if flag
       if @ap >= ACTION_COST.attack
         command.cost += ACTION_COST.attack

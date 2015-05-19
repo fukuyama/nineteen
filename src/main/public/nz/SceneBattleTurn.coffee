@@ -4,7 +4,7 @@
 ###
 
 tm.define 'nz.SceneBattleTurn',
-  superClass: tm.app.Scene
+  superClass: nz.SceneBase
 
   init: (param) ->
     @superInit()
@@ -83,6 +83,10 @@ tm.define 'nz.SceneBattleTurn',
     flag = false
     flag |= character.action for character in @characterSprites
     return (not flag) and (@_balletCount == 0)
+
+  refreshStatus: ->
+    @fireAll('refreshStatus',turn:@turn)
+    return
 
   updateTurn: ->
     if @_isEndAllCharacterAction()

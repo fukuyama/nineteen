@@ -171,7 +171,7 @@ class nz.ai.Param
     for c in @characters
       if c.mapx is r.mapx and c.mapy is r.mapy
         return false
-    if @character.getRemnantAp() < node.getCost(r)
+    if @character.getRemnantAp() < node.weight + 1
       return false
     return true
 
@@ -206,8 +206,10 @@ class nz.ai.Param
   * @param {number} num 後退する歩数
   ###
   setBackCommand: (num=1) ->
-    pos = nz.Graph.backPosition @character
     for i in [0 .. num]
+      pos = nz.Graph.backPosition @character
+      node = @graph.grid[pos.mapx][pos.mapy]
+      cost = node.weight + 1
       if @checkBackPosition()
         route = {
           mapx: pos.mapx

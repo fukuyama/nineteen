@@ -18,7 +18,7 @@ class nz.GridNodeWrap
 
   ###*
   * 自分のノードに、指定されたノードから移動する（入る）場合のコスト
-  * @param wrap {GridNodeWrap} 移動元ノード
+  * @param wrap {nz.GridNodeWrap} 移動元ノード
   ###
   getCost: (wrap) ->
     cost = @node.weight
