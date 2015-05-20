@@ -213,7 +213,7 @@ tm.define 'nz.SceneBattle',
     if acost > 0
       menu.push
         name: 'Reset Action'
-        func: @_resetAction.bind @
+        func: @_resetCommand.bind @
     menu.push {name:'Close Menu'}
     @openMenuDialog
       title: sc.name
@@ -333,8 +333,8 @@ tm.define 'nz.SceneBattle',
     )
     return
 
-  _resetAction: ->
-    @selectCharacter.clearAction()
+  _resetCommand: ->
+    @selectCharacter.clearCommand()
     @selectCharacterSprite.clearGhost()
     @refreshStatus()
     return

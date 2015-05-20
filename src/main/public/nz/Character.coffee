@@ -66,7 +66,7 @@ class nz.Character
     i = @commands.length - 1 unless i?
     unless @commands[i]?
       @commands[i] = {}
-      @clearAction i
+      @clearCommand i
     @commands[i]
 
   ###* AI用キャラクター情報
@@ -91,43 +91,56 @@ class nz.Character
     info.shot   = nz.utils.marge {}, @shot
     return new nz.Character(info)
 
-  ###* アクション削除
+  ###* コマンド削除
   * @param {number} i 戦闘ターン数
   * @memberof nz.Character#
-  * @method clearAction
+  * @method clearCommand
   ###
-  clearAction: (i) ->
+  clearCommand: (i) ->
     command = @_command i
     command.attack = false
     command.actions = []
     command.cost = 0
     return
 
-  ###* 移動アクション削除
+  ###* 移動コマンド削除
   * @param {number} i 戦闘ターン数
   * @memberof nz.Character#
-  * @method clearMoveAction
+  * @method clearMoveCommand
   ###
-  clearMoveAction: (i) ->
+  clearMoveCommand: (i) ->
     command = @_command i
-    command.actions = []
-    command.cost = 0
-    if @isAttackCommand(i)
-      command.cost += ACTION_COST.attack
+    actions = []
+    for action in command.actions
+      if action.move? or action.rotate?
+        command.cost -= action.cost
+      else
+        actions.push action
+    command.actions = actions
     return
 
-  ###* 射撃アクションを削除
+  ###* 攻撃コマンドを削除
   * @param {number} i 戦闘ターン数
   * @memberof nz.Character#
-  * @method clearShotAction
+  * @method clearAttackCommand
   ###
-  clearShotAction: (i) ->
+  clearAttackCommand: (i) ->
+    @setAttackCommand i,false
+    return
+
+  ###* 射撃コマンドを削除
+  * @param {number} i 戦闘ターン数
+  * @memberof nz.Character#
+  * @method clearShotCommand
+  ###
+  clearShotCommand: (i) ->
     command = @_command i
     actions = []
     for action in command.actions
       if action.shot?
-        command.cost += ACTION_COST.shot
-      actions.push action
+        command.cost -= action.cost
+      else
+        actions.push action
     command.actions = actions
     return
 
@@ -168,6 +181,7 @@ class nz.Character
           r.speed *= 2
         command.actions.push
           move: r
+          cost: r.cost - cost
       cost = r.cost
     command.cost = prev + cost
     return @
@@ -186,6 +200,7 @@ class nz.Character
         rotate:
           direction: (direction1 + i + 6) % 6
           speed: @move.speed
+        cost: ACTION_COST.rotate
       command.cost += ACTION_COST.rotate
     return @
 
@@ -221,6 +236,7 @@ class nz.Character
         rotation: rotation
         distance: @shot.distance
         speed: @shot.speed
+      cost: ACTION_COST.shot
     command.cost += ACTION_COST.shot
     return @
 
