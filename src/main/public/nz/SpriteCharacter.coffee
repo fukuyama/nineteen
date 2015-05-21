@@ -53,15 +53,15 @@ tm.define 'nz.SpriteCharacter',
       @update = null
       @attack = false
       return
-
     @on 'hitWeapon', (e) ->
       @_hitWeapon(e.owner)
       return
-
     @on 'hitBallet', (e) ->
       @_hitBallet(e.owner,e.ballet)
       return
-
+    @on 'deadCharacter', (e) ->
+      @_deadCharacter(e.character)
+      return
     return
 
   isGhost: () -> (@alpha == 0.5) # 半透明かどうかで判断
@@ -302,6 +302,8 @@ tm.define 'nz.SpriteCharacter',
     @character.hp -= @character.armor.defense - attacker.shot.damage
     scene = @getRoot()
     scene.refreshStatus()
+    if @character.hp <= 0
+      scene.deadCharacter(@character)
     return
 
   _hitWeapon: (attacker) ->
@@ -309,4 +311,6 @@ tm.define 'nz.SpriteCharacter',
     @character.hp -= @character.armor.defense - attacker.weapon.damage
     scene = @getRoot()
     scene.refreshStatus()
+    if @character.hp <= 0
+      scene.deadCharacter(@character)
     return

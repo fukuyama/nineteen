@@ -1,6 +1,6 @@
 ###*
 * @file SceneBattleTurn.coffee
-* 戦闘ターンシーン
+* 戦闘ターン処理シーン
 ###
 
 tm.define 'nz.SceneBattleTurn',
@@ -86,6 +86,10 @@ tm.define 'nz.SceneBattleTurn',
 
   refreshStatus: ->
     @fireAll('refreshStatus',turn:@turn)
+    return
+
+  deadCharacter: (character) ->
+    @fireAll('deadCharacter',character:character)
     return
 
   updateTurn: ->

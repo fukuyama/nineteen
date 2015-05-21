@@ -30,9 +30,10 @@ class nz.Character
         name: 'SampleAI'
         src: 'nz/ai/SampleAI.js'
       maxhp: 10
+      maxsp: 10
+      maxap: 6
       hp: 10
       sp: 10
-      ap: 6
       mapx: -1
       mapy: -1
       direction: 0
@@ -78,9 +79,11 @@ class nz.Character
   createAiInfo: (i) ->
     info = {
       name:      @name
+      maxhp:     @maxhp
+      maxsp:     @maxsp
+      maxap:     @maxap
       hp:        @hp
       sp:        @sp
-      ap:        @ap
       mapx:      @mapx
       mapy:      @mapy
       direction: @direction
@@ -125,8 +128,12 @@ class nz.Character
   * @method clearAttackCommand
   ###
   clearAttackCommand: (i) ->
-    @setAttackCommand i,false
-    return
+    command = @_command i
+    unless command.attack
+      return @
+    command.cost -= ACTION_COST.attack
+    command.attack = false
+    return @
 
   ###* 射撃コマンドを削除
   * @param {number} i 戦闘ターン数
@@ -156,7 +163,7 @@ class nz.Character
   * @memberof nz.Character#
   * @method getRemnantAp
   ###
-  getRemnantAp: (i) -> @ap - @getActionCost(i)
+  getRemnantAp: (i) -> @maxap - @getActionCost(i)
 
   ###* 移動コマンドを追加
   * @param {number} i 戦闘ターン数
@@ -171,7 +178,7 @@ class nz.Character
       direction = a.rotate.direction
     prev = command.cost
     cost = 0
-    for r in route when prev + cost <= @ap
+    for r in route when prev + cost <= @maxap
       if direction != r.direction
         @addRotateCommand i, direction, DIRECTIONS[direction].rotateIndex[r.direction]
         direction = r.direction
@@ -206,21 +213,18 @@ class nz.Character
 
   ###* 攻撃コマンドを設定
   * @param {number}  i    戦闘ターン数
-  * @param {boolean} flag 攻撃する場合 true
   * @memberof nz.Character#
   * @method setAttackCommand
   ###
-  setAttackCommand: (i,flag = true) ->
-    command = @_command i
-    if command.attack == flag
+  setAttackCommand: (i) ->
+    if @isShotCommand i
       return @
-    if flag
-      if @ap >= ACTION_COST.attack
-        command.cost += ACTION_COST.attack
-        command.attack = true
-    else
-      command.cost -= ACTION_COST.attack
-      command.attack = false
+    command = @_command i
+    if command.attack
+      return @
+    if @maxap >= ACTION_COST.attack
+      command.cost += ACTION_COST.attack
+      command.attack = true
     return @
 
   ###* 射撃コマンドを追加
@@ -230,6 +234,8 @@ class nz.Character
   * @method addShotCommand
   ###
   addShotCommand: (i,rotation) ->
+    if @isAttackCommand i
+      return @
     command = @_command i
     command.actions.push
       shot:

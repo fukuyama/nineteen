@@ -22,7 +22,7 @@ tm.define 'nz.SceneBattleMoveCommand',
   searchRoute: (e)->
     op = {
       graph:
-        cost: @commandAp()
+        cost: @target.character.getRemnantAp(@turn)
     }
     r = nz.utils.searchRoute(
       @mapSprite.graph
@@ -33,9 +33,6 @@ tm.define 'nz.SceneBattleMoveCommand',
     )
     return r
 
-  commandAp: ->
-    @target.character.ap - @target.character.getActionCost(@turn)
-
   _end: (e) ->
     if @mapSprite.isBlink(e.mapx, e.mapy)
       @callback @searchRoute(e)
@@ -45,7 +42,7 @@ tm.define 'nz.SceneBattleMoveCommand',
 
   _over: (e) ->
     @mapSprite.clearBlink()
-    ap = @commandAp()
+    ap = @target.character.getRemnantAp(@turn)
     route = @searchRoute(e)
     for r in route when r.cost <= ap
       @mapSprite.blink(r.mapx,r.mapy)

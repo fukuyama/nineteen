@@ -17,7 +17,7 @@ tm.define 'nz.SpriteStatus',
 
     @width          = 32 * 5
     @height         = 32 * 2.5
-    @alpha          = 1.0
+    @alpha          = 0.5
     @boundingType   = 'rect'
     @interactive    = true
     @checkHierarchy = true
@@ -25,7 +25,7 @@ tm.define 'nz.SpriteStatus',
     @bgColor         = 'blanchedalmond'
     gaugebBrderColor = 'gray'
 
-    @fromJSON
+    form =
       children:
         bg:
           type:          'RoundRectangleShape'
@@ -86,20 +86,23 @@ tm.define 'nz.SpriteStatus',
           color:       'Cyan'
           bgColor:     @bgColor
           borderColor: gaugebBrderColor
-        apGauge:
-          type:          'tm.ui.GlossyGauge'
-          x:             8
-          y:             40
-          width:         @width - 16
-          height:        4
-          originX:       @originX
-          originY:       @originY
-          borderWidth:   1
-          color:         'red'
-          bgColor:       @bgColor
-          borderColor:   gaugebBrderColor
-          animationFlag: false
-          _maxValue:     @character.ap
+          _maxValue:     @character.mapsp
+    if @detail
+      form.children.apGauge =
+        type:          'tm.ui.GlossyGauge'
+        x:             8
+        y:             40
+        width:         @width - 16
+        height:        4
+        originX:       @originX
+        originY:       @originY
+        borderWidth:   1
+        color:         'red'
+        bgColor:       @bgColor
+        borderColor:   gaugebBrderColor
+        animationFlag: false
+        _maxValue:     @character.maxap
+    @fromJSON form
 
     @on 'refreshStatus', @refreshStatus
 
@@ -107,17 +110,18 @@ tm.define 'nz.SpriteStatus',
     {
       turn
     } = param
-    ap = @character.ap - @character.getActionCost(turn)
     text = 'Action: '
     if @detail
+      ap = @character.getRemnantAp(turn)
       actions = []
       actions.push 'Attack' if @character.isAttackCommand(turn)
       actions.push 'Shot'   if @character.isShotCommand(turn)
       actions.push 'Move'   if @character.isMoveCommand(turn)
       text += actions.join(' & ')
       text += " (#{ap})"
+      @apGauge.value = ap
     else
       text += '???'
     @action.text = text
-    @apGauge.value = ap
     @hpGauge.value = @character.hp
+    @spGauge.value = @character.sp
