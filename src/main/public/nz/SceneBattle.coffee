@@ -28,6 +28,8 @@ tm.define 'nz.SceneBattle',
     @data =
       turn: 0 # 戦闘ターン数
 
+    @eventHandler = nz.EventHandlerBattle(scene:@)
+
     @on 'enter', @load.bind @
     return
 
@@ -90,7 +92,7 @@ tm.define 'nz.SceneBattle',
       y += 32 * 2.5 - 8
 
     # 基本操作
-    @on 'map.pointingend', @mapPointingend
+    @on 'map.pointingend', @_mapPointingend
     @one 'enterframe', ->
       @_pushScene(
         nz.SceneBattlePosition(
@@ -100,10 +102,10 @@ tm.define 'nz.SceneBattle',
       )
       @one 'resume', -> @_startInputPhase()
 
-    @refreshStatus()
+    @eventHandler.refreshStatus()
     return
 
-  mapPointingend: (e) ->
+  _mapPointingend: (e) ->
     @mapSprite.clearBlink()
     targets = @mapSprite.findCharacterGhost(e.mapx,e.mapy)
     for t in @mapSprite.findCharacter(e.mapx,e.mapy)
@@ -118,10 +120,6 @@ tm.define 'nz.SceneBattle',
       @_openCharacterSelectMenu(targets)
     return
 
-  refreshStatus: ->
-    @fireAll('refreshStatus',turn:@turn)
-    return
-
   activeStatus: (status) ->
     @status.addChild status
     return
@@ -134,19 +132,20 @@ tm.define 'nz.SceneBattle',
     return
 
   _pushScene: (scene) ->
+    @eventHandler.refreshStatus()
     @one 'pause',  ->
       @mapSprite.addChildTo scene
       @status.addChildTo scene
     @one 'resume', ->
       @mapSprite.addChildTo @
       @status.addChildTo @
+      @eventHandler.refreshStatus()
     @mapSprite.remove()
     @status.remove()
     @app.pushScene scene
     return
 
   _commandScene: (klass,callback) ->
-    @refreshStatus()
     target = @selectCharacterSprite
     if @_selectGhost
       target = @selectCharacterSprite.ghost
@@ -251,10 +250,9 @@ tm.define 'nz.SceneBattle',
         turn: @turn
       )
       @characters[i].commands[@turn] = c.commands[@turn]
-    @refreshStatus()
+    @eventHandler.refreshStatus()
 
   _startBattlePhase: ->
-    @refreshStatus()
     @_pushScene(
       nz.SceneBattleTurn(
         start: @turn
@@ -270,11 +268,13 @@ tm.define 'nz.SceneBattle',
     @_commandScene(
       nz.SceneBattleMoveCommand
       ((route) ->
-        @selectCharacter.addMoveCommand @turn, route
+        sc = @selectCharacter
+        sc.addMoveCommand @turn, route
         if route.length > 0
-          p = route[route.length-1]
-          @selectCharacterSprite.createGhost(p.direction,p.mapx,p.mapy).addChildTo @mapSprite
-        @refreshStatus()
+          @selectCharacterSprite.createGhost(route[route.length-1]).addChildTo @mapSprite
+        if sc.getRemnantAp(@turn) > 0
+          @_selectGhost = true
+          @one 'enterframe', @_addRotateCommand
         return
       ).bind @
     )
@@ -285,8 +285,8 @@ tm.define 'nz.SceneBattle',
     sc.setAttackCommand @turn
     scs = @selectCharacterSprite
     if not scs.hasGhost() and not scs.isGhost()
-      scs.createGhost(scs.direction,scs.mapx,scs.mapy).addChildTo @mapSprite
-    @refreshStatus()
+      scs.createGhost(scs).addChildTo @mapSprite
+    @eventHandler.refreshStatus()
     if sc.getRemnantAp(@turn) > 0
       @_selectGhost = true
       @one 'enterframe', @_addMoveCommand
@@ -302,8 +302,7 @@ tm.define 'nz.SceneBattle',
         scs = @selectCharacterSprite
         sc.addShotCommand @turn, rotation
         if not scs.hasGhost() and not scs.isGhost()
-          scs.createGhost(scs.direction,scs.mapx,scs.mapy).addChildTo @mapSprite
-        @refreshStatus()
+          scs.createGhost(scs).addChildTo @mapSprite
         if sc.getRemnantAp(@turn) > 0
           @_selectGhost = true
           @one 'enterframe', @_addMoveCommand
@@ -320,14 +319,8 @@ tm.define 'nz.SceneBattle',
         scs = @selectCharacterSprite
         sc.addRotateCommand @turn, direction1, DIRECTIONS[direction1].rotateIndex[direction2]
         unless scs.hasGhost()
-          s = scs
-          s.createGhost(direction2,s.mapx,s.mapy).addChildTo @mapSprite
-        else
-          scs.ghost.setDirection(direction2)
-        @refreshStatus()
-        if sc.getRemnantAp(@turn) > 0
-          @_selectGhost = true
-          @one 'enterframe', @_addMoveCommand
+          scs.createGhost(scs).addChildTo @mapSprite
+        scs.ghost.setDirection(direction2)
         return
       ).bind @
     )
@@ -336,7 +329,7 @@ tm.define 'nz.SceneBattle',
   _resetCommand: ->
     @selectCharacter.clearCommand()
     @selectCharacterSprite.clearGhost()
-    @refreshStatus()
+    @eventHandler.refreshStatus()
     return
 
 nz.SceneBattle.prototype.getter 'characterSprites', -> @mapSprite.characterSprites

@@ -42,11 +42,12 @@ tm.define 'nz.SpriteBattleMap',
           self.cursor.x = @x
           self.cursor.y = @y
 
-    @on 'battleSceneStart', (e) ->
+    @on 'startBattlePhase', (e) ->
       @cursor.visible = false
       return
-    @on 'battleSceneEnd', (e) ->
+    @on 'endBattlePhase', (e) ->
       @cursor.visible = true
+      return
 
     return
 

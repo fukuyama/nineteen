@@ -28,7 +28,7 @@ tm.define 'nz.SceneBattleDirectionCommand',
     for d,i in DIRECTIONS when 0 <= i and i < 6
       if d.rotation - 30 < rotation and rotation < d.rotation + 30
         costd = nz.Graph.directionCost(@target.direction, d.index)
-        if (@costa + costd) <= @target.character.ap
+        if (@costa + costd) <= @target.character.maxap
           if @_direction != d.index
             @_direction = d.index
             @pointer.rotation = d.rotation

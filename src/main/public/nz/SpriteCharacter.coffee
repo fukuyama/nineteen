@@ -40,16 +40,16 @@ tm.define 'nz.SpriteCharacter',
     @setMapPosition @character.mapx, @character.mapy
     @setDirection @character.direction
 
-    @on 'battleSceneStart', ->
+    @on 'startBattlePhase', ->
       @clearGhost()
       return
-    @on 'battleSceneEnd', ->
+    @on 'endBattlePhase', ->
       return
-    @on 'battleTurnStart', (e) ->
+    @on 'startBattleTurn', (e) ->
       @startAction(e.turn)
       @_weaponHitFlag = []
       return
-    @on 'battleTurnEnd', (e) ->
+    @on 'endBattleTurn', (e) ->
       @update = null
       @attack = false
       return
@@ -67,7 +67,12 @@ tm.define 'nz.SpriteCharacter',
   isGhost: () -> (@alpha == 0.5) # 半透明かどうかで判断
   hasGhost: () -> @ghost != null
 
-  createGhost: (direction,mapx,mapy) ->
+  createGhost: (param) ->
+    {
+      direction
+      mapx
+      mapy
+    } = param
     @clearGhost()
     @ghost = nz.SpriteCharacter(@index,@character)
       .setAlpha 0.5
@@ -279,38 +284,40 @@ tm.define 'nz.SpriteCharacter',
     vx = distance * Math.cos(angle) + bv.x
     vy = distance * Math.sin(angle) + bv.y
     speed = speed * distance / 32
-    einfo = {
+    info = {
       ballet: ballet
       owner: @
     }
+    eh = scene.eventHandler
     finish = ->
       ballet.remove()
-      scene.flare 'removeBallet', einfo
+      eh.removeBallet(info)
     ballet.tweener
       .move(vx,vy,speed)
       .call finish, @, []
     ballet.on 'collisionenter', (e) ->
-      e.other.flare 'hitBallet', einfo
+      e.other.flare 'hitBallet', info
       ballet.tweener
         .clear()
         .call finish, @, []
 
-    scene.flare 'addBallet', einfo
+    eh.addBallet(info)
+
+  _eventDispatch: ->
+    eh = @getRoot().eventHandler
+    eh.refreshStatus()
+    if @character.hp <= 0
+      eh.deadCharacter(@character)
+    return
 
   _hitBallet: (shooter,ballet) ->
     console.log "hit ballet #{@character.name}"
     @character.hp -= @character.armor.defense - attacker.shot.damage
-    scene = @getRoot()
-    scene.refreshStatus()
-    if @character.hp <= 0
-      scene.deadCharacter(@character)
+    @_eventDispatch()
     return
 
   _hitWeapon: (attacker) ->
     console.log "hit weapon #{@character.name}"
     @character.hp -= @character.armor.defense - attacker.weapon.damage
-    scene = @getRoot()
-    scene.refreshStatus()
-    if @character.hp <= 0
-      scene.deadCharacter(@character)
+    @_eventDispatch()
     return
