@@ -303,7 +303,8 @@ tm.define 'nz.SpriteCharacter',
 
     eh.addBallet(info)
 
-  _eventDispatch: ->
+  _damage: (d)->
+    @character.hp -= d
     eh = @getRoot().eventHandler
     eh.refreshStatus()
     if @character.hp <= 0
@@ -311,13 +312,9 @@ tm.define 'nz.SpriteCharacter',
     return
 
   _hitBallet: (shooter,ballet) ->
-    console.log "hit ballet #{@character.name}"
-    @character.hp -= @character.armor.defense - attacker.shot.damage
-    @_eventDispatch()
+    @_damage(@character.armor.defense - shooter.shot.damage)
     return
 
   _hitWeapon: (attacker) ->
-    console.log "hit weapon #{@character.name}"
-    @character.hp -= @character.armor.defense - attacker.weapon.damage
-    @_eventDispatch()
+    @_damage(@character.armor.defense - attacker.weapon.damage)
     return
