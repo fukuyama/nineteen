@@ -1,9 +1,9 @@
 ###*
-* @file SceneBattleTurn.coffee
-* 戦闘ターン処理シーン
+* @file SceneBattlePhase.coffee
+* 戦闘フェーズの処理
 ###
 
-tm.define 'nz.SceneBattleTurn',
+tm.define 'nz.SceneBattlePhase',
   superClass: nz.SceneBase
 
   init: (param) ->
@@ -40,9 +40,6 @@ tm.define 'nz.SceneBattleTurn',
       owner
     } = param
     @_balletCount += 1
-
-    for c in @characterSprites when c != owner
-      ballet.collision.add c
 
     # TODO: マップオブジェクトも追加しないと
     return
@@ -83,4 +80,4 @@ tm.define 'nz.SceneBattleTurn',
         @_startTurn(@turn + 1)
     return
 
-nz.SceneBattleTurn.prototype.getter 'characterSprites', -> @mapSprite.characterSprites
+nz.SceneBattlePhase.prototype.getter 'characterSprites', -> @mapSprite.characterSprites
