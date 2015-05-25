@@ -45,7 +45,7 @@ class nz.Utils
     unless options.closest?
       options.closest = true
 
-    for c in characters when source.mapx != c.mapx or source.mapy != c.mapy
+    for c in characters when c.isAlive() and (source.mapx != c.mapx or source.mapy != c.mapy)
       options.grid.push {
         mapx: c.mapx
         mapy: c.mapy

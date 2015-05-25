@@ -53,6 +53,9 @@ tm.define 'nz.SpriteCharacter',
       @update = null
       @attack = false
       return
+    @on 'addBallet', (e) ->
+      e.ballet.collision.add(@) if @ != e.owner and @isAlive()
+      return
     @on 'hitWeapon', (e) ->
       @_hitWeapon(e.owner)
       return
@@ -60,7 +63,8 @@ tm.define 'nz.SpriteCharacter',
       @_hitBallet(e.owner,e.ballet)
       return
     @on 'deadCharacter', (e) ->
-      @_deadCharacter(e.character)
+      # TODO:アニメーション
+      @hide()
       return
     return
 
@@ -98,7 +102,7 @@ tm.define 'nz.SpriteCharacter',
 
   updateBattle: ->
     scene = @getRoot()
-    for enemy,i in scene.characterSprites when @index != i
+    for enemy,i in scene.characterSprites when @index != i and enemy.isAlive()
       @_updateAttack(enemy)
     return
 
@@ -214,6 +218,8 @@ tm.define 'nz.SpriteCharacter',
 
   isMove: -> @move
   isStop: -> not @move
+  isDead: -> @character.isDead()
+  isAlive: -> @character.isAlive()
 
   _setShotAction: (param) ->
     @tweener.call @shotAnimation,@,[param]
@@ -288,10 +294,10 @@ tm.define 'nz.SpriteCharacter',
       ballet: ballet
       owner: @
     }
-    eh = scene.eventHandler
+    ｈ = scene.eventHandler
     finish = ->
       ballet.remove()
-      eh.removeBallet(info)
+      ｈ.removeBallet(info)
     ballet.tweener
       .move(vx,vy,speed)
       .call finish, @, []
@@ -301,20 +307,20 @@ tm.define 'nz.SpriteCharacter',
         .clear()
         .call finish, @, []
 
-    eh.addBallet(info)
+    ｈ.addBallet(info)
 
   _damage: (d)->
     @character.hp -= d
-    eh = @getRoot().eventHandler
-    eh.refreshStatus()
+    h = @getRoot().eventHandler
+    h.refreshStatus()
     if @character.hp <= 0
-      eh.deadCharacter(@character)
+      h.deadCharacter(@character)
     return
 
   _hitBallet: (shooter,ballet) ->
-    @_damage(@character.armor.defense - shooter.shot.damage)
+    @_damage(@character.armor.defense - shooter.character.shot.damage)
     return
 
   _hitWeapon: (attacker) ->
-    @_damage(@character.armor.defense - attacker.weapon.damage)
+    @_damage(@character.armor.defense - attacker.character.weapon.damage)
     return

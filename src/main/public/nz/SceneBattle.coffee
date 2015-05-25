@@ -108,7 +108,7 @@ tm.define 'nz.SceneBattle',
   _mapPointingend: (e) ->
     @mapSprite.clearBlink()
     targets = @mapSprite.findCharacterGhost(e.mapx,e.mapy)
-    for t in @mapSprite.findCharacter(e.mapx,e.mapy)
+    for t in @mapSprite.findCharacter(e.mapx,e.mapy) when t.isAlive()
       if not t.hasGhost() or t.ghost.mapx != e.mapx or t.ghost.mapy != e.mapy
         targets.push t
     targets = (t for t in targets when @controlTeam.contains t.character.team)
@@ -136,10 +136,12 @@ tm.define 'nz.SceneBattle',
     @one 'pause',  ->
       @mapSprite.addChildTo scene
       @status.addChildTo scene
+      return
     @one 'resume', ->
       @mapSprite.addChildTo @
       @status.addChildTo @
       @eventHandler.refreshStatus()
+      return
     @mapSprite.remove()
     @status.remove()
     @app.pushScene scene
@@ -229,7 +231,7 @@ tm.define 'nz.SceneBattle',
     return
 
   _checkCommandConf: ->
-    for c in @characters when @controlTeam.contains c.team
+    for c in @characters when @controlTeam.contains(c.team) and c.isAlive()
       if c.getRemnantAp(@turn) > 0
         return
     @_openCommandConf()
@@ -242,7 +244,7 @@ tm.define 'nz.SceneBattle',
   _startInputPhase: () ->
     @data.turn += 1
     characters = (c.createAiInfo() for c in @characters)
-    for c,i in characters when not (@controlTeam.contains c.team)
+    for c,i in characters when not (@controlTeam.contains c.team) and c.isAlive()
       nz.system.ai[c.ai.name]?.setupAction new nz.ai.Param(
         character: c
         characters: characters
@@ -254,7 +256,7 @@ tm.define 'nz.SceneBattle',
 
   _startBattlePhase: ->
     @_pushScene(
-      nz.SceneBattleTurn(
+      nz.SceneBattlePhase(
         start: @turn
         end: @turn
         mapSprite: @mapSprite

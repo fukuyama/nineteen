@@ -27,7 +27,7 @@ tm.define 'nz.EventHandlerBattle',
     if element.hasEventListener(e.type)
       element.fire(e)
     for child in element.children
-      @_dispatchEvent(e,child)
+      @_dispatchEvent(e,child) if child?
     return
 
   refreshStatus: ->

@@ -39,6 +39,13 @@
     "grunt-jsdoc": "latest",
     "grunt-execute": "latest",
     "grunt-exec": "latest",
-    "chai": "latest"
+    "chai": "latest",
+    "gulp": "~3.8.11",
+    "gulp-coffee": "~2.3.1",
+    "gulp-concat": "~2.5.2",
+    "gulp-uglify": "~1.2.0",
+    "gulp-copy": "0.0.2",
+    "gulp-rename": "~1.2.2",
+    "rimraf": "~2.3.4"
   }
 }

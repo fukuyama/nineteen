@@ -279,3 +279,6 @@ class nz.Character
     for action in command.actions when action.move?
       return true
     return false
+
+  isDead: -> return @hp <= 0
+  isAlive: -> return @hp > 0

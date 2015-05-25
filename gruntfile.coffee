@@ -50,7 +50,7 @@ module.exports = (grunt) ->
     'nz/SceneBattleMoveCommand'
     'nz/SceneBattleShotCommand'
     'nz/SceneBattleDirectionCommand'
-    'nz/SceneBattleTurn'
+    'nz/SceneBattlePhase'
 
     'nz/ai/Param'
 
