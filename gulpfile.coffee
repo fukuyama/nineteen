@@ -1,21 +1,27 @@
-
+config = require './buildprop.coffee'
 gulp   = require 'gulp'
-coffee = require 'gulp-coffee'
-concat = require 'gulp-concat'
-uglify = require 'gulp-uglify'
-copy   = require 'gulp-copy'
-rename = require 'gulp-rename'
-rimraf = require 'rimraf'
 
-gulp.task 'compile', ->
-  gulp.src 'src/main/public/nz/*.coffee'
-    .pipe coffee()
-    .pipe concat('main.min.js')
-  	.pipe uglify()
-    .pipe gulp.dest './target/public/'
+require('require-dir') './gulp'
 
-gulp.task 'clean', (cb) ->
-  rimraf './target', cb
+gulp.task 'default', [
+  'build'
+  'watch'
+  'server'
+]
 
-gulp.task 'build', ['compile']
-gulp.task 'default', ['build']
+gulp.task 'build', [
+  'coffeelint'
+  'test_console'
+  'build_express'
+  'build_main_script'
+  'build_ai_script'
+  'build_data'
+]
+
+gulp.task 'watch', [
+  'test_console:watch'
+  'build_express:watch'
+  'build_main_script:watch'
+  'build_ai_script:watch'
+  'build_data:watch'
+]

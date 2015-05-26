@@ -11,7 +11,7 @@ _g = window ? global
 nz = _g.nz = _g.nz ? {}
 _g = undefined
 
-###*
+###* AI namespace.
 * @namespace nz.ai
 ###
 nz.ai = nz.ai ? {}

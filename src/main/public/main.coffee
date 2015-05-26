@@ -24,6 +24,7 @@ tm.main ->
     @app.fitWindow()
     @app.replaceScene nz.SceneTitleMenu()
     return
+
   #app.pushScene SplashScene(
   #  width: screen.width
   #  height: screen.height

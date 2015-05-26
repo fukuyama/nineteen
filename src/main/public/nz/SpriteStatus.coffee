@@ -77,7 +77,7 @@ tm.define 'nz.SpriteStatus',
         spGauge:
           type:        'tm.ui.GlossyGauge'
           x:           8
-          y:           48
+          y:           40
           width:       @width - 16
           height:      4
           originX:     @originX
@@ -91,7 +91,7 @@ tm.define 'nz.SpriteStatus',
       form.children.apGauge =
         type:          'tm.ui.GlossyGauge'
         x:             8
-        y:             40
+        y:             48
         width:         @width - 16
         height:        4
         originX:       @originX

@@ -1,4 +1,7 @@
-# SampleAI.coffee
+###*
+* @file SampleAI.coffee
+* サンプルAI
+###
 
 # node.js と ブラウザでの this.nz を同じインスタンスにする
 _g = window ? global
@@ -9,6 +12,10 @@ nz.ai = nz.ai ? {}
 
 class nz.ai.SampleAI
 
+  ###* 初期化
+  * @classdesc サンプルAIクラス
+  * @constructor nz.ai.SampleAI
+  ###
   constructor: ->
     @rules = [
       {
