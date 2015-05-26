@@ -11,8 +11,8 @@
     "tmlib.js"
   ],
   "scripts": {
-    "preinstall": "npm install -g grunt-cli",
-    "test": "grunt test",
+    "preinstall": "npm install -g gulp",
+    "test": "gulp test",
     "start": "node target/bin/www"
   },
   "dependencies": {
@@ -26,19 +26,6 @@
   },
   "devDependencies": {
     "coffee-script": "latest",
-    "grunt": "latest",
-    "grunt-contrib-coffee": "latest",
-    "grunt-contrib-uglify": "latest",
-    "grunt-contrib-concat": "latest",
-    "grunt-contrib-watch": "latest",
-    "grunt-contrib-copy": "latest",
-    "grunt-contrib-clean": "latest",
-    "grunt-express-server": "latest",
-    "grunt-simple-mocha": "latest",
-    "grunt-coffeelint": "latest",
-    "grunt-jsdoc": "latest",
-    "grunt-execute": "latest",
-    "grunt-exec": "latest",
     "chai": "latest",
     "gulp": "~3.8.11",
     "gulp-coffee": "~2.3.1",
