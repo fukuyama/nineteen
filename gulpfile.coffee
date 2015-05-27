@@ -4,14 +4,21 @@ gulp   = require 'gulp'
 require('require-dir') './gulp'
 
 gulp.task 'default', [
+  'test'
   'build'
+]
+
+gulp.task 'dev', [
   'watch'
   'server'
 ]
 
-gulp.task 'build', [
+gulp.task 'test', [
   'coffeelint'
   'test_console'
+]
+
+gulp.task 'build', [
   'build_express'
   'build_main_script'
   'build_ai_script'

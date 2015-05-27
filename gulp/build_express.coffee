@@ -3,14 +3,14 @@ gulp   = require 'gulp'
 
 gulp.task 'build_express', ->
   {
-    srcFiles
+    files
     distDir
   } = config.express
-  return gulp.src srcFiles
+  return gulp.src files
     .pipe gulp.dest(distDir)
 
 gulp.task 'build_express:watch', ->
   {
-    srcFiles
+    files
   } = config.express
-  gulp.watch srcFiles, ['build_express']
+  gulp.watch files, ['build_express']

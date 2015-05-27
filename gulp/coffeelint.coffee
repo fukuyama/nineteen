@@ -4,9 +4,9 @@ coffeelint = require 'gulp-coffeelint'
 
 gulp.task 'coffeelint', ->
   {
-    lintFiles
+    files
   } = config.coffeelint
-  return gulp.src lintFiles
+  return gulp.src files
     .pipe coffeelint()
     .pipe coffeelint.reporter('coffeelint-stylish')
     .pipe coffeelint.reporter('fail')

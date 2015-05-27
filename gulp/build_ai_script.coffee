@@ -7,11 +7,11 @@ sourcemaps = require 'gulp-sourcemaps'
 
 gulp.task 'build_ai_script', ['coffeelint','test_console'], ->
   {
-    coffeeFiles
+    files
     distDir
     srcOption
   } = config.ai
-  gulp.src coffeeFiles, srcOption
+  gulp.src files, srcOption
     .pipe sourcemaps.init()
     .pipe coffee()
     .pipe uglify()
@@ -20,6 +20,6 @@ gulp.task 'build_ai_script', ['coffeelint','test_console'], ->
 
 gulp.task 'build_ai_script:watch', ->
   {
-    coffeeFiles
+    files
   } = config.ai
-  gulp.watch coffeeFiles, ['build_ai_script']
+  gulp.watch files, ['build_ai_script']

@@ -70,7 +70,7 @@ tm.define 'nz.SpriteStatus',
           originX:     @originX
           originY:     @originY
           borderWidth: 1
-          color:       'blue'
+          color:       'green'
           bgColor:     @bgColor
           borderColor: gaugebBrderColor
           _maxValue:   @character.maxhp
@@ -86,7 +86,7 @@ tm.define 'nz.SpriteStatus',
           color:       'Cyan'
           bgColor:     @bgColor
           borderColor: gaugebBrderColor
-          _maxValue:     @character.mapsp
+          _maxValue:   @character.mapsp
     if @detail
       form.children.apGauge =
         type:          'tm.ui.GlossyGauge'

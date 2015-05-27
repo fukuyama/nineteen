@@ -318,9 +318,9 @@ tm.define 'nz.SpriteCharacter',
     return
 
   _hitBallet: (shooter,ballet) ->
-    @_damage(@character.armor.defense - shooter.character.shot.damage)
+    @_damage(shooter.character.shot.damage - @character.armor.defense)
     return
 
   _hitWeapon: (attacker) ->
-    @_damage(@character.armor.defense - attacker.character.weapon.damage)
+    @_damage(attacker.character.weapon.damage - @character.armor.defense)
     return

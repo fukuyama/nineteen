@@ -280,5 +280,16 @@ class nz.Character
       return true
     return false
 
+  ###* 死亡判定
+  * @return {boolean} 死んでいる場合 true
+  * @memberof nz.Character#
+  * @method isDead
+  ###
   isDead: -> return @hp <= 0
+
+  ###* 生存判定
+  * @return {boolean} 生きている場合 true
+  * @memberof nz.Character#
+  * @method isAlive
+  ###
   isAlive: -> return @hp > 0

@@ -7,11 +7,11 @@ sourcemaps = require 'gulp-sourcemaps'
 
 gulp.task 'build_main_script', ['coffeelint','test_console'], ->
   {
-    coffeeFiles
+    files
     outputFile
     distDir
   } = config.main
-  gulp.src coffeeFiles
+  gulp.src files
     .pipe sourcemaps.init()
     .pipe coffee()
     .pipe concat(outputFile)
@@ -22,6 +22,6 @@ gulp.task 'build_main_script', ['coffeelint','test_console'], ->
 
 gulp.task 'build_main_script:watch', ->
   {
-    coffeeFiles
+    files
   } = config.main
-  gulp.watch coffeeFiles, ['build_main_script']
+  gulp.watch files, ['build_main_script']

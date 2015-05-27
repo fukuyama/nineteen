@@ -17,10 +17,14 @@ gulp.task 'build_data', ['build_express'], (cb) ->
     count++
     if count >= max
       cb()
-  for name in dataNames
-    obj = require '../' + srcDir + name + '.coffee'
-    out = distDir + name + '.json'
-    fs.writeFile out, JSON.stringify(obj), onEnd
+  fs.mkdir distDir, (err) ->
+    if err?
+      cb(err)
+      return
+    for name in dataNames
+      obj = require '../' + srcDir + name + '.coffee'
+      out = distDir + name + '.json'
+      fs.writeFile out, JSON.stringify(obj), onEnd
 
 gulp.task 'build_data:watch', ->
   {

@@ -38,43 +38,36 @@ aiScripts= [
 ]
 
 # ------------
-config = {}
+config =
+  main:
+    files: (mainDir + 'public/' + s + '.coffee' for s in mainScripts)
+    outputFile: 'main.min.js'
+    distDir: distDir + 'public/'
 
-config.main = {
-  coffeeFiles: (mainDir + 'public/' + s + '.coffee' for s in mainScripts)
-  outputFile: 'main.min.js'
-  distDir: distDir + 'public/'
-}
+  ai:
+    files: (mainDir + 'public/' + s + '.coffee' for s in aiScripts)
+    srcOption:
+      base: mainDir + 'public/'
+    distDir: distDir + 'public/'
 
-config.ai = {
-  coffeeFiles: (mainDir + 'public/' + s + '.coffee' for s in aiScripts)
-  srcOption: {base: mainDir + 'public/'}
-  distDir: distDir + 'public/'
-}
+  express:
+    files: mainDir + 'express/**'
+    distDir: distDir
 
-config.express = {
-  srcFiles: mainDir + 'express/**'
-  distDir: distDir
-}
+  data:
+    dataNames: dataNames
+    srcDir: mainDir + 'data/'
+    distDir: distDir + 'public/data/'
 
-config.data = {
-  dataNames: dataNames
-  srcDir: mainDir + 'data/'
-  distDir: distDir + 'public/data/'
-}
+  coffeelint:
+    files: mainDir + '**/*.coffee'
 
-config.coffeelint = {
-  lintFiles: mainDir + '**/*.coffee'
-}
+  test:
+    files: testDir + '**/*.coffee'
 
-config.test = {
-  testFiles: testDir + '**/*.coffee'
-}
+  server:
+    rootDir: distDir
 
-config.server = {
-  root: distDir + 'public/'
-}
-
-config.cleanDir = distDir
+  cleanDir: distDir
 
 module.exports = config

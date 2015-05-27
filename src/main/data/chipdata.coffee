@@ -1,7 +1,7 @@
 
 chipdata = [
   {
-    name: 'null'
+    name: 'NULL'
     frame: 0
     weight: 1
   }

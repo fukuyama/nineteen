@@ -4,14 +4,14 @@ mocha  = require 'gulp-mocha'
 
 gulp.task 'test_console', ->
   {
-    testFiles
+    files
   } = config.test
-  return gulp.src testFiles, read: false
+  return gulp.src files, read: false
     .pipe mocha
       reporter: 'nyan'
 
 gulp.task 'test_console:watch', ->
   {
-    testFiles
+    files
   } = config.test
-  gulp.watch testFiles, ['test_console']
+  gulp.watch files, ['test_console']
