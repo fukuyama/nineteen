@@ -90,7 +90,13 @@ tm.define 'nz.SceneTitleMenu',
       mapId: 0
       controlTeam: ['teamA']
       characters: [
-        new nz.Character(name:'キャラクター1',team:'teamA',spriteSheet:'character_test')
+        new nz.Character(
+          name:'キャラクター1'
+          team:'teamA'
+          spriteSheet:'character_test'
+          weapon:
+            damage: 20
+        )
         new nz.Character(name:'キャラクター2',team:'teamA',spriteSheet:'character_test')
         new nz.Character(name:'キャラクター3',team:'teamA',spriteSheet:'character_test')
         new nz.Character(name:'キャラクター4',team:'teamB',spriteSheet:'character_test')

@@ -1,4 +1,4 @@
-config     = require '../buildprop.coffee'
+config     = require '../buildconfig.coffee'
 gulp       = require 'gulp'
 coffee     = require 'gulp-coffee'
 concat     = require 'gulp-concat'

@@ -1,4 +1,4 @@
-config = require '../buildprop.coffee'
+config = require '../buildconfig.coffee'
 gulp   = require 'gulp'
 fs     = require 'fs'
 
@@ -18,7 +18,7 @@ gulp.task 'build_data', ['build_express'], (cb) ->
     if count >= max
       cb()
   fs.mkdir distDir, (err) ->
-    if err?
+    if err? and err.code isnt 'EEXIST'
       cb(err)
       return
     for name in dataNames
