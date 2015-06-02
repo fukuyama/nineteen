@@ -63,8 +63,12 @@ tm.define 'nz.SpriteCharacter',
       @_hitBallet(e.owner,e.ballet)
       return
     @on 'deadCharacter', (e) ->
+      {
+        character
+      } = e
       # TODO:アニメーション
-      @hide()
+      if e.character is @character
+        @hide()
       return
     return
 
@@ -313,6 +317,7 @@ tm.define 'nz.SpriteCharacter',
     @character.hp -= d
     h = @getRoot().eventHandler
     h.refreshStatus()
+    console.log "#{@character.name} damage #{d} hp #{@character.hp}"
     if @character.hp <= 0
       h.deadCharacter(@character)
     return
