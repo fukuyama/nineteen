@@ -78,6 +78,9 @@ tm.define 'nz.SceneBattlePhase',
         @_endPhase()
       else
         @_startTurn(@turn + 1)
+        if @_isEndAllCharacterAction()
+          @_endTurn()
+          @_endPhase()
     return
 
 nz.SceneBattlePhase.prototype.getter 'characterSprites', -> @mapSprite.characterSprites

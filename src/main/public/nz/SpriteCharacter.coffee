@@ -186,6 +186,7 @@ tm.define 'nz.SpriteCharacter',
   startAction: (turn) ->
     @tweener.clear()
     @move      = false
+    @attack    = false
     @action    = true
     @mapx      = @character.mapx
     @mapy      = @character.mapy
@@ -200,7 +201,9 @@ tm.define 'nz.SpriteCharacter',
         @_setRotateAction(action.rotate) if action.rotate?
         if @attack
           @tweener.call @updateBattle,@,[]
-    @tweener.call @_endAction,@,[]
+      @tweener.call @_endAction,@,[]
+    else
+      @_endAction()
     return
 
   applyPosition: ->
@@ -317,7 +320,6 @@ tm.define 'nz.SpriteCharacter',
     @character.hp -= d
     h = @getRoot().eventHandler
     h.refreshStatus()
-    console.log "#{@character.name} damage #{d} hp #{@character.hp}"
     if @character.hp <= 0
       h.deadCharacter(@character)
     return

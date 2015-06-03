@@ -263,7 +263,10 @@ tm.define 'nz.SceneBattle',
         status: @status
       )
     )
-    @one 'resume', -> @_startInputPhase()
+    @one 'resume', ->
+      # Phase が終わった後　戦闘終了かどうか確認して
+      # 戦闘を終わるか、リプレイするかの選択を表示。
+      @_startInputPhase()
     return
 
   _addMoveCommand: ->
