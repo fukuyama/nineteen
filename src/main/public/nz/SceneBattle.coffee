@@ -20,10 +20,16 @@ tm.define 'nz.SceneBattle',
       @mapId
       @characters
       @controlTeam
+      @endCondition
     } = param
     @superInit()
     @mapName = 'map_' + "#{@mapId}".paddingLeft(3,'0')
     @_selectCharacterIndex = 0
+
+    if @endCondition?
+      @endCondition =
+        type: 'team'
+        turn: 20
 
     @data =
       turn: 0 # 戦闘ターン数
@@ -130,6 +136,19 @@ tm.define 'nz.SceneBattle',
     @mapSprite.blink(s.mapx,s.mapy)
     @mapSprite.blink(s.ghost.mapx,s.ghost.mapy) if s.hasGhost()
     return
+
+  isEnd: ->
+    if @turn >= @endCondition.turn
+      return true
+    if @endCondition.type is 'team'
+      t = null
+      for c in @characters when c.isAlive()
+        unless t?
+          t = c.team
+        else if t isnt c.team
+          return false
+      return true
+    return false
 
   _pushScene: (scene) ->
     @eventHandler.refreshStatus()
@@ -264,9 +283,10 @@ tm.define 'nz.SceneBattle',
       )
     )
     @one 'resume', ->
-      # Phase が終わった後　戦闘終了かどうか確認して
-      # 戦闘を終わるか、リプレイするかの選択を表示。
-      @_startInputPhase()
+      if @isEnd()
+        @_openResult()
+      else
+        @_startInputPhase()
     return
 
   _addMoveCommand: ->
