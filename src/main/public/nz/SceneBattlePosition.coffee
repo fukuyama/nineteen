@@ -51,6 +51,16 @@ tm.define 'nz.SceneBattlePosition',
     @on 'enter',            @_start
     #@on 'map.pointingover', @_test
 
+    @on 'enterframe', (e) ->
+      kb = @app.keyboard
+      c  = @mapSprite.cursor
+      if kb.getKeyDown('up')
+        c.y -= c.height
+      if kb.getKeyDown('down')
+        c.y += c.height
+      #if kb.getKeyDown('left')
+      #if kb.getKeyDown('right')
+      return
     return
 
   _test: (e) ->

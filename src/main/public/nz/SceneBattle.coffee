@@ -256,6 +256,15 @@ tm.define 'nz.SceneBattle',
     @_openCommandConf()
     return
 
+  _openResult: ->
+    @openMenuDialog
+      title: 'Battle End'
+      menu: [
+        {name: 'Replay',    func: @_startReplay.bind @}
+        {name: 'Exit Game', func: @_exitGame.bind @}
+      ]
+    return
+
   _exitGame: ->
     @app.replaceScene nz.SceneTitleMenu()
     return
