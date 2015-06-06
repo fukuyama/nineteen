@@ -100,8 +100,8 @@ tm.define 'nz.SceneTitleMenu',
         new nz.Character(name:'キャラクター2',team:'teamA',spriteSheet:'character_test')
         new nz.Character(name:'キャラクター3',team:'teamA',spriteSheet:'character_test')
         new nz.Character(name:'キャラクター4',team:'teamB',spriteSheet:'character_test')
-        new nz.Character(name:'キャラクター5',team:'teamB',spriteSheet:'character_test')
-        new nz.Character(name:'キャラクター6',team:'teamB',spriteSheet:'character_test')
+        #new nz.Character(name:'キャラクター5',team:'teamB',spriteSheet:'character_test')
+        #new nz.Character(name:'キャラクター6',team:'teamB',spriteSheet:'character_test')
       ]
     )
     return

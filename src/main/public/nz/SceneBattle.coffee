@@ -26,7 +26,7 @@ tm.define 'nz.SceneBattle',
     @mapName = 'map_' + "#{@mapId}".paddingLeft(3,'0')
     @_selectCharacterIndex = 0
 
-    if @endCondition?
+    unless @endCondition?
       @endCondition =
         type: 'team'
         turn: 20
