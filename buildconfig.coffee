@@ -23,6 +23,7 @@ mainScripts = [
   'nz/SceneBattleShotCommand'
   'nz/SceneBattleDirectionCommand'
   'nz/SceneBattlePhase'
+  'nz/SceneBattleResult'
   'nz/ai/Param'
   'main'
 ]

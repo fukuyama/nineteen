@@ -99,6 +99,8 @@ tm.define 'nz.SceneBattle',
 
     # 基本操作
     @on 'map.pointingend', @_mapPointingend
+
+    # 開始時位置決め
     @one 'enterframe', ->
       @_pushScene(
         nz.SceneBattlePosition(
@@ -257,12 +259,20 @@ tm.define 'nz.SceneBattle',
     return
 
   _openResult: ->
+    @_pushScene(
+      nz.SceneBattleResult(
+        mapSprite: @mapSprite
+        status: @status
+      )
+    )
+    ###
     @openMenuDialog
       title: 'Battle End'
       menu: [
         {name: 'Replay',    func: @_startReplay.bind @}
         {name: 'Exit Game', func: @_exitGame.bind @}
       ]
+    ###
     return
 
   _exitGame: ->
