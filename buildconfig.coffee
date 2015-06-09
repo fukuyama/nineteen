@@ -16,6 +16,7 @@ mainScripts = [
   'nz/SpriteStatus'
   'nz/EventHandlerBattle'
   'nz/SceneBase'
+  'nz/SceneMenu'
   'nz/SceneTitleMenu'
   'nz/SceneBattle'
   'nz/SceneBattlePosition'

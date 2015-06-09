@@ -4,48 +4,42 @@
 ###
 
 tm.define 'nz.SceneTitleMenu',
-  superClass: tm.ui.MenuDialog
+  superClass: nz.SceneMenu
 
   ###* 初期化
   * @classdesc タイトルシーンクラス
   * @constructor nz.SceneTitleMenu
   ###
   init: () ->
-    menus = [
+    menu = [
       {
         name: 'New Game'
         desctiption: '新しいゲームをはじめる'
-        callback: @_new_game
+        func: @_new_game
       }
       {
         name: 'Load Game'
         desctiption: '保存したゲームをはじめる'
-        callback: @_load_game
+        func: @_load_game
       }
       {
         name: 'Option'
         desctiption: 'ゲームオプション'
-        callback: @_option
+        func: @_option
       }
       {
         name: 'Debug Game'
         desctiption: 'デバックゲーム'
-        callback: @_debug_game
+        func: @_debug_game
       }
     ]
 
     @superInit
       title: nz.system.title
-      screenWidth: nz.system.screen.width
-      screenHeight: nz.system.screen.height
-      menu: for menu in menus then menu.name
-      menuDesctiptions: for menu in menus then menu.desctiption
+      menu: menu
     @box.setStrokeStyle nz.system.dialog.strokeStyle
     @box.setFillStyle nz.system.dialog.fillStyle
 
-    @index = 0
-    @on 'menuselected', (e) -> @index = e.selectIndex
-    @on 'exit', (e) -> menus[@index].callback.call(@, e)
     @on 'enter', (e) -> @app.pushScene tm.game.TitleScene(title:nz.system.title)
 
     return

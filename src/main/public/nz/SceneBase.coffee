@@ -24,6 +24,7 @@ tm.define 'nz.SceneBase',
     dlg.on 'menuclosed', (e) -> menuFunc[e.selectIndex]?.call(null,e.selectIndex)
     dlg.box.setStrokeStyle nz.system.dialog.strokeStyle
     dlg.box.setFillStyle   nz.system.dialog.fillStyle
+
     @app.pushScene dlg
     return dlg
 
