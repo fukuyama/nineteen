@@ -22,8 +22,12 @@ tm.define 'nz.SceneMenu',
     @box.setStrokeStyle nz.system.dialog.strokeStyle
     @box.setFillStyle   nz.system.dialog.fillStyle
 
-    @on 'menuclosed', (e) ->
-      @menuFunc[e.selectIndex]?.call(@,e.selectIndex)
+    index = null
+    @on 'menuselected', (e) ->
+      index = e.selectIndex
+      return
+    @on 'exit', (e) ->
+      @menuFunc[index]?.call(@,index) if index?
       return
 
     @on 'enterframe', (e) ->

@@ -38,3 +38,25 @@ tm.define 'nz.SceneBase',
         .setBaseline 'middle'
         .setPosition SCREEN_W / 2, SCREEN_H - 10
     @_description.text = text
+
+  createKeyboradHander: ->
+    eventKeys      = ['up','down','left','right','enter']
+    #eventUpKeys    = []
+    repeatCount    = 0
+    repeatDelay    = 10
+    repeatIntarval = 0
+
+    return ->
+      kb = @app.keyboard
+      for key in eventKeys when kb.getKeyDown(key)
+        repeatCount = 0
+        @fire tm.event.Event('input_' + key)
+
+      for key in eventKeys when kb.getKey(key)
+        if repeatDelay < repeatCount++
+          @fire tm.event.Event('repeat_' + key)
+          repeatCount -= repeatIntarval
+
+      #for key in eventUpKeys when kb.getKeyUp(key)
+      #  repeatCount = 0
+      #  @fire tm.event.Event('input_' + key + '_up')

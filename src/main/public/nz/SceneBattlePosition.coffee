@@ -21,6 +21,8 @@ tm.define 'nz.SceneBattlePosition',
     @teamArea  = {}
     @members   = {}
 
+    @_keyDown  = null
+
     areaIndex  = 0
     for c in @mapSprite.characterSprites
       team = c.character.team
@@ -51,17 +53,23 @@ tm.define 'nz.SceneBattlePosition',
     @on 'enter',            @_start
     #@on 'map.pointingover', @_test
 
-    @on 'enterframe', (e) ->
-      kb = @app.keyboard
-      c  = @mapSprite.cursor
-      if kb.getKeyDown('up')
-        c.y -= c.height
-      if kb.getKeyDown('down')
-        c.y += c.height
-      #if kb.getKeyDown('left')
-      #if kb.getKeyDown('right')
-      return
-    return
+    @on 'enterframe'   , @createKeyboradHander()
+    @on 'input_up'     , @cursorHandler
+    @on 'input_down'   , @cursorHandler
+    @on 'input_left'   , @cursorHandler
+    @on 'input_right'  , @cursorHandler
+    @on 'repeat_up'    , @cursorHandler
+    @on 'repeat_down'  , @cursorHandler
+    @on 'repeat_left'  , @cursorHandler
+    @on 'repeat_right' , @cursorHandler
+    @on 'input_enter'  , @inputEnter
+
+  cursorHandler: (e) ->
+    @mapSprite.fire e
+    @_mapPointingover @mapSprite.cursor
+
+  inputEnter: (e) ->
+    @_mapPointingend @mapSprite.cursor
 
   _test: (e) ->
     @mapSprite.cursor.visible = true
@@ -123,16 +131,24 @@ tm.define 'nz.SceneBattlePosition',
       c.setDirection DIRNUM.UP
     return
 
-  _mapPointingover: (e) ->
+  _mapPointingover: (param) ->
+    {
+      mapx
+      mapy
+    } = param
     @mapSprite.cursor.visible = true
     @character.visible = true
-    @_setBattlePosition(@character,e.mapx,e.mapy)
+    @_setBattlePosition(@character,mapx,mapy)
     @character.applyPosition()
     return
 
-  _mapPointingend: (e) ->
-    if @mapSprite.isBlink(e.mapx,e.mapy)
-      @_mapPointingover(e)
+  _mapPointingend: (param) ->
+    {
+      mapx
+      mapy
+    } = param
+    if @mapSprite.isBlink(mapx,mapy)
+      @_mapPointingover(param)
       for team in @controlTeam
         for c in @members[team] when not c.visible
           @_start()

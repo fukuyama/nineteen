@@ -34,13 +34,13 @@ tm.define 'nz.SpriteBattleMap',
         @_initMapChip(mapx,mapy)
 
     @cursor = @_createCursor().addChildTo(@)
+    @setCursorPosition @getMapChip(0,0)
 
     self = @
     for line in @_chips
       for chip in line
         chip.on 'pointingover', ->
-          self.cursor.x = @x
-          self.cursor.y = @y
+          self.setCursorPosition @
 
     @on 'startBattlePhase', (e) ->
       @cursor.visible = false
@@ -49,6 +49,46 @@ tm.define 'nz.SpriteBattleMap',
       @cursor.visible = true
       return
 
+    @on 'input_up'     , @cursorUp
+    @on 'input_down'   , @cursorDown
+    @on 'input_left'   , @cursorLeft
+    @on 'input_right'  , @cursorRight
+    @on 'repeat_up'    , @cursorUp
+    @on 'repeat_down'  , @cursorDown
+    @on 'repeat_left'  , @cursorLeft
+    @on 'repeat_right' , @cursorRight
+
+    return
+
+  setCursorPosition: (param) ->
+    return unless param?
+    @cursor.mapx = param.mapx if param.mapx?
+    @cursor.mapy = param.mapy if param.mapy?
+    @cursor.x = param.x
+    @cursor.y = param.y
+    return
+
+  cursorUp: ->
+    {mapx,mapy} = @cursor
+    @setCursorPosition @getMapChip(mapx,mapy - 1)
+    return
+  cursorDown: ->
+    {mapx,mapy} = @cursor
+    @setCursorPosition @getMapChip(mapx,mapy + 1)
+    return
+  cursorLeft: ->
+    {mapx,mapy} = @cursor
+    chip = @getMapChip(mapx - 1,mapy)
+    unless chip?
+      chip = @getMapChip(mapx - 1,mapy - 1)
+    @setCursorPosition chip
+    return
+  cursorRight: ->
+    {mapx,mapy} = @cursor
+    chip = @getMapChip(mapx + 1,mapy)
+    unless chip?
+      chip = @getMapChip(mapx + 1,mapy - 1)
+    @setCursorPosition chip
     return
 
   # 指定された座標のキャラクターを探す
@@ -154,6 +194,6 @@ tm.define 'nz.SpriteBattleMap',
     @_activeBlinks.clear()
     return
 
-  isBlink: (mapx,mapy) -> @_blinks[mapx][mapy].visible
+  isBlink: (mapx,mapy) -> @_blinks[mapx]?[mapy]?.visible
 
-  getMapChip: (mapx,mapy) -> @_chips[mapx][mapy]
+  getMapChip: (mapx,mapy) -> @_chips[mapx]?[mapy]
