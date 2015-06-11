@@ -71,7 +71,12 @@ class nz.Utils
     return r
 
   relativeRotation: (rotation,p1,p2) ->
-    r = Math.radToDeg(Math.atan2 p2.y - p1.y, p2.x - p1.x) - rotation
+    r = 0
+    if p2?
+      r = Math.radToDeg(Math.atan2 p2.y - p1.y, p2.x - p1.x)
+    else
+      r = p1 % 360
+    r = r - rotation
     if r > 180
       r -= 360
     else if r < -180

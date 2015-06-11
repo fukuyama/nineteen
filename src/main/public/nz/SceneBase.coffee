@@ -13,18 +13,8 @@ tm.define 'nz.SceneBase',
     @superInit()
     return
 
-  openMenuDialog: (_param) ->
-    param = {
-      screenWidth:  SCREEN_W
-      screenHeight: SCREEN_H
-    }.$extend _param
-    menuFunc   = (m.func for m in param.menu when m.func?)
-    param.menu = (m.name for m in param.menu when m.name?)
-    dlg = tm.ui.MenuDialog(param)
-    dlg.on 'menuclosed', (e) -> menuFunc[e.selectIndex]?.call(null,e.selectIndex)
-    dlg.box.setStrokeStyle nz.system.dialog.strokeStyle
-    dlg.box.setFillStyle   nz.system.dialog.fillStyle
-
+  openMenuDialog: (param) ->
+    dlg = nz.SceneMenu(param)
     @app.pushScene dlg
     return dlg
 
@@ -60,3 +50,9 @@ tm.define 'nz.SceneBase',
       #for key in eventUpKeys when kb.getKeyUp(key)
       #  repeatCount = 0
       #  @fire tm.event.Event('input_' + key + '_up')
+
+  setupCursorHandler: (handler) ->
+    for k in ['up','down','left','right']
+      @on 'input_'  + k, handler
+      @on 'repeat_' + k, handler
+    return

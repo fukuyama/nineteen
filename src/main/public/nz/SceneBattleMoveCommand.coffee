@@ -4,7 +4,7 @@
 ###
 
 tm.define 'nz.SceneBattleMoveCommand',
-  superClass: tm.app.Scene
+  superClass: nz.SceneBase
 
   init: (param) ->
     @superInit()
@@ -18,6 +18,15 @@ tm.define 'nz.SceneBattleMoveCommand',
 
     @on 'map.pointingover', @_over
     @on 'map.pointingend', @_end
+
+    @on 'enterframe'   , @createKeyboradHander()
+    @setupCursorHandler (e) ->
+      @mapSprite.fire e
+      @_over @mapSprite.cursor
+    @on 'input_enter'  , @inputEnter
+
+  inputEnter: (e) ->
+    @_end @mapSprite.cursor
 
   searchRoute: (e)->
     op = {

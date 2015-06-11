@@ -4,7 +4,7 @@
 ###
 
 tm.define 'nz.SceneBattleShotCommand',
-  superClass: tm.app.Scene
+  superClass: nz.SceneBase
 
   init: (param) ->
     @superInit()
@@ -17,18 +17,52 @@ tm.define 'nz.SceneBattleShotCommand',
 
     @costa = @target.character.getActionCost(@turn)
 
-    #@on 'map.pointingstart', @_pointStart
-    #@on 'map.pointingover', (e) ->
-    #  @mapSprite.clearBlink()
-    #  result = nz.utils.lineRoute(@target.character,e)
-    #  for p in result
-    #    @mapSprite.blink(p.mapx,p.mapy)
-    #  return
+    @_keyInput = false
+    @_keyRotate = 0
+    @on 'enterframe'  , @createKeyboradHander()
+    @on 'input_left'  , @_inputLeft
+    @on 'repeat_left' , @_inputLeft
+    @on 'input_right' , @_inputRight
+    @on 'repeat_right', @_inputRight
+    #@on 'input_enter'  , @inputEnter
+
+    @on 'map.pointingstart', -> @_keyInput = false
     @on 'map.pointingend',   @_pointEnd
     @_createPointer()
 
+  _inputLeft: ->
+    @_keyInput = true
+    @_keyRotate -= 5
+    @_rotatePointer @_keyRotate
+    return
+
+  _inputRight: ->
+    @_keyInput = true
+    @_keyRotate += 5
+    @_rotatePointer @_keyRotate
+    return
+
+  _rotatePointer: (r) ->
+    if @pointer?
+      tcsr = @target.character.shot.range
+
+      r = nz.utils.relativeRotation(@target.body.rotation,r)
+      @target.checkDirection(
+        r:             r
+        start:         tcsr.start
+        end:           tcsr.end
+        anticlockwise: tcsr.anticlockwise
+        callback: ((result,ra) ->
+          ra += @target.body.rotation
+          unless result
+            @_keyRotate = ra
+          @pointer.rotation = ra
+        ).bind @
+      )
+    return
+
   update: (app) ->
-    @_movePointer(app.pointing)
+    @_movePointer(app.pointing) unless @_keyInput
     return
 
   _pointStart: (e) ->

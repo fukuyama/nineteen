@@ -21,8 +21,6 @@ tm.define 'nz.SceneBattlePosition',
     @teamArea  = {}
     @members   = {}
 
-    @_keyDown  = null
-
     areaIndex  = 0
     for c in @mapSprite.characterSprites
       team = c.character.team
@@ -54,15 +52,8 @@ tm.define 'nz.SceneBattlePosition',
     #@on 'map.pointingover', @_test
 
     @on 'enterframe'   , @createKeyboradHander()
-    @on 'input_up'     , @cursorHandler
-    @on 'input_down'   , @cursorHandler
-    @on 'input_left'   , @cursorHandler
-    @on 'input_right'  , @cursorHandler
-    @on 'repeat_up'    , @cursorHandler
-    @on 'repeat_down'  , @cursorHandler
-    @on 'repeat_left'  , @cursorHandler
-    @on 'repeat_right' , @cursorHandler
     @on 'input_enter'  , @inputEnter
+    @setupCursorHandler @cursorHandler
 
   cursorHandler: (e) ->
     @mapSprite.fire e
@@ -100,22 +91,6 @@ tm.define 'nz.SceneBattlePosition',
     @mapSprite.clearBlink()
     @one 'enterframe', -> @app.popScene()
     return
-
-  _openCharacterMenu: ->
-    @mapSprite.clearBlink()
-    @mapSprite.cursor.visible = false
-    characters = []
-    menu = []
-    for team in @controlTeam
-      for c in @members[team] when not c.visible
-        characters.push c
-        menu.push
-          name: c.character.name
-          func: ((i) -> @_selectCharacter(characters[i])).bind @
-    @openMenuDialog(
-      title: 'Character'
-      menu: menu
-    )
 
   _selectCharacter: (@character) ->
     @mapSprite.clearBlink()

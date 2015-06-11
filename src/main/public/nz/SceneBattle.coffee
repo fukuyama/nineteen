@@ -111,13 +111,27 @@ tm.define 'nz.SceneBattle',
       @one 'resume', -> @_startInputPhase()
 
     @eventHandler.refreshStatus()
+
+    @on 'enterframe'   , @createKeyboradHander()
+    @on 'input_enter'  , @inputEnter
+    @setupCursorHandler @cursorHandler
     return
 
-  _mapPointingend: (e) ->
+  cursorHandler: (e) ->
+    @mapSprite.fire e
+
+  inputEnter: (e) ->
+    @_mapPointingend @mapSprite.cursor
+
+  _mapPointingend: (param) ->
+    {
+      mapx
+      mapy
+    } = param
     @mapSprite.clearBlink()
-    targets = @mapSprite.findCharacterGhost(e.mapx,e.mapy)
-    for t in @mapSprite.findCharacter(e.mapx,e.mapy) when t.isAlive()
-      if not t.hasGhost() or t.ghost.mapx != e.mapx or t.ghost.mapy != e.mapy
+    targets = @mapSprite.findCharacterGhost(mapx,mapy)
+    for t in @mapSprite.findCharacter(mapx,mapy) when t.isAlive()
+      if not t.hasGhost() or t.ghost.mapx != mapx or t.ghost.mapy != mapy
         targets.push t
     targets = (t for t in targets when @controlTeam.contains t.character.team)
     if targets.length == 0
@@ -184,11 +198,12 @@ tm.define 'nz.SceneBattle',
 
   _openMainMenu: ->
     @openMenuDialog
+      self: @
       title: 'Command?'
       menu: [
-        {name:'Next Turn', func: @_openCommandConf.bind @}
-        {name:'Option',    func: (e) -> return}
-        {name:'Exit Game', func: @_exitGame.bind @}
+        {name:'Next Turn', func: @_openCommandConf}
+        {name:'Option',    func: -> return}
+        {name:'Exit Game', func: @_exitGame}
         {name:'Close Menu'}
       ]
     return
@@ -198,9 +213,10 @@ tm.define 'nz.SceneBattle',
     for t in targets
       menu.push
         name: t.character.name
-        func: ((i) -> @_openCharacterMenu targets[i]).bind @
+        func: (i) -> @_openCharacterMenu targets[i]
     menu.push {name: 'Close Menu'}
     @openMenuDialog
+      self: @
       title: 'Select Character'
       menu: menu
     return
@@ -218,35 +234,37 @@ tm.define 'nz.SceneBattle',
       if rap > 0
         menu.push
           name: 'Move'
-          func: @_addMoveCommand.bind @
+          func: @_addMoveCommand
         menu.push
           name: 'Direction'
-          func: @_addRotateCommand.bind @
+          func: @_addRotateCommand
       if rap >= ACTION_COST.attack
         attack = sc.isAttackCommand(@turn)
         shot   = sc.isShotCommand(@turn)
         if not attack and not shot
           menu.push
             name: 'Attack'
-            func: @_addAttackCommand.bind @
+            func: @_addAttackCommand
           menu.push
             name: 'Shot'
-            func: @_addShotCommand.bind @
+            func: @_addShotCommand
     if acost > 0
       menu.push
         name: 'Reset Action'
-        func: @_resetCommand.bind @
+        func: @_resetCommand
     menu.push {name:'Close Menu'}
     @openMenuDialog
+      self: @
       title: sc.name
       menu: menu
     return
 
   _openCommandConf: ->
     @openMenuDialog
+      self: @
       title: 'Start Battle?'
       menu: [
-        {name:'Yes',func:@_startBattlePhase.bind @}
+        {name:'Yes',func:@_startBattlePhase}
         {name:'No'}
       ]
     return
@@ -267,10 +285,11 @@ tm.define 'nz.SceneBattle',
     )
     ###
     @openMenuDialog
+      self: @
       title: 'Battle End'
       menu: [
-        {name: 'Replay',    func: @_startReplay.bind @}
-        {name: 'Exit Game', func: @_exitGame.bind @}
+        {name: 'Replay',    func: @_startReplay}
+        {name: 'Exit Game', func: @_exitGame}
       ]
     ###
     return

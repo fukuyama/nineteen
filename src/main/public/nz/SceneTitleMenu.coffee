@@ -4,13 +4,15 @@
 ###
 
 tm.define 'nz.SceneTitleMenu',
-  superClass: nz.SceneMenu
+  superClass: nz.SceneBase
 
   ###* 初期化
   * @classdesc タイトルシーンクラス
   * @constructor nz.SceneTitleMenu
   ###
   init: () ->
+    @superInit()
+
     menu = [
       {
         name: 'New Game'
@@ -34,13 +36,14 @@ tm.define 'nz.SceneTitleMenu',
       }
     ]
 
-    @superInit
-      title: nz.system.title
-      menu: menu
-    @box.setStrokeStyle nz.system.dialog.strokeStyle
-    @box.setFillStyle nz.system.dialog.fillStyle
+    @on 'enter', ->
+      @app.pushScene tm.game.TitleScene(title:nz.system.title)
 
-    @on 'enter', (e) -> @app.pushScene tm.game.TitleScene(title:nz.system.title)
+    @on 'resume', ->
+      @openMenuDialog
+        self: @
+        title: nz.system.title
+        menu: menu
 
     return
 
@@ -48,7 +51,7 @@ tm.define 'nz.SceneTitleMenu',
   * @constructor nz.SceneTitleMenu#
   ###
   _new_game: ->
-    @app.pushScene nz.SceneBattle(
+    @app.replaceScene nz.SceneBattle(
       mapId: 1
       controlTeam: ['teamA']
       characters: [
@@ -80,7 +83,7 @@ tm.define 'nz.SceneTitleMenu',
   * @constructor nz.SceneTitleMenu#
   ###
   _debug_game: ->
-    @app.pushScene nz.SceneBattle(
+    @app.replaceScene nz.SceneBattle(
       mapId: 0
       controlTeam: ['teamA']
       characters: [
@@ -91,8 +94,8 @@ tm.define 'nz.SceneTitleMenu',
           weapon:
             damage: 20
         )
-        new nz.Character(name:'キャラクター2',team:'teamA',spriteSheet:'character_test')
-        new nz.Character(name:'キャラクター3',team:'teamA',spriteSheet:'character_test')
+        #new nz.Character(name:'キャラクター2',team:'teamA',spriteSheet:'character_test')
+        #new nz.Character(name:'キャラクター3',team:'teamA',spriteSheet:'character_test')
         new nz.Character(name:'キャラクター4',team:'teamB',spriteSheet:'character_test')
         #new nz.Character(name:'キャラクター5',team:'teamB',spriteSheet:'character_test')
         #new nz.Character(name:'キャラクター6',team:'teamB',spriteSheet:'character_test')

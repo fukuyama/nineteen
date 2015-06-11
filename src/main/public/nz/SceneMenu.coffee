@@ -11,6 +11,7 @@ tm.define 'nz.SceneMenu',
 
   init: (param) ->
     param = {
+      self: @
       screenWidth:  SCREEN_W
       screenHeight: SCREEN_H
     }.$extend param
@@ -26,8 +27,8 @@ tm.define 'nz.SceneMenu',
     @on 'menuselected', (e) ->
       index = e.selectIndex
       return
-    @on 'exit', (e) ->
-      @menuFunc[index]?.call(@,index) if index?
+    @on 'menuclosed', (e) ->
+      @menuFunc[index]?.call(param.self,index) if index?
       return
 
     @on 'enterframe', (e) ->

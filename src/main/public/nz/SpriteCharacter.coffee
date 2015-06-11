@@ -135,6 +135,7 @@ tm.define 'nz.SpriteCharacter',
     else
       res = r1 <= r or  r <= r2
     if callback?
+      ra = r
       unless res
         ra = r1 if r1 > r
         ra = r2 if r  > r2
