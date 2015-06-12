@@ -33,6 +33,7 @@ tm.define 'nz.SceneBattle',
 
     @data =
       turn: 0 # 戦闘ターン数
+      winner: null
 
     @eventHandler = nz.EventHandlerBattle(scene:@)
 
@@ -163,6 +164,9 @@ tm.define 'nz.SceneBattle',
           t = c.team
         else if t isnt c.team
           return false
+      @data.winner = {
+        name: t
+      }
       return true
     return false
 
@@ -277,21 +281,13 @@ tm.define 'nz.SceneBattle',
     return
 
   _openResult: ->
-    @_pushScene(
-      nz.SceneBattleResult(
-        mapSprite: @mapSprite
-        status: @status
-      )
-    )
-    ###
-    @openMenuDialog
-      self: @
-      title: 'Battle End'
-      menu: [
-        {name: 'Replay',    func: @_startReplay}
-        {name: 'Exit Game', func: @_exitGame}
-      ]
-    ###
+    @_pushScene nz.SceneBattleResult
+      mapSprite: @mapSprite
+      status: @status
+      data: @data
+    @one 'resume', ->
+      console.log 'replay?'
+      return
     return
 
   _exitGame: ->

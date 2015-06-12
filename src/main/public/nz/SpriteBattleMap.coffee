@@ -29,18 +29,12 @@ tm.define 'nz.SpriteBattleMap',
     @width  = @map.width  * MAP_CHIP_W
     @height = @map.height * MAP_CHIP_H
     for mapx in [0...@map.width]
-      h = if mapx % 2 != 0 then @map.height else @map.width - 1
+      h = if mapx % 2 != 0 then @map.height else @map.height - 1
       for mapy in [0...h]
         @_initMapChip(mapx,mapy)
 
     @cursor = @_createCursor().addChildTo(@)
     @setCursorPosition @getMapChip(0,0)
-
-    self = @
-    for line in @_chips
-      for chip in line
-        chip.on 'pointingover', ->
-          self.setCursorPosition @
 
     @on 'startBattlePhase', (e) ->
       @cursor.visible = false
@@ -107,11 +101,13 @@ tm.define 'nz.SpriteBattleMap',
 
   _createCursor: ->
     cursor = tm.display.Shape(
+      x:           0
+      y:           0
       width:       MAP_CHIP_W
       height:      MAP_CHIP_H
       strokeStyle: 'red'
       lineWidth:   3
-      visible:     false
+      visible:     true
     )
     cursor._render = -> @canvas.strokeRect(0, 0, @width, @height)
     cursor.render()
@@ -152,6 +148,8 @@ tm.define 'nz.SpriteBattleMap',
       .on 'pointingend', @_dispatchMapChipEvent
     chip.mapx = mapx
     chip.mapy = mapy
+
+    chip.on 'pointingover', @setCursorPosition.bind @, chip
 
     tm.display.Label("#{mapx},#{mapy}",{fontSize:8}).setPosition(0,h/2-8).addChildTo(chip)
 

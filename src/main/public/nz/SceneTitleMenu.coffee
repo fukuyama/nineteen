@@ -37,7 +37,11 @@ tm.define 'nz.SceneTitleMenu',
     ]
 
     @on 'enter', ->
-      @app.pushScene tm.game.TitleScene(title:nz.system.title)
+      scene = tm.game.TitleScene(title:nz.system.title)
+      scene.on 'enterframe', ->
+        if @app.keyboard.getKeyDown('enter')
+          @onpointingstart()
+      @app.pushScene scene
 
     @on 'resume', ->
       @openMenuDialog

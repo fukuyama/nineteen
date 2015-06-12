@@ -17,7 +17,7 @@ tm.define 'nz.SceneBattleShotCommand',
 
     @costa = @target.character.getActionCost(@turn)
 
-    @_keyInput = false
+    @_keyInput = true
     @_keyRotate = 0
     @on 'enterframe'  , @createKeyboradHander()
     @on 'input_left'  , @_inputLeft
@@ -26,7 +26,7 @@ tm.define 'nz.SceneBattleShotCommand',
     @on 'repeat_right', @_inputRight
     #@on 'input_enter'  , @inputEnter
 
-    @on 'map.pointingstart', -> @_keyInput = false
+    @on 'map.pointingover', -> @_keyInput = false
     @on 'map.pointingend',   @_pointEnd
     @_createPointer()
 

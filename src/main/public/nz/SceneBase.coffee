@@ -31,7 +31,6 @@ tm.define 'nz.SceneBase',
 
   createKeyboradHander: ->
     eventKeys      = ['up','down','left','right','enter']
-    #eventUpKeys    = []
     repeatCount    = 0
     repeatDelay    = 10
     repeatIntarval = 0
@@ -46,10 +45,6 @@ tm.define 'nz.SceneBase',
         if repeatDelay < repeatCount++
           @fire tm.event.Event('repeat_' + key)
           repeatCount -= repeatIntarval
-
-      #for key in eventUpKeys when kb.getKeyUp(key)
-      #  repeatCount = 0
-      #  @fire tm.event.Event('input_' + key + '_up')
 
   setupCursorHandler: (handler) ->
     for k in ['up','down','left','right']
