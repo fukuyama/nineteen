@@ -32,8 +32,10 @@ tm.define 'nz.SceneBattle',
         turn: 20
 
     @data =
-      turn: 0 # 戦闘ターン数
+      turn:   0    # 戦闘ターン数
       winner: null
+      replay: null
+      startInfo: {}
 
     @eventHandler = nz.EventHandlerBattle(scene:@)
 
@@ -70,7 +72,7 @@ tm.define 'nz.SceneBattle',
 
     # マップ
     @mapSprite = nz.SpriteBattleMap(@mapName).addChildTo(@)
-    @mapSprite.x = (SCREEN_W - @mapSprite.width )
+    @mapSprite.x = (SCREEN_W - @mapSprite.width ) - 32
     @mapSprite.y = (SCREEN_H - @mapSprite.height) / 2
 
     # ステータスフォルダ
@@ -109,7 +111,15 @@ tm.define 'nz.SceneBattle',
           controlTeam: @controlTeam
         )
       )
-      @one 'resume', -> @_startInputPhase()
+      @one 'resume', ->
+        @data.startInfo.characters = []
+        for c in @characters
+          @data.startInfo.characters.push
+            mapx:      c.mapx
+            mapy:      c.mapy
+            direction: c.direction
+            hp:        c.hp
+        @_startInputPhase()
 
     @eventHandler.refreshStatus()
 
@@ -268,7 +278,7 @@ tm.define 'nz.SceneBattle',
       self: @
       title: 'Start Battle?'
       menu: [
-        {name:'Yes',func:@_startBattlePhase}
+        {name:'Yes',func: -> @_startBattlePhase() }
         {name:'No'}
       ]
     return
@@ -286,8 +296,22 @@ tm.define 'nz.SceneBattle',
       status: @status
       data: @data
     @one 'resume', ->
-      console.log 'replay?'
+      @_startReplay()
       return
+    return
+
+  _startReplay: ->
+    return unless @data.replay?
+    si = @data.startInfo
+    for sc,i in @characterSprites
+      c    = sc.character
+      o    = si.characters[i]
+      c.hp = o.hp
+      sc.setMapPosition(o.mapx,o.mapy)
+      sc.setDirection(o.direction)
+      sc.applyPosition()
+      sc.show()
+    @_startBattlePhase(@data.replay)
     return
 
   _exitGame: ->
@@ -307,11 +331,18 @@ tm.define 'nz.SceneBattle',
       @characters[i].commands[@turn] = c.commands[@turn]
     @eventHandler.refreshStatus()
 
-  _startBattlePhase: ->
+  _startBattlePhase: (param) ->
+    {
+      start
+      end
+    } = {
+      start: @turn
+      end: @turn
+    }.$extend param
     @_pushScene(
       nz.SceneBattlePhase(
-        start: @turn
-        end: @turn
+        start: start
+        end: end
         mapSprite: @mapSprite
         status: @status
       )

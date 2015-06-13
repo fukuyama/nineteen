@@ -62,31 +62,33 @@ tm.define 'nz.SpriteStatus',
           originY:   @originY
           fontSize:  8
         hpGauge:
-          type:        'tm.ui.GlossyGauge'
-          x:           8
-          y:           32
-          width:       @width - 16
-          height:      4
-          originX:     @originX
-          originY:     @originY
-          borderWidth: 1
-          color:       'green'
-          bgColor:     @bgColor
-          borderColor: gaugebBrderColor
-          _maxValue:   @character.maxhp
+          type:          'tm.ui.GlossyGauge'
+          x:             8
+          y:             32
+          width:         @width - 16
+          height:        4
+          originX:       @originX
+          originY:       @originY
+          borderWidth:   1
+          color:         'green'
+          bgColor:       @bgColor
+          borderColor:   gaugebBrderColor
+          animationTime: 1000
+          _maxValue:     @character.maxhp
         spGauge:
-          type:        'tm.ui.GlossyGauge'
-          x:           8
-          y:           40
-          width:       @width - 16
-          height:      4
-          originX:     @originX
-          originY:     @originY
-          borderWidth: 1
-          color:       'Cyan'
-          bgColor:     @bgColor
-          borderColor: gaugebBrderColor
-          _maxValue:   @character.mapsp
+          type:          'tm.ui.GlossyGauge'
+          x:             8
+          y:             40
+          width:         @width - 16
+          height:        4
+          originX:       @originX
+          originY:       @originY
+          borderWidth:   1
+          color:         'Cyan'
+          bgColor:       @bgColor
+          borderColor:   gaugebBrderColor
+          animationTime: 1000
+          _maxValue:     @character.mapsp
     if @detail
       form.children.apGauge =
         type:          'tm.ui.GlossyGauge'

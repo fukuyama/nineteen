@@ -32,8 +32,8 @@ tm.define 'nz.SceneBattleResult',
       children:
         bg:
           type:          'RoundRectangleShape'
-          x:             16
-          y:             16
+          x:             32
+          y:             32
           width:         @width
           height:        @height
           strokeStyle:   'black'
@@ -51,8 +51,8 @@ tm.define 'nz.SceneBattleResult',
           fillStyle: 'black'
           align:     'left'
           baseline:  'top'
-          x:         16 + 8
-          y:         16 + 10
+          x:         32 + 8
+          y:         32 + 10
           originX:   @originX
           originY:   @originY
           fontSize:  8
@@ -64,6 +64,9 @@ tm.define 'nz.SceneBattleResult',
     @on 'input_enter', @_openBattleEndMenu
 
   _startReplay: ->
+    @data.replay =
+      start: 1
+      end: @data.turn
     @app.popScene()
     return
 
