@@ -45,7 +45,7 @@ class nz.ai.SampleAI
         setup: (param) ->
           # 移動射撃
           param.setShotCommand()
-          param.setMoveCommand()
+          param.setBackCommand(5)
           return true
       }
       {
