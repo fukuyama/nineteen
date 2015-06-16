@@ -19,6 +19,7 @@ require('../../../../main/public/nz/GridNode.coffee')
 require('../../../../main/public/nz/System.coffee')
 require('../../../../main/public/nz/Utils.coffee')
 require('../../../../main/public/nz/ai/Param.coffee')
+require('../../../../main/public/nz/ai/RuleBaseAI.coffee')
 require('../../../../main/public/nz/ai/SampleAI.coffee')
 
 

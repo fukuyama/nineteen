@@ -26,6 +26,7 @@ mainScripts = [
   'nz/SceneBattlePhase'
   'nz/SceneBattleResult'
   'nz/ai/Param'
+  'nz/ai/RuleBaseAI'
   'main'
 ]
 dataNames= [
