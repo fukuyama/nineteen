@@ -1,6 +1,6 @@
 ###*
-* @file SampleAI.coffee
-* サンプルAI
+* @file Shooter.coffee
+* シューターAI
 ###
 
 # node.js と ブラウザでの this.nz を同じインスタンスにする
@@ -10,7 +10,7 @@ _g = undefined
 
 nz.ai = nz.ai ? {}
 
-class nz.ai.SampleAI　extends　nz.ai.RuleBaseAI
+class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
 
   ###* 初期化
   * @classdesc サンプルAIクラス
@@ -20,26 +20,17 @@ class nz.ai.SampleAI　extends　nz.ai.RuleBaseAI
     super()
     @addRule
       cond: (param) ->
-        # 距離が１以下で後ろに移動ができる場合
-        return param.distance <= 1 and param.checkBackPosition()
+        # 距離が４以下で射撃範囲にターゲットがいる場合
+        return param.distance <= 4 and param.checkShotRange()
       setup: (param) ->
-        # 下がりつつ攻撃
-        param.setAttackCommand()
-        param.setBackCommand(10)
-        return true
-    @addRule
-      cond: (param) ->
-        # 距離が４以下の場合
-        return param.distance <= 4
-      setup: (param) ->
-        # ターゲットに移動攻撃
-        param.setAttackCommand()
+        # 移動射撃
+        param.setShotCommand()
         param.setMoveCommand()
         return true
     @addRule
       cond: (param) ->
-        # 距離が６以下で射撃範囲にターゲットがいる場合
-        return param.distance <= 6 and param.checkShotRange()
+        # 距離が８以下で射撃範囲にターゲットがいる場合
+        return param.distance <= 8 and param.checkShotRange()
       setup: (param) ->
         # 移動射撃
         param.setShotCommand()

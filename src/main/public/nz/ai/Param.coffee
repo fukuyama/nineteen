@@ -142,7 +142,7 @@ class nz.ai.Param
     @distance = r.distance
     return
 
-  ###* 射撃葉ににターゲットがいるか確認する
+  ###* 射撃範囲にターゲットがいるか確認する
   * @memberof nz.ai.Param#
   * @method checkShotRange
   ###
@@ -179,8 +179,8 @@ class nz.ai.Param
   * @memberof nz.ai.Param#
   * @method setMoveCommand
   ###
-  setMoveCommand: ->
-    route = nz.utils.searchRoute @graph,@character,@target,@characters
+  setMoveCommand: (target = @target) ->
+    route = nz.utils.searchRoute @graph,@character,target,@characters
     @character.addMoveCommand @turn,route
     return
 

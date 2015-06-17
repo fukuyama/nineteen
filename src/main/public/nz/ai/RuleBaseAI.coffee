@@ -19,6 +19,9 @@ class nz.ai.RuleBaseAI
   constructor: ->
     @rules = []
 
+  addRule: (rule) ->
+    @rules.push rule
+
   ###* 戦闘開始位置設定
   * @param  {Object}         param           設定用パラメータ
   * @param  {nz.Character}   param.character 設定対象のキャラクター
