@@ -23,9 +23,13 @@ class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
         # 距離が４以下で射撃範囲にターゲットがいる場合
         return param.distance <= 4 and param.checkShotRange()
       setup: (param) ->
-        # 移動射撃
+        # 射撃移動
         param.setShotCommand()
-        param.setMoveCommand()
+        # 移動先は、相手の位置から同じ距離を保ちつつ左に回り込む
+        # TODO: 座標計算
+        mapx = 1
+        mapy = 1
+        param.setMoveCommand(mapx:mapx,mapy:mapy)
         return true
     @addRule
       cond: (param) ->
