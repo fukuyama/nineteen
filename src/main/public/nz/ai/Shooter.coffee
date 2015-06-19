@@ -26,9 +26,17 @@ class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
         # 射撃移動
         param.setShotCommand()
         # 移動先は、相手の位置から同じ距離を保ちつつ左に回り込む
-        # TODO: 座標計算
+        # TODO: 座標計算＆壁計算も
         mapx = 1
         mapy = 1
+        
+        m = 4 * 32
+        t = tm.geom.Vector2().setObject nz.utils.mapxy2screenxy param.target
+        s = tm.geom.Vector2().setObject nz.utils.mapxy2screenxy param.chracter
+        d = s.distance t
+        r = s.sub(t).toAngle() - m / d
+        g = tm.geom.Vector2().setRadian(r,d).add(t)
+
         param.setMoveCommand(mapx:mapx,mapy:mapy)
         return true
     @addRule

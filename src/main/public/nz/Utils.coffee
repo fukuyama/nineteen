@@ -57,11 +57,32 @@ class nz.Utils
     {direction,mapx,mapy} = source
     return graph.searchRoute(direction, mapx, mapy, target.mapx, target.mapy, options)
 
+  ###* マップ座標をスクリーン座標へ変換
+  * @param {Object} p {mapx,mapy}
+  * @return {Object}  {x,y}
+  ###
   mapxy2screenxy: (p) ->
     if arguments.length == 2
       p = {
         mapx: arguments[0]
         mapy: arguments[1]
+      }
+    r = {
+      x: p.mapx * MAP_CHIP_W + MAP_CHIP_W * 0.5
+      y: p.mapy * MAP_CHIP_H + MAP_CHIP_H * 0.5
+    }
+    r.y += MAP_CHIP_H * 0.5 if p.mapx % 2 == 0
+    return r
+
+  ###* スクリーン座標をマップ座標へ変換
+  * @param {Object} p {x,y}
+  * @return {Object}  {mapx,mapy}
+  ###
+  screenxy2mapxy: (p) ->  
+    if arguments.length == 2
+      p = {
+        x: arguments[0]
+        y: arguments[1]
       }
     r = {
       x: p.mapx * MAP_CHIP_W + MAP_CHIP_W * 0.5
