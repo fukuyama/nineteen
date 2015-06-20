@@ -30,11 +30,18 @@ class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
         mapx = 1
         mapy = 1
         
+        # 移動距離
         m = 4 * 32
+        # ターゲット
         t = tm.geom.Vector2().setObject nz.utils.mapxy2screenxy param.target
+        # 自分の位置
         s = tm.geom.Vector2().setObject nz.utils.mapxy2screenxy param.chracter
+        # ターゲットまでの距離
         d = s.distance t
-        r = s.sub(t).toAngle() - m / d
+        # ターゲットからの方向
+        r = s.sub(t).toAngle()
+        # 移動後の方向
+        r -= m / d
         g = tm.geom.Vector2().setRadian(r,d).add(t)
 
         param.setMoveCommand(mapx:mapx,mapy:mapy)
