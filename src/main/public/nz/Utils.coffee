@@ -67,6 +67,7 @@ class nz.Utils
         mapx: arguments[0]
         mapy: arguments[1]
       }
+    # origin があるから、0.5 ずらす
     r = {
       x: p.mapx * MAP_CHIP_W + MAP_CHIP_W * 0.5
       y: p.mapy * MAP_CHIP_H + MAP_CHIP_H * 0.5
@@ -84,12 +85,15 @@ class nz.Utils
         x: arguments[0]
         y: arguments[1]
       }
-    r = {
-      x: p.mapx * MAP_CHIP_W + MAP_CHIP_W * 0.5
-      y: p.mapy * MAP_CHIP_H + MAP_CHIP_H * 0.5
+    mapx = Math.round (p.x - MAP_CHIP_W * 0.5) / MAP_CHIP_W
+    if mapx % 2 == 0
+      mapy = Math.round p.y / MAP_CHIP_H
+    else
+      mapy = Math.round (p.y - MAP_CHIP_H * 0.5) / MAP_CHIP_H
+    return {
+      mapx: mapx
+      mapy: mapy
     }
-    r.y += MAP_CHIP_H * 0.5 if p.mapx % 2 == 0
-    return r
 
   relativeRotation: (rotation,p1,p2) ->
     r = 0
