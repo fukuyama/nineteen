@@ -26,6 +26,11 @@ lineRouteTest = (p1,p2,data ... ) ->
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'UtilsTest', () ->
+  describe 'mapxy2screenxy 1', () ->
+    it '0,0', ->
+      p = nz.utils.mapxy2screenxy mapx:0, mapy:0
+      p.x.should.equals 16,'x'
+      p.y.should.equals 32,'y'
   describe 'lineRoute 1', () ->
     it '(5,5),(5,6)', ->
       lineRouteTest [5,5],[5,6],[5,5],[5,6]

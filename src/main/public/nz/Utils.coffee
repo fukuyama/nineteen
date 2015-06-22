@@ -79,7 +79,7 @@ class nz.Utils
   * @param {Object} p {x,y}
   * @return {Object}  {mapx,mapy}
   ###
-  screenxy2mapxy: (p) ->  
+  screenxy2mapxy: (p) ->
     if arguments.length == 2
       p = {
         x: arguments[0]
