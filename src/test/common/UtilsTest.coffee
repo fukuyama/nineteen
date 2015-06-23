@@ -31,6 +31,114 @@ describe 'UtilsTest', () ->
       p = nz.utils.mapxy2screenxy mapx:0, mapy:0
       p.x.should.equals 16,'x'
       p.y.should.equals 32,'y'
+    it '1,1', ->
+      p = nz.utils.mapxy2screenxy mapx:1, mapy:1
+      p.x.should.equals 48,'x'
+      p.y.should.equals 48,'y'
+    it '1,2', ->
+      p = nz.utils.mapxy2screenxy mapx:1, mapy:2
+      p.x.should.equals 48,'x'
+      p.y.should.equals 80,'y'
+    it '2,1', ->
+      p = nz.utils.mapxy2screenxy mapx:2, mapy:1
+      p.x.should.equals 80,'x'
+      p.y.should.equals 64,'y'
+    it '5,5', ->
+      p = nz.utils.mapxy2screenxy mapx:5, mapy:5
+      p.x.should.equals 176,'x'
+      p.y.should.equals 176,'y'
+    it '6,5', ->
+      p = nz.utils.mapxy2screenxy mapx:6, mapy:5
+      p.x.should.equals 208,'x'
+      p.y.should.equals 192,'y'
+  describe 'screenxy2mapxy 1', () ->
+    it '16,32', ->
+      p = nz.utils.screenxy2mapxy x:16, y:32
+      p.mapx.should.equals 0,'mapx1'
+      p.mapy.should.equals 0,'mapy1'
+      p = nz.utils.screenxy2mapxy x:0, y:0
+      p.mapx.should.equals 0,'mapx2'
+      p.mapy.should.equals 0,'mapy2'
+      p = nz.utils.screenxy2mapxy x:31, y:0
+      p.mapx.should.equals 0,'mapx3'
+      p.mapy.should.equals 0,'mapy3'
+      p = nz.utils.screenxy2mapxy x:0, y:16
+      p.mapx.should.equals 0,'mapx3'
+      p.mapy.should.equals 0,'mapy3'
+      p = nz.utils.screenxy2mapxy x:31, y:47
+      p.mapx.should.equals 0,'mapx4'
+      p.mapy.should.equals 0,'mapy4'
+    it '48,48', ->
+      p = nz.utils.screenxy2mapxy x:48, y:48
+      p.mapx.should.equals 1,'mapx1'
+      p.mapy.should.equals 1,'mapy1'
+      p = nz.utils.screenxy2mapxy x:32, y:32
+      p.mapx.should.equals 1,'mapx2'
+      p.mapy.should.equals 1,'mapy2'
+      p = nz.utils.screenxy2mapxy x:32, y:63
+      p.mapx.should.equals 1,'mapx3'
+      p.mapy.should.equals 1,'mapy3'
+      p = nz.utils.screenxy2mapxy x:63, y:32
+      p.mapx.should.equals 1,'mapx4'
+      p.mapy.should.equals 1,'mapy4'
+      p = nz.utils.screenxy2mapxy x:63, y:63
+      p.mapx.should.equals 1,'mapx4'
+      p.mapy.should.equals 1,'mapy4'
+    it '48,80', ->
+      p = nz.utils.screenxy2mapxy x:48, y:80
+      p.mapx.should.equals 1,'mapx'
+      p.mapy.should.equals 2,'mapy'
+    it '80,64', ->
+      p = nz.utils.screenxy2mapxy x:80, y:64
+      p.mapx.should.equals 2,'mapx'
+      p.mapy.should.equals 1,'mapy'
+    it '176,176', ->
+      p = nz.utils.screenxy2mapxy x:176, y:176
+      p.mapx.should.equals 5,'mapx'
+      p.mapy.should.equals 5,'mapy'
+      p = nz.utils.screenxy2mapxy x:159, y:176
+      p.mapx.should.equals 4,'mapx'
+      p.mapy.should.equals 5,'mapy'
+      p = nz.utils.screenxy2mapxy x:192, y:176
+      p.mapx.should.equals 6,'mapx'
+      p.mapy.should.equals 5,'mapy'
+      p = nz.utils.screenxy2mapxy x:160, y:160
+      p.mapx.should.equals 5,'mapx'
+      p.mapy.should.equals 5,'mapy'
+      p = nz.utils.screenxy2mapxy x:160, y:191
+      p.mapx.should.equals 5,'mapx'
+      p.mapy.should.equals 5,'mapy'
+      p = nz.utils.screenxy2mapxy x:191, y:160
+      p.mapx.should.equals 5,'mapx'
+      p.mapy.should.equals 5,'mapy'
+      p = nz.utils.screenxy2mapxy x:191, y:191
+      p.mapx.should.equals 5,'mapx'
+      p.mapy.should.equals 5,'mapy'
+      p = nz.utils.screenxy2mapxy x:191, y:159
+      p.mapx.should.equals 5,'mapx'
+      p.mapy.should.equals 4,'mapy'
+      p = nz.utils.screenxy2mapxy x:191, y:192
+      p.mapx.should.equals 5,'mapx'
+      p.mapy.should.equals 6,'mapy'
+    it '208,192', ->
+      p = nz.utils.screenxy2mapxy x:208, y:192
+      p.mapx.should.equals 6,'mapx'
+      p.mapy.should.equals 5,'mapy'
+      p = nz.utils.screenxy2mapxy x:208, y:175
+      p.mapx.should.equals 6,'mapx'
+      p.mapy.should.equals 4,'mapy'
+      p = nz.utils.screenxy2mapxy x:208, y:176
+      p.mapx.should.equals 6,'mapx'
+      p.mapy.should.equals 5,'mapy'
+      p = nz.utils.screenxy2mapxy x:192, y:176
+      p.mapx.should.equals 6,'mapx'
+      p.mapy.should.equals 5,'mapy'
+      p = nz.utils.screenxy2mapxy x:223, y:176
+      p.mapx.should.equals 6,'mapx'
+      p.mapy.should.equals 5,'mapy'
+      p = nz.utils.screenxy2mapxy x:223, y:207
+      p.mapx.should.equals 6,'mapx'
+      p.mapy.should.equals 5,'mapy'
   describe 'lineRoute 1', () ->
     it '(5,5),(5,6)', ->
       lineRouteTest [5,5],[5,6],[5,5],[5,6]

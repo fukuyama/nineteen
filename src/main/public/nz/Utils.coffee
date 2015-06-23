@@ -85,11 +85,13 @@ class nz.Utils
         x: arguments[0]
         y: arguments[1]
       }
-    mapx = Math.round (p.x - MAP_CHIP_W * 0.5) / MAP_CHIP_W
+    mapx = Math.floor p.x / MAP_CHIP_W
     if mapx % 2 == 0
-      mapy = Math.round p.y / MAP_CHIP_H
+      mapy = Math.floor (p.y - MAP_CHIP_H * 0.5) / MAP_CHIP_H
     else
-      mapy = Math.round (p.y - MAP_CHIP_H * 0.5) / MAP_CHIP_H
+      mapy = Math.floor p.y / MAP_CHIP_H
+    mapx = 0 if mapx < 0
+    mapy = 0 if mapy < 0
     return {
       mapx: mapx
       mapy: mapy
