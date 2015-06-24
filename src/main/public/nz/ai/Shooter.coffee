@@ -12,6 +12,28 @@ nz.ai = nz.ai ? {}
 
 class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
 
+
+  calcSlidePosition: (param) ->
+    {
+      target
+      character
+      length
+    } = param
+    m = length * 32
+    # ターゲット
+    t = tm.geom.Vector2().setObject nz.utils.mapxy2screenxy target
+    # 自分の位置
+    s = tm.geom.Vector2().setObject nz.utils.mapxy2screenxy chracter
+    # ターゲットまでの距離
+    d = s.distance t
+    # ターゲットからの方向
+    r = s.sub(t).toAngle()
+    # 移動後の方向
+    r -= m / d
+    # 目的値
+    g = tm.geom.Vector2().setRadian(r,d).add(t)
+    return nz.utils.screenxy2mapxy g
+
   ###* 初期化
   * @classdesc サンプルAIクラス
   * @constructor nz.ai.SampleAI
@@ -27,24 +49,11 @@ class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
         param.setShotCommand()
         # 移動先は、相手の位置から同じ距離を保ちつつ左に回り込む
         # TODO: 座標計算＆壁計算も
-        mapx = 1
-        mapy = 1
-        
-        # 移動距離
-        m = 4 * 32
-        # ターゲット
-        t = tm.geom.Vector2().setObject nz.utils.mapxy2screenxy param.target
-        # 自分の位置
-        s = tm.geom.Vector2().setObject nz.utils.mapxy2screenxy param.chracter
-        # ターゲットまでの距離
-        d = s.distance t
-        # ターゲットからの方向
-        r = s.sub(t).toAngle()
-        # 移動後の方向
-        r -= m / d
-        g = tm.geom.Vector2().setRadian(r,d).add(t)
-
-        param.setMoveCommand(mapx:mapx,mapy:mapy)
+        p = @calcSlidePosition
+          target: param.target
+          character: param.character
+          length: 4
+        param.setMoveCommand(p)
         return true
     @addRule
       cond: (param) ->
@@ -64,4 +73,4 @@ class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
         param.setMoveCommand()
         return true
 
-nz.system.addAI 'SampleAI', new nz.ai.SampleAI()
+nz.system.addAI 'Shooter', new nz.ai.Shooter()

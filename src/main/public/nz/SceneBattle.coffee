@@ -167,6 +167,8 @@ tm.define 'nz.SceneBattle',
   isEnd: ->
     if @turn >= @endCondition.turn
       return true
+
+    # 終了タイプがチームの場合、１チームが残っている場合に終了
     if @endCondition.type is 'team'
       t = null
       for c in @characters when c.isAlive()

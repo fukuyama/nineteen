@@ -37,6 +37,7 @@ dataNames= [
   'character_test'
 ]
 aiScripts= [
+  'nz/ai/Shooter'
   'nz/ai/SampleAI'
 ]
 

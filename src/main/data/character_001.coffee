@@ -2,7 +2,7 @@
 character =
   image: 'img/character_001.png'
   frame:
-    width: 32
+    width:  32
     height: 32
   animations:
     up:         {frames: [ 1, 2, 1, 0], next:   'up', frequency:8}
