@@ -157,20 +157,42 @@ class nz.ai.Param
     }
     return nz.utils.checkDirectionRange(data)
 
+  ###* 指定した座標が移動できるか確認する(コスト計算含まない)
+  * @memberof nz.ai.Param#
+  * @method checkMovePosition
+  * @param {Object} p {mapx,mapy}
+  ###
+  checkMovePosition: (p) ->
+    node = @graph.grid[p.mapx][p.mapy]
+    unless node?
+      return false
+    if node.isWall()
+      return false
+    for c in @characters
+      if c.mapx is p.mapx and c.mapy is p.mapy
+        return false
+    return true
+
+  ###* 前に移動できるか確認する(コスト計算含む)
+  * @memberof nz.ai.Param#
+  * @method checkFrontPosition
+  ###
+  checkFrontPosition: ->
+    r = nz.Graph.frontPosition @character
+    unless @checkMovePosition(r)
+      return false
+    if @character.getRemnantAp() < node.weight + 1
+      return false
+    return true
+
   ###* 後ろに移動できるか確認する(コスト計算含む)
   * @memberof nz.ai.Param#
   * @method checkBackPosition
   ###
   checkBackPosition: ->
     r = nz.Graph.backPosition @character
-    node = @graph.grid[r.mapx][r.mapy]
-    unless node?
+    unless @checkMovePosition(r)
       return false
-    if node.isWall()
-      return false
-    for c in @characters
-      if c.mapx is r.mapx and c.mapy is r.mapy
-        return false
     if @character.getRemnantAp() < node.weight + 1
       return false
     return true
@@ -202,15 +224,36 @@ class nz.ai.Param
 
   ###* 後ろに移動するコマンドを設定する
   * @memberof nz.ai.Param#
-  * @method setBackCommand
+  * @method setMoveBackCommand
   * @param {number} num 後退する歩数
   ###
-  setBackCommand: (num=1) ->
+  setMoveBackCommand: (num=1) ->
     for i in [0 .. num]
       pos = nz.Graph.backPosition @character
       node = @graph.grid[pos.mapx][pos.mapy]
       cost = node.weight + 1
       if @checkBackPosition()
+        route = {
+          mapx: pos.mapx
+          mapy: pos.mapy
+          cost: cost
+          back: true
+          direction: pos.direction
+        }
+        @character.addMoveCommand @turn, [route]
+    return
+
+  ###* 前に移動するコマンドを設定する
+  * @memberof nz.ai.Param#
+  * @method setMoveFrontCommand
+  * @param {number} num 前進する歩数
+  ###
+  setMoveFrontCommand: (num=1) ->
+    for i in [0 .. num]
+      if @checkFrontPosition()
+        pos = nz.Graph.frontPosition @character
+        node = @graph.grid[pos.mapx][pos.mapy]
+        cost = node.weight + 1
         route = {
           mapx: pos.mapx
           mapy: pos.mapy

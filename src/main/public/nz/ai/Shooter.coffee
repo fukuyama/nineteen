@@ -12,7 +12,6 @@ nz.ai = nz.ai ? {}
 
 class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
 
-
   calcSlidePosition: (param) ->
     {
       target
