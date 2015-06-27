@@ -92,6 +92,7 @@ class nz.Character
     info.move   = nz.utils.marge {}, @move
     info.weapon = nz.utils.marge {}, @weapon
     info.shot   = nz.utils.marge {}, @shot
+    info.ai     = nz.utils.marge {}, @ai
     return new nz.Character(info)
 
   ###* コマンド削除
@@ -165,6 +166,13 @@ class nz.Character
   ###
   getRemnantAp: (i) -> @maxap - @getActionCost(i)
 
+  getLastDirection: (i) ->
+    command = @_command i
+    direction = @direction
+    for a in command.actions when a.rotate?
+      direction = a.rotate.direction
+    return direction
+
   ###* 移動コマンドを追加
   * @param {number} i 戦闘ターン数
   * @param {Array} route 移動ルート
@@ -173,9 +181,7 @@ class nz.Character
   ###
   addMoveCommand: (i,route) ->
     command = @_command i
-    direction = @direction
-    for a in command.actions when a.rotate?
-      direction = a.rotate.direction
+    direction = @getLastDirection(i)
     prev = command.cost
     cost = 0
     for r in route when prev + cost <= @maxap

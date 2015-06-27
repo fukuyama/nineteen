@@ -16,6 +16,8 @@ _g = undefined
 ###
 nz.ai = nz.ai ? {}
 
+DIRECTIONS = nz.system.character.directions
+
 class nz.ai.Param
 
   ###* 戦闘ターン数
@@ -178,9 +180,10 @@ class nz.ai.Param
   * @method checkFrontPosition
   ###
   checkFrontPosition: ->
-    r = nz.Graph.frontPosition @character
-    unless @checkMovePosition(r)
+    p = nz.Graph.frontPosition @character
+    unless @checkMovePosition(p)
       return false
+    node = @graph.grid[p.mapx][p.mapy]
     if @character.getRemnantAp() < node.weight + 1
       return false
     return true
@@ -190,9 +193,10 @@ class nz.ai.Param
   * @method checkBackPosition
   ###
   checkBackPosition: ->
-    r = nz.Graph.backPosition @character
-    unless @checkMovePosition(r)
+    p = nz.Graph.backPosition @character
+    unless @checkMovePosition(p)
       return false
+    node = @graph.grid[p.mapx][p.mapy]
     if @character.getRemnantAp() < node.weight + 1
       return false
     return true
@@ -258,8 +262,29 @@ class nz.ai.Param
           mapx: pos.mapx
           mapy: pos.mapy
           cost: cost
-          back: true
+          back: false
           direction: pos.direction
         }
         @character.addMoveCommand @turn, [route]
+    return
+
+  ###* 方向転換コマンドを設定する（相対値）
+  * @memberof nz.ai.Param#
+  * @method setRotateCommand
+  * @param {number} rotate 方向転換する値(-3から+3の相対値)
+  ###
+  setRotateCommand: (rotate) ->
+    d = @character.getLastDirection @turn
+    @character.addRotateCommand @turn, d, rotate
+    return
+
+  ###* 方向転換コマンドを設定する（絶対値）
+  * @memberof nz.ai.Param#
+  * @method setDirectionCommand
+  * @param {number} direction 方向転換する方向(0から5の絶対値)
+  ###
+  setDirectionCommand: (direction) ->
+    if 0 <= direction and direction <= 5
+      d = @character.getLastDirection @turn
+      @character.addRotateCommand @turn, d, DIRECTIONS[d].rotateIndex[direction]
     return

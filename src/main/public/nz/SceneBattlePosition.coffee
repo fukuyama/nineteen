@@ -72,10 +72,11 @@ tm.define 'nz.SceneBattlePosition',
     return
 
   _start: ->
-    for c in @mapSprite.characterSprites when not c.visible
+    for c in @mapSprite.characterSprites when (not c.visible) and @controlTeam.contains c.team
       @_selectCharacter c
       @description MSGS.battle.position.setiing.format name:c.character.name
       return
+    @_end()
     return
 
   _end: ->

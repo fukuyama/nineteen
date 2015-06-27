@@ -333,6 +333,9 @@ tm.define 'nz.SceneBattle',
       @characters[i].commands[@turn] = c.commands[@turn]
     @eventHandler.refreshStatus()
 
+    if @controlTeam.length is 0
+      @_startBattlePhase()
+
   _startBattlePhase: (param) ->
     {
       start

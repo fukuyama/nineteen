@@ -104,8 +104,18 @@ tm.define 'nz.SceneTitleMenu',
           name:'キャラクター4'
           team:'teamB'
           spriteSheet:'character_test'
+          ai:
+            name: 'Shooter'
+            src: 'nz/ai/Shooter.js'
         )
-        #new nz.Character(name:'キャラクター5',team:'teamB',spriteSheet:'character_test')
+        new nz.Character(
+          name:'キャラクター5'
+          team:'teamB'
+          spriteSheet:'character_test'
+          ai:
+            name: 'Runner'
+            src: 'nz/ai/Runner.js'
+        )
         #new nz.Character(name:'キャラクター6',team:'teamB',spriteSheet:'character_test')
       ]
     )

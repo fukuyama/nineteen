@@ -15,10 +15,9 @@ class nz.ai.Runner
   ###* 初期化
   * マップ上を走り回るだけのAI
   * @classdesc ランナーAIクラス
-  * @constructor nz.ai.SampleAI
+  * @constructor nz.ai.Runner
   ###
   constructor: ->
-    super()
 
   ###* 戦闘開始位置設定
   * @param  {Object}         param           設定用パラメータ
@@ -41,10 +40,14 @@ class nz.ai.Runner
   * @param　{nz.ai.Param} param 設定用パラメータ
   ###
   setupAction: (param) ->
+    {
+      character
+    } = param
+    console.log 'setupAction ' + character.name
     m = Math.rand(1, 6)
     param.setMoveFrontCommand(m)
     d = Math.rand(-2, 2)
-    param.setDirectionCommand(d)
+    param.setRotateCommand(d)
     m = Math.rand(1, 6)
     param.setMoveFrontCommand(m)
     return

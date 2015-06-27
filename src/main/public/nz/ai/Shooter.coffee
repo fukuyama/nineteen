@@ -61,7 +61,7 @@ class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
       setup: (param) ->
         # 移動射撃
         param.setShotCommand()
-        param.setBackCommand(5)
+        param.setMoveBackCommand(5)
         return true
     @addRule
       cond: (param) ->

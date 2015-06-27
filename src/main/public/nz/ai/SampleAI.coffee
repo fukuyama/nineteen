@@ -25,7 +25,7 @@ class nz.ai.SampleAI　extends　nz.ai.RuleBaseAI
       setup: (param) ->
         # 下がりつつ攻撃
         param.setAttackCommand()
-        param.setBackCommand(10)
+        param.setMoveBackCommand(10)
         return true
     @addRule
       cond: (param) ->
@@ -43,7 +43,7 @@ class nz.ai.SampleAI　extends　nz.ai.RuleBaseAI
       setup: (param) ->
         # 移動射撃
         param.setShotCommand()
-        param.setBackCommand(5)
+        param.setMoveBackCommand(5)
         return true
     @addRule
       cond: (param) ->
