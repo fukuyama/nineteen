@@ -46,7 +46,6 @@ class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
       setup: (param) ->
         # 射撃移動
         param.setShotCommand()
-        # 移動先は、相手の位置から同じ距離を保ちつつ左に回り込む
         # TODO: 座標計算＆壁計算も
         p = @calcSlidePosition
           target: param.target
