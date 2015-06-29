@@ -91,23 +91,31 @@ tm.define 'nz.SceneTitleMenu',
       mapId: 0
       controlTeam: []
       characters: [
+        #new nz.Character(
+        #  name:'キャラクター1'
+        #  team:'teamA'
+        #  spriteSheet:'character_test'
+        #  weapon:
+        #    damage: 20
+        #)
         new nz.Character(
-          name:'キャラクター1'
+          name:'キャラクター2'
           team:'teamA'
-          spriteSheet:'character_test'
-          weapon:
-            damage: 20
-        )
-        #new nz.Character(name:'キャラクター2',team:'teamA',spriteSheet:'character_test')
-        #new nz.Character(name:'キャラクター3',team:'teamA',spriteSheet:'character_test')
-        new nz.Character(
-          name:'キャラクター4'
-          team:'teamB'
           spriteSheet:'character_test'
           ai:
             name: 'Shooter'
             src: 'nz/ai/Shooter.js'
         )
+        #new nz.Character(name:'キャラクター2',team:'teamA',spriteSheet:'character_test')
+        #new nz.Character(name:'キャラクター3',team:'teamA',spriteSheet:'character_test')
+        #new nz.Character(
+        #  name:'キャラクター4'
+        #  team:'teamB'
+        #  spriteSheet:'character_test'
+        #  ai:
+        #    name: 'Shooter'
+        #    src: 'nz/ai/Shooter.js'
+        #)
         new nz.Character(
           name:'キャラクター5'
           team:'teamB'

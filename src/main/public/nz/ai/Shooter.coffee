@@ -22,7 +22,7 @@ class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
     # ターゲット
     t = tm.geom.Vector2().setObject nz.utils.mapxy2screenxy target
     # 自分の位置
-    s = tm.geom.Vector2().setObject nz.utils.mapxy2screenxy chracter
+    s = tm.geom.Vector2().setObject nz.utils.mapxy2screenxy character
     # ターゲットまでの距離
     d = s.distance t
     # ターゲットからの方向
@@ -41,8 +41,8 @@ class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
     super()
     @addRule
       cond: (param) ->
-        # 距離が４以下で射撃範囲にターゲットがいる場合
-        return param.distance <= 4 and param.checkShotRange()
+        # 距離が６以下で射撃範囲にターゲットがいる場合
+        return param.distance <= 6 and param.checkShotRange()
       setup: (param) ->
         # 射撃移動
         param.setShotCommand()
@@ -51,7 +51,10 @@ class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
           target: param.target
           character: param.character
           length: 4
-        param.setMoveCommand(p)
+        if param.checkMovePosition p
+          param.setMoveCommand(p)
+        else
+          param.setMoveBackCommand(2)
         return true
     @addRule
       cond: (param) ->
@@ -61,6 +64,20 @@ class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
         # 移動射撃
         param.setShotCommand()
         param.setMoveBackCommand(5)
+        return true
+    @addRule
+      cond: (param) ->
+        # 距離が８以下
+        return param.distance <= 8
+      setup: (param) ->
+        p = @calcSlidePosition
+          target: param.target
+          character: param.character
+          length: 2
+        if param.checkMovePosition p
+          param.setMoveCommand(p)
+        else
+          param.setMoveBackCommand(2)
         return true
     @addRule
       cond: (param) ->

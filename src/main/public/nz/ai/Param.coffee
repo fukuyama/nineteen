@@ -120,6 +120,33 @@ class nz.ai.Param
         result.target = t
     return result
 
+  getHexPosition: (n=6) ->
+    c =
+      mapx: @character.mapx
+      mapy: @character.mapy
+    result = []
+    if @graph.grid[c.mapx]?[c.mapy - n]?
+      result.push
+        mapx: c.mapx
+        mapy: c.mapy - n
+    if @graph.grid[c.mapx]?[c.mapy + n]?
+      result.push
+        mapx: c.mapx
+        mapy: c.mapy + n
+    nx = n
+    ny = n / 2
+    if n % 2 != 0
+      if c.mapx % 2 == 0
+        ny -= 0.5
+      else
+        ny += 0.5
+    if @graph.grid[c.mapx - nx]?[c.mapy - ny]?
+      result.push
+        mapx: c.mapx - nx
+        mapy: c.mapy - ny
+    return result
+
+
   ###* 戦闘参加キャラクターの敵と味方を分ける。
   * @memberof nz.ai.Param#
   * @method setFriendsAndTargets
@@ -223,6 +250,7 @@ class nz.ai.Param
   * @method setShotCommand
   ###
   setShotCommand: ->
+    console.log "#{@character.name} shot #{@rotation}"
     @character.addShotCommand @turn,@rotation
     return
 
@@ -288,3 +316,7 @@ class nz.ai.Param
       d = @character.getLastDirection @turn
       @character.addRotateCommand @turn, d, DIRECTIONS[d].rotateIndex[direction]
     return
+
+
+
+
