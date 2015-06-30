@@ -66,3 +66,76 @@ describe 'nz.ai.ParamTest', () ->
       r = param.searchTargets(3,6)
       r.length.should.equals 1,'length'
       r[0].name.should.equals 'char1'
+
+  describe 'getHexPosition', ->
+    checkPosition = (n,src,test) ->
+      src.mapx.should.equals test.mapx,"(#{n})mapx"
+      src.mapy.should.equals test.mapy,"(#{n})mapy"
+    it 'default', ->
+      reset()
+      character.mapx = 6
+      character.mapy = 6
+      param = new nz.ai.Param(
+        character:  character
+        characters: characters
+        graph:      graph
+        turn:       1
+      )
+      res = param.getHexPosition()
+      res.length.should.equals 6
+      checkPosition(0,res[0],{mapx: 6,mapy: 0})
+      checkPosition(1,res[1],{mapx: 6,mapy:12})
+      checkPosition(2,res[2],{mapx: 0,mapy: 3})
+      checkPosition(3,res[3],{mapx: 0,mapy: 9})
+      checkPosition(4,res[4],{mapx:12,mapy: 3})
+      checkPosition(5,res[5],{mapx:12,mapy: 9})
+    it 'pos 6,6 len 5', ->
+      reset()
+      character.mapx = 6
+      character.mapy = 6
+      param = new nz.ai.Param(
+        character:  character
+        characters: characters
+        graph:      graph
+        turn:       1
+      )
+      res = param.getHexPosition(5)
+      res.length.should.equals 6
+      checkPosition(0,res[0],{mapx: 6,mapy: 1})
+      checkPosition(1,res[1],{mapx: 6,mapy:11})
+      checkPosition(2,res[2],{mapx: 1,mapy: 4})
+      checkPosition(3,res[3],{mapx: 1,mapy: 9})
+      checkPosition(4,res[4],{mapx:11,mapy: 4})
+      checkPosition(5,res[5],{mapx:11,mapy: 9})
+    it 'pos 7,7 len 5', ->
+      reset()
+      character.mapx = 7
+      character.mapy = 7
+      param = new nz.ai.Param(
+        character:  character
+        characters: characters
+        graph:      graph
+        turn:       1
+      )
+      res = param.getHexPosition(5)
+      res.length.should.equals 6
+      checkPosition(0,res[0],{mapx: 7,mapy: 2})
+      checkPosition(1,res[1],{mapx: 7,mapy:12})
+      checkPosition(2,res[2],{mapx: 2,mapy: 4})
+      checkPosition(3,res[3],{mapx: 2,mapy: 9})
+      checkPosition(4,res[4],{mapx:12,mapy: 4})
+      checkPosition(5,res[5],{mapx:12,mapy: 9})
+    it 'pos 1,1 len 5', ->
+      reset()
+      character.mapx = 1
+      character.mapy = 1
+      param = new nz.ai.Param(
+        character:  character
+        characters: characters
+        graph:      graph
+        turn:       1
+      )
+      res = param.getHexPosition(5)
+      res.length.should.equals 2
+      checkPosition(0,res[0],{mapx: 1,mapy: 6})
+      checkPosition(1,res[1],{mapx: 6,mapy: 3})

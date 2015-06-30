@@ -121,31 +121,28 @@ class nz.ai.Param
     return result
 
   getHexPosition: (n=6) ->
-    c =
-      mapx: @character.mapx
-      mapy: @character.mapy
-    result = []
-    if @graph.grid[c.mapx]?[c.mapy - n]?
-      result.push
-        mapx: c.mapx
-        mapy: c.mapy - n
-    if @graph.grid[c.mapx]?[c.mapy + n]?
-      result.push
-        mapx: c.mapx
-        mapy: c.mapy + n
+    c = @character
     nx = n
-    ny = n / 2
+    ny1 = n / 2
+    ny2 = n / 2
     if n % 2 != 0
       if c.mapx % 2 == 0
-        ny -= 0.5
+        ny1 -= 0.5
+        ny2 += 0.5
       else
-        ny += 0.5
-    if @graph.grid[c.mapx - nx]?[c.mapy - ny]?
-      result.push
-        mapx: c.mapx - nx
-        mapy: c.mapy - ny
-    return result
-
+        ny1 += 0.5
+        ny2 -= 0.5
+    return (
+      for res in [
+        {mapx: c.mapx     , mapy: c.mapy - n  }
+        {mapx: c.mapx     , mapy: c.mapy + n  }
+        {mapx: c.mapx - nx, mapy: c.mapy - ny1}
+        {mapx: c.mapx - nx, mapy: c.mapy + ny2}
+        {mapx: c.mapx + nx, mapy: c.mapy - ny1}
+        {mapx: c.mapx + nx, mapy: c.mapy + ny2}
+      ] when @graph.grid[res.mapx]?[res.mapy]?
+        res
+    )
 
   ###* 戦闘参加キャラクターの敵と味方を分ける。
   * @memberof nz.ai.Param#

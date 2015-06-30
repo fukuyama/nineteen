@@ -44,11 +44,11 @@ class nz.ai.Runner
       character
     } = param
     console.log 'setupAction ' + character.name
-    m = Math.rand(1, 6)
+    m = Math.rand(2, 6)
     param.setMoveFrontCommand(m)
     d = Math.rand(-2, 2)
     param.setRotateCommand(d)
-    m = Math.rand(1, 6)
+    m = Math.rand(2, 6)
     param.setMoveFrontCommand(m)
     return
 
