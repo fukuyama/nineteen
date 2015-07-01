@@ -174,9 +174,12 @@ class nz.ai.Param
   ###
   checkShotRange: ->
     self = @
+    source = nz.utils.mapxy2screenxy @character
+    source.direction = @character.direction
+    target = nz.utils.mapxy2screenxy @target
     data = {
-      source: @character
-      target: @target
+      source: source
+      target: target
       range: @character.shot.range
       callback: (res,r) ->
         self.rotation = r if res

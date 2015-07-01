@@ -163,7 +163,7 @@ class nz.Utils
   * @param {number}   param.target   ターゲット座標(x,y)
   * @param {number}   param.start    確認する開始角度 -180 ～ 180
   * @param {number}   param.end      確認する終了角度 -180 ～ 180
-  * @param {boolean}  param.anticlockwise
+  * @param {boolean}  param.anticlockwise range 方向(true 反時計回り)
   * @param {Function} param.callback チェック結果をもらう関数
   ###
   checkDirectionRange: (param) ->
