@@ -258,7 +258,9 @@ class nz.ai.Param
   ###
   setShotCommand: ->
     console.log "#{@character.name} shot #{@rotation}"
-    @character.addShotCommand @turn,@rotation
+    direction = @character.getLastDirection @turn
+    rotation = nz.system.character.directions[direction].rotation
+    @character.addShotCommand @turn,@rotation + rotation
     return
 
   ###* 後ろに移動するコマンドを設定する
