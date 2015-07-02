@@ -26,7 +26,8 @@ mainScripts = [
   'nz/SceneBattlePhase'
   'nz/SceneBattleResult'
   'nz/ai/Param'
-  'nz/ai/RuleBaseAI'
+  'nz/ai/Default'
+  'nz/ai/Rule'
   'main'
 ]
 dataNames= [
@@ -37,7 +38,7 @@ dataNames= [
   'character_test'
 ]
 aiScripts= [
-  'nz/ai/SampleAI'
+  'nz/ai/Sample'
   'nz/ai/Shooter'
   'nz/ai/Runner'
 ]

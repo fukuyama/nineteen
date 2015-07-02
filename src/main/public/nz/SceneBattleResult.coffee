@@ -45,9 +45,8 @@ tm.define 'nz.SceneBattleResult',
           shadowColor:   'gray'
           originX:       @originX
           originY:       @originY
-        name:
+        message:
           type:      'Label'
-          text:      'Winner! ' + @data.winner.name
           fillStyle: 'black'
           align:     'left'
           baseline:  'top'
@@ -56,6 +55,11 @@ tm.define 'nz.SceneBattleResult',
           originX:   @originX
           originY:   @originY
           fontSize:  8
+    form.children.message.text =
+      if @data.result.winner?
+        'Winner! ' + @data.result.winner.name
+      else
+        'Draw!!! ' + (o.name for o in @data.result.draw).join ','
 
     @fromJSON form
 

@@ -65,6 +65,9 @@ class nz.ai.Param
     @setNearTarget()
     return
 
+  ###*
+  * @private
+  ###
   _searchCharacters: (rotatedir, distance, characters, character = @character) ->
     {
       mapx
@@ -120,6 +123,10 @@ class nz.ai.Param
         result.target = t
     return result
 
+  ###* 周囲6方向の位置を座標を取得
+  * @param {number} n 距離
+  * @return {Array} {mapx,mapy} の座標を表したオブジェクトは配列
+  ###
   getHexPosition: (n=6) ->
     c = @character
     nx = n
@@ -192,7 +199,7 @@ class nz.ai.Param
   * @param {Object} p {mapx,mapy}
   ###
   checkMovePosition: (p) ->
-    node = @graph.grid[p.mapx][p.mapy]
+    node = @graph.grid[p.mapx]?[p.mapy]
     unless node?
       return false
     if node.isWall()

@@ -1,5 +1,5 @@
 ###*
-* @file SampleAI.coffee
+* @file Sample.coffee
 * サンプルAI
 ###
 
@@ -10,15 +10,21 @@ _g = undefined
 
 nz.ai = nz.ai ? {}
 
-class nz.ai.SampleAI　extends　nz.ai.RuleBaseAI
+class nz.ai.Sample
+
+  setupBattlePosition: (o) -> @defaultAI.setupBattlePosition o
+  setupAction: (o) -> @ruleAI.setupAction o
+  rule: (o) -> @ruleAI.add o
 
   ###* 初期化
   * @classdesc サンプルAIクラス
-  * @constructor nz.ai.SampleAI
+  * @constructor nz.ai.Sample
   ###
   constructor: ->
-    super()
-    @addRule
+    @defaultAI = new nz.ai.Default()
+    @ruleAI    = new nz.ai.Rule(@)
+
+    @rule
       cond: (param) ->
         # 距離が１以下で後ろに移動ができる場合
         return param.distance <= 1 and param.checkBackPosition()
@@ -27,7 +33,7 @@ class nz.ai.SampleAI　extends　nz.ai.RuleBaseAI
         param.setAttackCommand()
         param.setMoveBackCommand(10)
         return true
-    @addRule
+    @rule
       cond: (param) ->
         # 距離が４以下の場合
         return param.distance <= 4
@@ -36,7 +42,7 @@ class nz.ai.SampleAI　extends　nz.ai.RuleBaseAI
         param.setAttackCommand()
         param.setMoveCommand()
         return true
-    @addRule
+    @rule
       cond: (param) ->
         # 距離が６以下で射撃範囲にターゲットがいる場合
         return param.distance <= 6 and param.checkShotRange()
@@ -45,7 +51,7 @@ class nz.ai.SampleAI　extends　nz.ai.RuleBaseAI
         param.setShotCommand()
         param.setMoveBackCommand(5)
         return true
-    @addRule
+    @rule
       cond: (param) ->
         # どれでもない時
         return true

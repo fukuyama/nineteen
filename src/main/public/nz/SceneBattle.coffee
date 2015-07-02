@@ -164,10 +164,38 @@ tm.define 'nz.SceneBattle',
     @mapSprite.blink(s.ghost.mapx,s.ghost.mapy) if s.hasGhost()
     return
 
-  isEnd: ->
+  _createResult: ->
+    # 時間切れの場合
     if @turn >= @endCondition.turn
-      return true
-
+      name = ''
+      score = 0
+      t = {}
+      for c in @characters when c.isAlive()
+        if t[c.team]?
+          t[c.team] = c.hp
+        else
+          t[c.team] += c.hp
+        if score < t[t.team]
+          name  = t.team
+          score = t[t.team]
+      winner = [
+        {
+          name: name
+          score: score
+        }
+      ]
+      for k,v of t
+        if name isnt k and score is v
+          winner.push
+            name: k
+            score: v
+      if winner.length is 1
+        @data.result =
+          winner: winner[0]
+      else
+        @data.result =
+          draw: winner
+      return
     # 終了タイプがチームの場合、１チームが残っている場合に終了
     if @endCondition.type is 'team'
       t = null
@@ -175,12 +203,15 @@ tm.define 'nz.SceneBattle',
         unless t?
           t = c.team
         else if t isnt c.team
-          return false
-      @data.winner = {
-        name: t
+          return
+      @data.result = {
+        winner:
+          name: t
       }
-      return true
-    return false
+      return
+    return
+
+  isEnd: -> @data.result?
 
   _pushScene: (scene) ->
     @eventHandler.refreshStatus()
@@ -353,6 +384,7 @@ tm.define 'nz.SceneBattle',
       )
     )
     @one 'resume', ->
+      @_createResult()
       if @isEnd()
         @_openResult()
       else

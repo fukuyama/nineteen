@@ -10,7 +10,11 @@ _g = undefined
 
 nz.ai = nz.ai ? {}
 
-class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
+class nz.ai.Shooter
+
+  setupBattlePosition: (o) -> @defaultAI.setupBattlePosition o
+  setupAction: (o) -> @ruleAI.setupAction o
+  rule: (o) -> @ruleAI.add o
 
   calcSlidePosition: (param) ->
     {
@@ -38,8 +42,10 @@ class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
   * @constructor nz.ai.SampleAI
   ###
   constructor: ->
-    super()
-    @addRule
+    @defaultAI = new nz.ai.Default()
+    @ruleAI    = new nz.ai.Rule(@)
+
+    @rule
       cond: (param) ->
         # 距離が６以下で射撃範囲にターゲットがいる場合
         return param.distance <= 6 and param.checkShotRange()
@@ -56,7 +62,7 @@ class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
         else
           param.setMoveBackCommand(2)
         return true
-    @addRule
+    @rule
       cond: (param) ->
         # 距離が８以下で射撃範囲にターゲットがいる場合
         return param.distance <= 8 and param.checkShotRange()
@@ -65,7 +71,7 @@ class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
         param.setShotCommand()
         param.setMoveBackCommand(5)
         return true
-    @addRule
+    @rule
       cond: (param) ->
         # 距離が８以下
         return param.distance <= 8
@@ -79,7 +85,7 @@ class nz.ai.Shooter　extends　nz.ai.RuleBaseAI
         else
           param.setMoveBackCommand(2)
         return true
-    @addRule
+    @rule
       cond: (param) ->
         # どれでもない時
         return true
