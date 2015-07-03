@@ -98,16 +98,29 @@ tm.define 'nz.SceneTitleMenu',
         #  weapon:
         #    damage: 20
         #)
+        #new nz.Character(
+        #  name:'キャラクター2'
+        #  team:'teamA'
+        #  spriteSheet:'character_test'
+        #  ai:
+        #    name: 'Shooter'
+        #    src: 'nz/ai/Shooter.js'
+        #)
+        #new nz.Character(
+        #  name:'キャラクター3'
+        #  team:'teamA'
+        #  spriteSheet:'character_test'
+        #  ai:
+        #    name: 'Default'
+        #)
         new nz.Character(
-          name:'キャラクター2'
+          name:'キャラクター3'
           team:'teamA'
           spriteSheet:'character_test'
           ai:
-            name: 'Shooter'
-            src: 'nz/ai/Shooter.js'
+            name: 'Runner'
+            src: 'nz/ai/Runner.js'
         )
-        #new nz.Character(name:'キャラクター2',team:'teamA',spriteSheet:'character_test')
-        #new nz.Character(name:'キャラクター3',team:'teamA',spriteSheet:'character_test')
         #new nz.Character(
         #  name:'キャラクター4'
         #  team:'teamB'
@@ -116,15 +129,22 @@ tm.define 'nz.SceneTitleMenu',
         #    name: 'Shooter'
         #    src: 'nz/ai/Shooter.js'
         #)
+        #new nz.Character(
+        #  name:'キャラクター5'
+        #  team:'teamB'
+        #  spriteSheet:'character_test'
+        #  ai:
+        #    name: 'Runner'
+        #    src: 'nz/ai/Runner.js'
+        #)
         new nz.Character(
-          name:'キャラクター5'
+          name:'キャラクター6'
           team:'teamB'
           spriteSheet:'character_test'
           ai:
-            name: 'Runner'
-            src: 'nz/ai/Runner.js'
+            name: 'Shooter'
+            src: 'nz/ai/Shooter.js'
         )
-        #new nz.Character(name:'キャラクター6',team:'teamB',spriteSheet:'character_test')
       ]
     )
     return

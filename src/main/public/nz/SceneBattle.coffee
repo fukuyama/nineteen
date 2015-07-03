@@ -48,7 +48,7 @@ tm.define 'nz.SceneBattle',
     unless tm.asset.Manager.contains(@mapName)
       assets[@mapName] = "data/#{@mapName}.json"
       loaded = false
-    for c in @characters when not tm.asset.Manager.contains(c.ai.name)
+    for c in @characters when c.ai.src? and not tm.asset.Manager.contains(c.ai.name)
       assets[c.ai.name] = c.ai.src
       loaded = false
 

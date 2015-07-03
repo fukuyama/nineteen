@@ -136,6 +136,7 @@ tm.define 'nz.SpriteBattleMap',
     node = @graph.grid[mapx][mapy]
     frameIndex = node.frame
 
+    # TODO: マップごとに画像を変更したい
     chip = tm.display.Sprite('map_chip',w,h)
       .addChildTo(@)
       .setPosition(x,y)

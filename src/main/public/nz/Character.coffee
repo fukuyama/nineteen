@@ -27,8 +27,8 @@ class nz.Character
       spriteSheet: 'character_001'
       team: 'teamA'
       ai:
-        name: 'SampleAI'
-        src: 'nz/ai/SampleAI.js'
+        name: 'Default'
+        # src: 'nz/ai/Default.js'
       maxhp: 10
       maxsp: 10
       maxap: 6
@@ -173,6 +173,15 @@ class nz.Character
       direction = a.rotate.direction
     return direction
 
+  getLastPosition: (i) ->
+    command = @_command i
+    pos =
+      mapx: @mapx
+      mapy: @mapy
+    for a in command.actions when a.move?
+      pos = a.move
+    return pos
+
   ###* 移動コマンドを追加
   * @param {number} i 戦闘ターン数
   * @param {Array} route 移動ルート
@@ -180,7 +189,7 @@ class nz.Character
   * @method addMoveCommand
   ###
   addMoveCommand: (i,route) ->
-    command = @_command i
+    command   = @_command i
     direction = @getLastDirection(i)
     prev = command.cost
     cost = 0

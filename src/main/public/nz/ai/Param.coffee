@@ -209,12 +209,22 @@ class nz.ai.Param
         return false
     return true
 
+  getFrontPosition: ->
+    c = @character.getLastPosition(@turn)
+    c.direction = @character.getLastDirection(@turn)
+    return nz.Graph.frontPosition c
+
+  getBackPosition: ->
+    c = @character.getLastPosition(@turn)
+    c.direction = @character.getLastDirection(@turn)
+    return nz.Graph.backPosition c
+
   ###* 前に移動できるか確認する(コスト計算含む)
   * @memberof nz.ai.Param#
   * @method checkFrontPosition
   ###
   checkFrontPosition: ->
-    p = nz.Graph.frontPosition @character
+    p = @getFrontPosition()
     unless @checkMovePosition(p)
       return false
     node = @graph.grid[p.mapx][p.mapy]
@@ -227,7 +237,7 @@ class nz.ai.Param
   * @method checkBackPosition
   ###
   checkBackPosition: ->
-    p = nz.Graph.backPosition @character
+    p = @getBackPosition()
     unless @checkMovePosition(p)
       return false
     node = @graph.grid[p.mapx][p.mapy]
@@ -239,8 +249,12 @@ class nz.ai.Param
   * @memberof nz.ai.Param#
   * @method setMoveCommand
   ###
-  setMoveCommand: (target = @target) ->
-    route = nz.utils.searchRoute @graph,@character,target,@characters
+  setMoveCommand: (args) ->
+    target = args.target ? @target
+    length = args.length ? 99
+    route  = nz.utils.searchRoute @graph,@character,target,@characters
+    if length < route.length
+      route = route[0 ... length]
     @character.addMoveCommand @turn,route
     return
 
@@ -257,7 +271,6 @@ class nz.ai.Param
   * @method setShotCommand
   ###
   setShotCommand: ->
-    console.log "#{@character.name} shot #{@rotation}"
     direction = @character.getLastDirection @turn
     rotation = nz.system.character.directions[direction].rotation
     @character.addShotCommand @turn,@rotation + rotation
@@ -270,10 +283,10 @@ class nz.ai.Param
   ###
   setMoveBackCommand: (num=1) ->
     for i in [0 .. num]
-      pos = nz.Graph.backPosition @character
-      node = @graph.grid[pos.mapx][pos.mapy]
-      cost = node.weight + 1
       if @checkBackPosition()
+        pos  = @getBackPosition()
+        node = @graph.grid[pos.mapx][pos.mapy]
+        cost = node.weight + 1
         route = {
           mapx: pos.mapx
           mapy: pos.mapy
@@ -292,7 +305,7 @@ class nz.ai.Param
   setMoveFrontCommand: (num=1) ->
     for i in [0 .. num]
       if @checkFrontPosition()
-        pos = nz.Graph.frontPosition @character
+        pos  = @getFrontPosition()
         node = @graph.grid[pos.mapx][pos.mapy]
         cost = node.weight + 1
         route = {
@@ -325,7 +338,3 @@ class nz.ai.Param
       d = @character.getLastDirection @turn
       @character.addRotateCommand @turn, d, DIRECTIONS[d].rotateIndex[direction]
     return
-
-
-
-

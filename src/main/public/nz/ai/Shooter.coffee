@@ -35,11 +35,13 @@ class nz.ai.Shooter
     r -= m / d
     # 目的値
     g = tm.geom.Vector2().setRadian(r,d).add(t)
-    return nz.utils.screenxy2mapxy g
+    a = nz.utils.screenxy2mapxy g
+    #console.log "t=#{t} s=#{s} d=#{d} r=#{r} g=#{g} a.mapx=#{a.mapx} a.mapy=#{a.mapy}"
+    return a
 
   ###* 初期化
   * @classdesc サンプルAIクラス
-  * @constructor nz.ai.SampleAI
+  * @constructor nz.ai.Shooter
   ###
   constructor: ->
     @defaultAI = new nz.ai.Default()
@@ -50,6 +52,7 @@ class nz.ai.Shooter
         # 距離が６以下で射撃範囲にターゲットがいる場合
         return param.distance <= 6 and param.checkShotRange()
       setup: (param) ->
+        #console.log "turn #{param.turn} rule 1"
         # 射撃移動
         param.setShotCommand()
         # TODO: 座標計算＆壁計算も
@@ -58,7 +61,7 @@ class nz.ai.Shooter
           character: param.character
           length: 4
         if param.checkMovePosition p
-          param.setMoveCommand(p)
+          param.setMoveCommand(target:p)
         else
           param.setMoveBackCommand(2)
         return true
@@ -67,6 +70,7 @@ class nz.ai.Shooter
         # 距離が８以下で射撃範囲にターゲットがいる場合
         return param.distance <= 8 and param.checkShotRange()
       setup: (param) ->
+        #console.log "turn #{param.turn} rule 2"
         # 移動射撃
         param.setShotCommand()
         param.setMoveBackCommand(5)
@@ -76,12 +80,13 @@ class nz.ai.Shooter
         # 距離が８以下
         return param.distance <= 8
       setup: (param) ->
+        #console.log "turn #{param.turn} rule 3"
         p = @calcSlidePosition
           target: param.target
           character: param.character
-          length: 2
+          length: 3
         if param.checkMovePosition p
-          param.setMoveCommand(p)
+          param.setMoveCommand(target:p)
         else
           param.setMoveBackCommand(2)
         return true
@@ -90,8 +95,9 @@ class nz.ai.Shooter
         # どれでもない時
         return true
       setup: (param) ->
+        #console.log "turn #{param.turn} rule 3"
         # 近づく
-        param.setMoveCommand()
+        param.setMoveCommand(length:3)
         return true
 
 nz.system.addAI 'Shooter', new nz.ai.Shooter()
