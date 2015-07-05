@@ -26,6 +26,23 @@ tm.define 'nz.SceneBattlePhase',
     @on 'addBallet', @_addBallet
     @on 'removeBallet', @_removeBallet
 
+    @on 'map.pointingend', @_mapPointingend
+
+    return
+
+  _mapPointingend: ->
+    console.log 'test'
+    @_openReplayEndMenu()
+    return
+
+  _openReplayEndMenu: ->
+    @openMenuDialog
+      self: @
+      title: 'Battle End'
+      menu: [
+        {name: 'Replay?',    func: @_startReplay}
+        {name: 'Exit Game?', func: @_exitGame}
+      ]
     return
 
   _removeBallet: (param) ->
