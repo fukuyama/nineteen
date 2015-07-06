@@ -26,23 +26,27 @@ tm.define 'nz.SceneBattlePhase',
     @on 'addBallet', @_addBallet
     @on 'removeBallet', @_removeBallet
 
-    @on 'map.pointingend', @_mapPointingend
+    @on 'map.pointingend', @_openPauseMenu
+
+    @on 'enterframe'   , @createKeyboradHander()
+    @on 'input_enter'  , @_openPauseMenu
 
     return
 
-  _mapPointingend: ->
-    console.log 'test'
-    @_openReplayEndMenu()
-    return
-
-  _openReplayEndMenu: ->
+  _openPauseMenu: ->
     @openMenuDialog
       self: @
-      title: 'Battle End'
+      title: 'Pause'
       menu: [
-        {name: 'Replay?',    func: @_startReplay}
+        {name: 'Continue',   func: -> return }
         {name: 'Exit Game?', func: @_exitGame}
       ]
+    return
+
+  _exitGame: (e) ->
+    app = @app ? e.app
+    app.popScene()
+    app.replaceScene nz.SceneTitleMenu()
     return
 
   _removeBallet: (param) ->

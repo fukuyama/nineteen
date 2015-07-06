@@ -59,12 +59,12 @@ tm.define 'nz.SceneTitleMenu',
       mapId: 1
       controlTeam: ['teamA']
       characters: [
-        new nz.Character(name:'キャラクター1',team:'teamA')
-        new nz.Character(name:'キャラクター2',team:'teamA')
-        new nz.Character(name:'キャラクター3',team:'teamA')
-        new nz.Character(name:'キャラクター4',team:'teamB')
-        new nz.Character(name:'キャラクター5',team:'teamB')
-        new nz.Character(name:'キャラクター6',team:'teamB')
+        {name:'キャラクター1',team:'teamA'}
+        {name:'キャラクター2',team:'teamA'}
+        {name:'キャラクター3',team:'teamA'}
+        {name:'キャラクター4',team:'teamB'}
+        {name:'キャラクター5',team:'teamB'}
+        {name:'キャラクター6',team:'teamB'}
       ]
     )
     return
@@ -89,7 +89,7 @@ tm.define 'nz.SceneTitleMenu',
   _debug_game: ->
     @app.replaceScene nz.SceneBattle(
       mapId: 0
-      controlTeam: []
+      controlTeam: ['teamA']
       characters: [
         #new nz.Character(
         #  name:'キャラクター1'
@@ -113,14 +113,14 @@ tm.define 'nz.SceneTitleMenu',
         #  ai:
         #    name: 'Default'
         #)
-        new nz.Character(
+        {
           name:'キャラクター3'
           team:'teamA'
           spriteSheet:'character_test'
           ai:
             name: 'Runner'
             src: 'nz/ai/Runner.js'
-        )
+        }
         #new nz.Character(
         #  name:'キャラクター4'
         #  team:'teamB'
@@ -137,14 +137,14 @@ tm.define 'nz.SceneTitleMenu',
         #    name: 'Runner'
         #    src: 'nz/ai/Runner.js'
         #)
-        new nz.Character(
+        {
           name:'キャラクター6'
           team:'teamB'
           spriteSheet:'character_test'
           ai:
             name: 'Shooter'
             src: 'nz/ai/Shooter.js'
-        )
+        }
       ]
     )
     return

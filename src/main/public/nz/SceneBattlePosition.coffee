@@ -49,7 +49,6 @@ tm.define 'nz.SceneBattlePosition',
     @on 'map.pointingover', @_mapPointingover
     @on 'map.pointingend',  @_mapPointingend
     @on 'enter',            @_start
-    #@on 'map.pointingover', @_test
 
     @on 'enterframe'   , @createKeyboradHander()
     @on 'input_enter'  , @inputEnter
@@ -62,17 +61,8 @@ tm.define 'nz.SceneBattlePosition',
   inputEnter: (e) ->
     @_mapPointingend @mapSprite.cursor
 
-  _test: (e) ->
-    @mapSprite.cursor.visible = true
-    @mapSprite.clearBlink()
-    for x in [0 ... @mapSprite.map.width]
-      for y in [0 ... @mapSprite.map.height]
-        if nz.system.ai['SampleAI'].calcDistance({x:e.mapx,y:e.mapy},{x:x,y:y}) <= 3
-          @mapSprite.blink(x,y)
-    return
-
   _start: ->
-    for c in @mapSprite.characterSprites when (not c.visible) and @controlTeam.contains c.team
+    for c in @mapSprite.characterSprites when (not c.visible) and @controlTeam.contains c.character.team
       @_selectCharacter c
       @description MSGS.battle.position.setiing.format name:c.character.name
       return
@@ -112,10 +102,10 @@ tm.define 'nz.SceneBattlePosition',
       mapx
       mapy
     } = param
-    @mapSprite.cursor.visible = true
-    @character.visible = true
     @_setBattlePosition(@character,mapx,mapy)
     @character.applyPosition()
+    @mapSprite.cursor.visible = true
+    @character.visible = true
     return
 
   _mapPointingend: (param) ->

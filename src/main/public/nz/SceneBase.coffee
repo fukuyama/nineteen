@@ -35,8 +35,9 @@ tm.define 'nz.SceneBase',
     repeatDelay    = 10
     repeatIntarval = 0
 
-    return ->
-      kb = @app.keyboard
+    return (e) ->
+      app = @app ? e.app
+      kb = app.keyboard
       for key in eventKeys when kb.getKeyDown(key)
         repeatCount = 0
         @fire tm.event.Event('input_' + key)

@@ -20,9 +20,12 @@ tm.main ->
     assets: assets
     width: screen.width
     height: screen.height
-  ).on 'load', ->
+  ).on 'load', (e) ->
     @app.fitWindow()
-    @app.replaceScene nz.SceneTitleMenu()
+    if nz.system.loaded?
+      nz.system.loaded.call(@,@app)
+    else
+      @app.replaceScene nz.SceneTitleMenu()
     return
 
   #app.pushScene SplashScene(

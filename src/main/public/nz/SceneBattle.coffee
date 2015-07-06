@@ -31,6 +31,10 @@ tm.define 'nz.SceneBattle',
         type: 'team'
         turn: 20
 
+    for c,i in @characters
+      unless c instanceof nz.Character
+        @characters[i] = new nz.Character(c)
+
     @data =
       turn:   0    # 戦闘ターン数
       winner: null
@@ -48,9 +52,11 @@ tm.define 'nz.SceneBattle',
     unless tm.asset.Manager.contains(@mapName)
       assets[@mapName] = "data/#{@mapName}.json"
       loaded = false
-    for c in @characters when c.ai.src? and not tm.asset.Manager.contains(c.ai.name)
-      assets[c.ai.name] = c.ai.src
-      loaded = false
+    for c in @characters when not tm.asset.Manager.contains(c.ai.name)
+      src = c.ai.src ? "nz/ai/#{c.ai.name}.js"
+      unless nz.system.ai[c.ai.name]?
+        assets[c.ai.name] = src
+        loaded = false
 
     unless loaded
       scene = tm.game.LoadingScene(
