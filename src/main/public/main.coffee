@@ -3,7 +3,7 @@ tm.main ->
   screen = nz.system.screen
   assets = nz.system.assets
 
-  app = tm.display.CanvasApp '#world'
+  nz.system.app = app = tm.display.CanvasApp '#world'
   # app.enableStats()
 
   # リサイズ
@@ -22,10 +22,7 @@ tm.main ->
     height: screen.height
   ).on 'load', (e) ->
     @app.fitWindow()
-    if nz.system.loaded?
-      nz.system.loaded.call(@,@app)
-    else
-      @app.replaceScene nz.SceneTitleMenu()
+    nz.system.start()
     return
 
   #app.pushScene SplashScene(

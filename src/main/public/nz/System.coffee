@@ -67,4 +67,13 @@ class nz.System
 
   addAI: (name,ai) -> @ai[name] = ai
 
+  start: ->
+    @app.replaceScene nz.SceneTitleMenu()
+    return
+
+  restart: ->
+    @start()
+    return
+
+
 nz.system = new nz.System()

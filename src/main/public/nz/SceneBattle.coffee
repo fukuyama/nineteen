@@ -355,7 +355,7 @@ tm.define 'nz.SceneBattle',
     return
 
   _exitGame: ->
-    @app.replaceScene nz.SceneTitleMenu()
+    nz.system.restart()
     return
 
   _startInputPhase: () ->

@@ -75,7 +75,7 @@ tm.define 'nz.SceneBattleResult',
     return
 
   _exitGame: ->
-    @app.replaceScene nz.SceneTitleMenu()
+    nz.system.restart()
     return
 
   _openBattleEndMenu: ->

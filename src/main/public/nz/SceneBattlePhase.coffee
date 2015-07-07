@@ -46,7 +46,7 @@ tm.define 'nz.SceneBattlePhase',
   _exitGame: (e) ->
     app = @app ? e.app
     app.popScene()
-    app.replaceScene nz.SceneTitleMenu()
+    nz.system.restart()
     return
 
   _removeBallet: (param) ->

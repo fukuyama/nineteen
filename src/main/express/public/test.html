@@ -19,9 +19,9 @@
   <script src="lib/develop/tmlib.js"></script>
   <script src="main.min.js"></script>
   <script>
-  nz.system.loaded = function (app) {
-  	console.log('system loaded');
-    app.replaceScene(nz.SceneBattle({
+  nz.system.start = function () {
+  	console.log('system start');
+    nz.system.app.replaceScene(nz.SceneBattle({
       mapId: 0,
       controlTeam: [],
       characters: [
