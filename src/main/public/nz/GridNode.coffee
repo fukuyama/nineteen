@@ -61,19 +61,17 @@ class nz.GridNode
   clean: ->
     return
 
-  toString: ->
-    return "[#{@mapx},#{@mapy}]"
+  toString: -> "[#{@mapx},#{@mapy}]"
 
   ###*
   * 指定されたノードが、自分から見てどの方向にあるか
   * @param node {GridNode|GridNodeWrap} 調査対象ノード
   ###
-  calcDirection: (node) -> nz.Graph.direction(@,node)
+  calcDirection:   (node) -> nz.Graph.direction(@,node)
   calcDirectionTo: (node) -> nz.Graph.direction(@,node)
   calcDirectionBy: (node) -> nz.Graph.direction(node,@)
 
   ###*
   * 壁判定
   ###
-  isWall: ->
-    return @weight == 0 or @options?.isWall
+  isWall: -> @weight is 0 or @options?.isWall

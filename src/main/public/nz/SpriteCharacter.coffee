@@ -247,19 +247,13 @@ tm.define 'nz.SpriteCharacter',
     @tweener.move(x,y,speed)
     return
 
-  _setBackAction: (param) ->
-    return
-
   _setRotateAction: (param) ->
     {
       direction
       speed
     } = param
     @tweener.wait speed
-    @tweener.call @directionAnimation,@,[direction]
-
-  directionAnimation: (direction) ->
-    @setDirection direction
+    @tweener.call @setDirection,@,[direction]
 
   attackAnimation: ->
     # 攻撃アニメーション中は、アクションを続ける

@@ -88,9 +88,12 @@ tm.define 'nz.SceneBattlePhase',
   _isEnd: -> @turn >= @endTurn
 
   _isEndAllCharacterAction: ->
-    flag = false
-    flag |= c.action for c in @characterSprites when c.isAlive()
-    return (not flag) and (@_balletCount == 0)
+    flag = @characterSprites
+      .filter (c) -> c.isAlive()
+      .some (c) -> c.action
+    #flag = false
+    #flag |= c.action for c in @characterSprites when c.isAlive()
+    return (not flag) and (@_balletCount is 0)
 
   updateTurn: ->
     if @_isEndAllCharacterAction()

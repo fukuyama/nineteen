@@ -51,6 +51,13 @@ describe 'nz.CharacterTest', () ->
       c.getActionCost(0).should.equals 0
       actions = c.commands[0].actions
       actions.length.should.equals 0
+    it 'isMoveCommand 1', ->
+      c.isMoveCommand(0).should.equals false
+      route = [
+        {mapx:0,mapy:1,cost:1,back:false,direction:3}
+      ]
+      c.addMoveCommand(0,route)
+      c.isMoveCommand(0).should.equals true
     it 'addMoveCommand 2', ->
       route = [
         {mapx:0,mapy:1,cost:1,back:false,direction:3}
@@ -81,6 +88,10 @@ describe 'nz.CharacterTest', () ->
       c.getActionCost(0).should.equals 0
       actions = c.commands[0].actions
       actions.length.should.equals 0
+    it 'isShotCommand 1', ->
+      c.isShotCommand(0).should.equals false
+      c.addShotCommand(0,0)
+      c.isShotCommand(0).should.equals true
     it 'setAttackCommand 1', ->
       c = new nz.Character(mapx:0,mapy:0,direction:3)
       c.setAttackCommand(0)

@@ -267,11 +267,7 @@ class nz.Character
   * @memberof nz.Character#
   * @method isShotCommand
   ###
-  isShotCommand: (i) ->
-    command = @_command i
-    for action in command.actions when action.shot?
-      return true
-    return false
+  isShotCommand: (i) -> @_command(i).actions.some (action) -> action.shot?
 
   ###* 攻撃コマンドが設定されているかどうか
   * @param {number} i 戦闘ターン数
@@ -279,9 +275,7 @@ class nz.Character
   * @memberof nz.Character#
   * @method isAttackCommand
   ###
-  isAttackCommand: (i) ->
-    command = @_command i
-    return command.attack
+  isAttackCommand: (i) -> @_command(i).attack
 
   ###* 移動コマンドが設定されているかどうか
   * @param {number} i 戦闘ターン数
@@ -289,22 +283,18 @@ class nz.Character
   * @memberof nz.Character#
   * @method isMoveCommand
   ###
-  isMoveCommand: (i) ->
-    command = @_command i
-    for action in command.actions when action.move?
-      return true
-    return false
+  isMoveCommand: (i) -> @_command(i).actions.some (action) -> action.move?
 
   ###* 死亡判定
   * @return {boolean} 死んでいる場合 true
   * @memberof nz.Character#
   * @method isDead
   ###
-  isDead: -> return @hp <= 0
+  isDead: -> @hp <= 0
 
   ###* 生存判定
   * @return {boolean} 生きている場合 true
   * @memberof nz.Character#
   * @method isAlive
   ###
-  isAlive: -> return @hp > 0
+  isAlive: -> @hp > 0

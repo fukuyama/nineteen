@@ -171,50 +171,58 @@ tm.define 'nz.SceneBattle',
     @mapSprite.blink(s.ghost.mapx,s.ghost.mapy) if s.hasGhost()
     return
 
+  _createResultTimeup: ->
+    name = ''
+    score = 0
+    t = {}
+    for c in @characters when c.isAlive()
+      unless t[c.team]?
+        t[c.team] = c.hp
+      else
+        t[c.team] += c.hp
+      if score < t[c.team]
+        name  = c.team
+        score = t[c.team]
+    winner = [
+      {
+        name: name
+        score: score
+      }
+    ]
+    for k,v of t when name isnt k and score is v
+      winner.push
+        name: k
+        score: v
+    if winner.length is 1
+      @data.result =
+        winner: winner[0]
+    else
+      @data.result =
+        draw: winner
+    return
+
+  _createResultTeam: ->
+    # １チームが残っている場合に終了
+    t = null
+    for c in @characters when c.isAlive()
+      unless t?
+        t = c.team
+      else if t isnt c.team
+        return
+    @data.result = {
+      winner:
+        name: t
+    }
+    return
+
   _createResult: ->
     # 時間切れの場合
     if @turn >= @endCondition.turn
-      name = ''
-      score = 0
-      t = {}
-      for c in @characters when c.isAlive()
-        if t[c.team]?
-          t[c.team] = c.hp
-        else
-          t[c.team] += c.hp
-        if score < t[t.team]
-          name  = t.team
-          score = t[t.team]
-      winner = [
-        {
-          name: name
-          score: score
-        }
-      ]
-      for k,v of t
-        if name isnt k and score is v
-          winner.push
-            name: k
-            score: v
-      if winner.length is 1
-        @data.result =
-          winner: winner[0]
-      else
-        @data.result =
-          draw: winner
+      @_createResultTimeup()
       return
-    # 終了タイプがチームの場合、１チームが残っている場合に終了
+    # 終了タイプがチームの場合
     if @endCondition.type is 'team'
-      t = null
-      for c in @characters when c.isAlive()
-        unless t?
-          t = c.team
-        else if t isnt c.team
-          return
-      @data.result = {
-        winner:
-          name: t
-      }
+      @_createResultTeam()
       return
     return
 
@@ -360,6 +368,7 @@ tm.define 'nz.SceneBattle',
 
   _startInputPhase: () ->
     @data.turn += 1
+    console.log "battle turn #{@data.turn}"
     characters = (c.createAiInfo() for c in @characters)
     for c,i in characters when not (@controlTeam.contains c.team) and c.isAlive()
       nz.system.ai[c.ai.name]?.setupAction new nz.ai.Param(

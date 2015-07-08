@@ -107,14 +107,24 @@ class nz.Graph
     @wrapNodes[key]
 
 
-  neighbors: (wrap) ->
-    ret = []
-    for [x,y,d] in _NEIGHBORS[wrap.mapx % 2][wrap.direction]
-      x += wrap.mapx
-      y += wrap.mapy
-      if @grid[x]?[y]?
-        ret.push @getWrap(x,y,d)
-    return ret
+  neighbors: (w) ->
+    #self = @
+    #return _NEIGHBORS[w.mapx % 2][w.direction]
+    #  .filter (o) ->
+    #    [x,y,d] = o
+    #    self.grid[x + w.mapx]?[y + w.mapy]?
+    #  .map (o) ->
+    #    [x,y,d] = o
+    #    self.getWrap(x + w.mapx,y + w.mapy,d)
+    #ret = []
+    #for [x,y,d] in _NEIGHBORS[w.mapx % 2][w.direction]
+    #  x += w.mapx
+    #  y += w.mapy
+    #  if @grid[x]?[y]?
+    #    ret.push @getWrap(x,y,d)
+    #return ret
+    for [x,y,d] in _NEIGHBORS[w.mapx % 2][w.direction] when @grid[x + w.mapx]?[y + w.mapy]?
+      @getWrap(x + w.mapx, y + w.mapy, d)
 
   toString: ->
     graphString = []
@@ -280,10 +290,8 @@ nz.Graph.backPosition = (p) ->
 * @return {Array<Object>} 座標配列
 ###
 nz.Graph.hexLine = (p) ->
-  r = []
   for n in [0 ... p.distance]
-    r.push (p = @frontPosition(p))
-  return r
+    p = @frontPosition(p)
 
 ###* 方向に対する座標エリアを取得する。
 * 時計まわりに３０度のエリアを探す。
