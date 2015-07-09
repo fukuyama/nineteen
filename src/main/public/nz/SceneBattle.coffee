@@ -125,6 +125,7 @@ tm.define 'nz.SceneBattle',
             mapy:      c.mapy
             direction: c.direction
             hp:        c.hp
+            sp:        c.sp
         @_startInputPhase()
 
     @eventHandler.refreshStatus()
@@ -153,11 +154,11 @@ tm.define 'nz.SceneBattle',
         targets.push t
     targets = (t for t in targets when @controlTeam.contains t.character.team)
     if targets.length == 0
-      @_openMainMenu()
+      @_openGameMenu()
     else if targets.length == 1
-      @_openCharacterMenu(targets[0])
+      @_openCommandMenu(targets[0])
     else
-      @_openCharacterSelectMenu(targets)
+      @_openSelectCharacterMenu(targets)
     return
 
   activeStatus: (status) ->
@@ -258,24 +259,24 @@ tm.define 'nz.SceneBattle',
     @one 'resume', @_checkCommandConf.bind @
     return
 
-  _openMainMenu: ->
+  _openGameMenu: ->
     @openMenuDialog
       self: @
       title: 'Command?'
       menu: [
-        {name:'Next Turn', func: @_openCommandConf}
+        {name:'Next Turn', func: @_openTurnConfMenu}
         {name:'Option',    func: -> return}
         {name:'Exit Game', func: @_exitGame}
         {name:'Close Menu'}
       ]
     return
 
-  _openCharacterSelectMenu: (targets) ->
+  _openSelectCharacterMenu: (targets) ->
     menu = []
     for t in targets
       menu.push
         name: t.character.name
-        func: (i) -> @_openCharacterMenu targets[i]
+        func: (i) -> @_openCommandMenu targets[i]
     menu.push {name: 'Close Menu'}
     @openMenuDialog
       self: @
@@ -283,7 +284,7 @@ tm.define 'nz.SceneBattle',
       menu: menu
     return
 
-  _openCharacterMenu: (target) ->
+  _openCommandMenu: (target) ->
     @_selectCharacterIndex = target.index
     @_selectGhost          = target.isGhost()
     @activeStatus(s) for s in @status.children when s.index == target.index
@@ -298,7 +299,7 @@ tm.define 'nz.SceneBattle',
           name: 'Move'
           func: @_addMoveCommand
         menu.push
-          name: 'Direction'
+          name: 'Rotate'
           func: @_addRotateCommand
       if rap >= ACTION_COST.attack
         attack = sc.isAttackCommand(@turn)
@@ -321,7 +322,7 @@ tm.define 'nz.SceneBattle',
       menu: menu
     return
 
-  _openCommandConf: ->
+  _openTurnConfMenu: ->
     @openMenuDialog
       self: @
       title: 'Start Battle?'
@@ -335,7 +336,7 @@ tm.define 'nz.SceneBattle',
     for c in @characters when @controlTeam.contains(c.team) and c.isAlive()
       if c.getRemnantAp(@turn) > 0
         return
-    @_openCommandConf()
+    @_openTurnConfMenu()
     return
 
   _openResult: ->
@@ -355,6 +356,7 @@ tm.define 'nz.SceneBattle',
       c    = sc.character
       o    = si.characters[i]
       c.hp = o.hp
+      c.sp = o.sp
       sc.setMapPosition(o.mapx,o.mapy)
       sc.setDirection(o.direction)
       sc.applyPosition()
@@ -369,7 +371,7 @@ tm.define 'nz.SceneBattle',
   _startInputPhase: () ->
     @data.turn += 1
     console.log "battle turn #{@data.turn}"
-    characters = (c.createAiInfo() for c in @characters)
+    characters = @characters.map (c) -> c.createAiInfo()
     for c,i in characters when not (@controlTeam.contains c.team) and c.isAlive()
       nz.system.ai[c.ai.name]?.setupAction new nz.ai.Param(
         character: c

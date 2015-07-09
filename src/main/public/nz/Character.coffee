@@ -30,10 +30,10 @@ class nz.Character
         name: 'Default'
         # src: 'nz/ai/Default.js'
       maxhp: 10
-      maxsp: 10
+      maxsp: 60
       maxap: 6
       hp: 10
-      sp: 10
+      sp: 60
       mapx: -1
       mapy: -1
       direction: 0

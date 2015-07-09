@@ -41,32 +41,32 @@ tm.define 'nz.SpriteStatus',
           originX:       @originX
           originY:       @originY
         name:
-          type:      'Label'
-          text:      @character.name
-          fillStyle: 'black'
-          align:     'left'
-          baseline:  'top'
-          x:         8
-          y:         10
-          originX:   @originX
-          originY:   @originY
-          fontSize:  8
+          type:          'Label'
+          text:          @character.name
+          fillStyle:     'black'
+          align:         'left'
+          baseline:      'top'
+          x:             8
+          y:             10
+          originX:       @originX
+          originY:       @originY
+          fontSize:      8
         action:
-          type:      'Label'
-          fillStyle: 'black'
-          align:     'left'
-          baseline:  'top'
-          x:         8
-          y:         20
-          originX:   @originX
-          originY:   @originY
-          fontSize:  8
+          type:          'Label'
+          fillStyle:     'black'
+          align:         'left'
+          baseline:      'top'
+          x:             8
+          y:             20
+          originX:       @originX
+          originY:       @originY
+          fontSize:      8
         hpGauge:
           type:          'tm.ui.GlossyGauge'
           x:             8
-          y:             32
+          y:             38
           width:         @width - 16
-          height:        4
+          height:        6
           originX:       @originX
           originY:       @originY
           borderWidth:   1
@@ -75,35 +75,57 @@ tm.define 'nz.SpriteStatus',
           borderColor:   gaugebBrderColor
           animationTime: 1000
           _maxValue:     @character.maxhp
+        hpLabel:
+          type:          'Label'
+          fillStyle:     'black'
+          align:         'left'
+          baseline:      'top'
+          x:             10
+          y:             38 - 2
+          originX:       @originX
+          originY:       @originY
+          fontSize:      8
+          text:          'HP'
         spGauge:
           type:          'tm.ui.GlossyGauge'
           x:             8
-          y:             40
+          y:             50
           width:         @width - 16
-          height:        4
+          height:        6
           originX:       @originX
           originY:       @originY
           borderWidth:   1
-          color:         'Cyan'
+          color:         'DarkSlateBlue'
           bgColor:       @bgColor
           borderColor:   gaugebBrderColor
           animationTime: 1000
-          _maxValue:     @character.mapsp
-    if @detail
-      form.children.apGauge =
-        type:          'tm.ui.GlossyGauge'
-        x:             8
-        y:             48
-        width:         @width - 16
-        height:        4
-        originX:       @originX
-        originY:       @originY
-        borderWidth:   1
-        color:         'red'
-        bgColor:       @bgColor
-        borderColor:   gaugebBrderColor
-        animationFlag: false
-        _maxValue:     @character.maxap
+          _maxValue:     @character.maxsp
+        spLabel:
+          type:          'Label'
+          fillStyle:     'black'
+          align:         'left'
+          baseline:      'top'
+          x:             10
+          y:             50 - 2
+          originX:       @originX
+          originY:       @originY
+          fontSize:      8
+          text:          'SP'
+    #if @detail
+    #  form.children.apGauge =
+    #    type:          'tm.ui.GlossyGauge'
+    #    x:             8
+    #    y:             48
+    #    width:         @width - 16
+    #    height:        4
+    #    originX:       @originX
+    #    originY:       @originY
+    #    borderWidth:   1
+    #    color:         'red'
+    #    bgColor:       @bgColor
+    #    borderColor:   gaugebBrderColor
+    #    animationFlag: false
+    #    _maxValue:     @character.maxap
     @fromJSON form
 
     @on 'refreshStatus', @refreshStatus
@@ -112,6 +134,14 @@ tm.define 'nz.SpriteStatus',
     {
       turn
     } = param
+
+    @_refreshActionText turn
+
+    @hpGauge.value = @character.hp
+    @spGauge.value = @character.sp
+    # @apGauge.value = ap if @detail
+
+  _refreshActionText: (turn) ->
     text = 'Action: '
     if @detail
       ap = @character.getRemnantAp(turn)
@@ -120,10 +150,7 @@ tm.define 'nz.SpriteStatus',
       actions.push 'Shot'   if @character.isShotCommand(turn)
       actions.push 'Move'   if @character.isMoveCommand(turn)
       text += actions.join(' & ')
-      text += " (#{ap})"
-      @apGauge.value = ap
+      text += " (AP=#{ap})"
     else
       text += '???'
     @action.text = text
-    @hpGauge.value = @character.hp
-    @spGauge.value = @character.sp

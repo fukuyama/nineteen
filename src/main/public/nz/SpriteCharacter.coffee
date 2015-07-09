@@ -17,6 +17,10 @@ tm.define 'nz.SpriteCharacter',
   ###
   init: (@index,@character) ->
     @superInit(@character.spriteSheet)
+
+    #canvas = tm.graphics.Canvas().resize(@width, @height).drawTexture(@ss.image,0,0)
+    #@ss.image.element = canvas.element
+
     @checkHierarchy = true
     @ghost = null
 
@@ -162,7 +166,7 @@ tm.define 'nz.SpriteCharacter',
     if distance < (cw.height + @body.width / 2)
       p = enemy.position.clone().$extend cw.range
       if @_checkAttackDirection(p)
-        @attackAnimation()
+        @_attackAnimation()
         @attack = false
     return
 
@@ -230,7 +234,8 @@ tm.define 'nz.SpriteCharacter',
   isAlive: -> @character.isAlive()
 
   _setShotAction: (param) ->
-    @tweener.call @shotAnimation,@,[param]
+    @tweener.call @_shotAnimation,@,[param]
+    @tweener.call @_fatigue,@,[2]
     return
 
   _setMoveAction: (param) ->
@@ -245,6 +250,7 @@ tm.define 'nz.SpriteCharacter',
       y
     } = nz.utils.mapxy2screenxy(@)
     @tweener.move(x,y,speed)
+    @tweener.call @_fatigue,@,[1]
     return
 
   _setRotateAction: (param) ->
@@ -254,8 +260,9 @@ tm.define 'nz.SpriteCharacter',
     } = param
     @tweener.wait speed
     @tweener.call @setDirection,@,[direction]
+    @tweener.call @_fatigue,@,[1]
 
-  attackAnimation: ->
+  _attackAnimation: ->
     # 攻撃アニメーション中は、アクションを続ける
     action = @action
     @action = true
@@ -264,6 +271,7 @@ tm.define 'nz.SpriteCharacter',
       @weapon.rotation = 0
       @tweener.play()
       @action = action # 元の状態に
+      @_fatigue(3)
     @tweener.pause()
     cw = @character.weapon
     @weapon.visible = true
@@ -274,7 +282,7 @@ tm.define 'nz.SpriteCharacter',
         .rotate(cw.range.end,cw.speed)
         .call finish,@,[]
 
-  shotAnimation: (param) ->
+  _shotAnimation: (param) ->
     {
       rotation
       distance
@@ -310,13 +318,9 @@ tm.define 'nz.SpriteCharacter',
         .call finish, @, []
 
     ｈ.addBallet(info)
+    return
 
-  _damage: (d)->
-    @character.hp -= d
-    h = @getRoot().eventHandler
-    h.refreshStatus()
-    if @character.hp <= 0
-      h.deadCharacter(@character)
+  _deadAnimation: (param) ->
     return
 
   _hitBallet: (shooter,ballet) ->
@@ -325,4 +329,20 @@ tm.define 'nz.SpriteCharacter',
 
   _hitWeapon: (attacker) ->
     @_damage(attacker.character.weapon.damage - @character.armor.defense)
+    return
+
+  _damage: (n)->
+    return if n <= 0
+    @character.hp -= n
+    h = @getRoot().eventHandler
+    h.refreshStatus()
+    if @character.hp <= 0
+      h.deadCharacter(@character)
+    return
+
+  _fatigue: (n) ->
+    return if n <= 0
+    @character.sp -= n
+    h = @getRoot().eventHandler
+    h.refreshStatus()
     return
