@@ -18,8 +18,10 @@ tm.define 'nz.SpriteCharacter',
   init: (@index,@character) ->
     @superInit(@character.spriteSheet)
 
-    #canvas = tm.graphics.Canvas().resize(@width, @height).drawTexture(@ss.image,0,0)
-    #@ss.image.element = canvas.element
+    canvas = tm.graphics.Canvas()
+      .resize(@ss.image.width, @ss.image.height)
+      .drawTexture(@ss.image,0,0)
+    @ss.image.element = canvas.element
 
     @checkHierarchy = true
     @ghost = null
