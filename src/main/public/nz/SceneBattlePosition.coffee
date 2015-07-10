@@ -3,8 +3,8 @@
 * 戦闘開始位置設定
 ###
 
-MSGS   = nz.system.MESSAGES
-DIRNUM = nz.system.DIRECTION_NUM
+MSGS   = nz.system.messages
+DIRNUM = nz.system.direction_num
 
 tm.define 'nz.SceneBattlePosition',
   superClass: nz.SceneBase

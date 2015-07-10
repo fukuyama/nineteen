@@ -18,8 +18,11 @@ class nz.Utils
   marge: (r,o) ->
     for k,v of o
       if typeof v is 'object'
-        r[k] = {} unless r[k]?
-        @marge r[k], v
+        if v instanceof Array
+          r[k] = [].concat v
+        else
+          r[k] = {} unless r[k]?
+          @marge r[k], v
       else
         r[k] = v
     return r

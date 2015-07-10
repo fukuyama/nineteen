@@ -87,16 +87,16 @@ tm.define 'nz.SceneBattle',
     x = y = 0
     for character,i in @characters
       # キャラクター
-      @characterSprites.push(
-        nz.SpriteCharacter(i,character)
-          .setVisible(false)
-          .addChildTo(@mapSprite)
-      )
+      sprite = nz.SpriteCharacter(i,character)
+        .setVisible(false)
+        .addChildTo(@mapSprite)
+      @characterSprites.push sprite
 
       # ステータス
       s = nz.SpriteStatus(
         index: i
         character: character
+        characterSprite: sprite
         detail: @controlTeam.contains character.team
       )
       s.setPosition x, y
@@ -294,10 +294,11 @@ tm.define 'nz.SceneBattle',
     rap   = sc.getRemnantAp(@turn)
     # アクションの入力が可能かどうか。（ゴーストを選択しているか、ゴーストを選択してない場合は、ゴーストを持っていなければ、入力可能）
     if @_selectGhost or (not @_selectGhost and not target.hasGhost())
-      if rap > 0
+      if rap >= ACTION_COST.move
         menu.push
           name: 'Move'
           func: @_addMoveCommand
+      if rap >= ACTION_COST.rotate
         menu.push
           name: 'Rotate'
           func: @_addRotateCommand

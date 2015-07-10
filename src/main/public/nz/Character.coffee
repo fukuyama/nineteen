@@ -22,6 +22,10 @@ class nz.Character
   * @constructor nz.Character
   ###
   constructor: (param = {}) ->
+    # 色変えする場合
+    #colorChanges: [
+    #  {from:[0,0,0],to:[255,0,0]}
+    #]
     nz.utils.marge @, {
       name: 'テストキャラクター'
       spriteSheet: 'character_001'
@@ -30,10 +34,10 @@ class nz.Character
         name: 'Default'
         # src: 'nz/ai/Default.js'
       maxhp: 10
-      maxsp: 60
+      maxsp: 100
       maxap: 6
       hp: 10
-      sp: 60
+      sp: 100
       mapx: -1
       mapy: -1
       direction: 0

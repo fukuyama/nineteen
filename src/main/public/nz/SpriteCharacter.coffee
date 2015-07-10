@@ -6,6 +6,7 @@
 MAP_CHIP_W = nz.system.map.chip.width
 MAP_CHIP_H = nz.system.map.chip.height
 DIRECTIONS = nz.system.character.directions
+ST_COST    = nz.system.character.stamina_cost
 
 tm.define 'nz.SpriteCharacter',
   superClass: tm.display.AnimationSprite
@@ -18,10 +19,15 @@ tm.define 'nz.SpriteCharacter',
   init: (@index,@character) ->
     @superInit(@character.spriteSheet)
 
-    canvas = tm.graphics.Canvas()
-      .resize(@ss.image.width, @ss.image.height)
-      .drawTexture(@ss.image,0,0)
-    @ss.image.element = canvas.element
+    if @character.colorChanges?
+      @ss = tm.asset.SpriteSheet(@ss) # 複製…ちょっと無理やり感
+      w   = @ss.image.width
+      h   = @ss.image.height
+      bmp = @ss.image.getBitmap(0,0,w,h)
+      for c in @character.colorChanges
+        f = @_createColorFilter c.from, c.to
+        bmp.filter f if f?
+      @ss.image = tm.graphics.Canvas().resize(w,h).drawBitmap(bmp,0,0)
 
     @checkHierarchy = true
     @ghost = null
@@ -31,16 +37,7 @@ tm.define 'nz.SpriteCharacter',
       height: @height
     ).addChildTo @
 
-    @weapon = tm.display.RectangleShape(
-      width: @character.weapon.height
-      height: @character.weapon.width
-      strokeStyle: 'black'
-      fillStyle: 'red'
-    ).addChildTo @body
-      .setOrigin(0.0,0.5)
-      .setVisible(false)
-    @weapon.checkHierarchy = true
-
+    @weapon = @createWeapon()
     @weapon.on 'enterframe', @_enterframeWeapon.bind @
 
     @setMapPosition @character.mapx, @character.mapy
@@ -80,6 +77,33 @@ tm.define 'nz.SpriteCharacter',
 
   isGhost: () -> (@alpha == 0.5) # 半透明かどうかで判断
   hasGhost: () -> @ghost != null
+
+  _createColorFilter: (a,b) ->
+    if b.length is 3
+      return {
+        calc: (pixel, index, x, y, bitmap) ->
+          if pixel[0] is a[0] and pixel[1] is a[1] and pixel[2] is a[2]
+            bitmap.setPixelIndex(index, b[0], b[1], b[2])
+      }
+    if a.length is 4 and b.length is 4
+      return {
+        calc: (pixel, index, x, y, bitmap) ->
+          if pixel[0] is a[0] and pixel[1] is a[1] and pixel[2] is a[2] and pixel[3] is a[3]
+            bitmap.setPixel32Index(index, b[0], b[1], b[2], b[3])
+      }
+    return undefined
+
+  createWeapon: ->
+    w = tm.display.RectangleShape(
+      width: @character.weapon.height
+      height: @character.weapon.width
+      strokeStyle: 'black'
+      fillStyle: 'red'
+    ).addChildTo @body
+      .setOrigin(0.0,0.5)
+      .setVisible(false)
+    w.checkHierarchy = true
+    return w
 
   createGhost: (param) ->
     {
@@ -237,7 +261,7 @@ tm.define 'nz.SpriteCharacter',
 
   _setShotAction: (param) ->
     @tweener.call @_shotAnimation,@,[param]
-    @tweener.call @_fatigue,@,[2]
+    @tweener.call @_fatigue,@,[ST_COST.shot]
     return
 
   _setMoveAction: (param) ->
@@ -252,7 +276,7 @@ tm.define 'nz.SpriteCharacter',
       y
     } = nz.utils.mapxy2screenxy(@)
     @tweener.move(x,y,speed)
-    @tweener.call @_fatigue,@,[1]
+    @tweener.call @_fatigue,@,[ST_COST.move]
     return
 
   _setRotateAction: (param) ->
@@ -262,7 +286,7 @@ tm.define 'nz.SpriteCharacter',
     } = param
     @tweener.wait speed
     @tweener.call @setDirection,@,[direction]
-    @tweener.call @_fatigue,@,[1]
+    @tweener.call @_fatigue,@,[ST_COST.rotate]
 
   _attackAnimation: ->
     # 攻撃アニメーション中は、アクションを続ける
@@ -273,7 +297,7 @@ tm.define 'nz.SpriteCharacter',
       @weapon.rotation = 0
       @tweener.play()
       @action = action # 元の状態に
-      @_fatigue(3)
+      @_fatigue(ST_COST.attack)
     @tweener.pause()
     cw = @character.weapon
     @weapon.visible = true

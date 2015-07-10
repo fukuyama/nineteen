@@ -11,7 +11,7 @@ _g = undefined
 class nz.System
 
   title: 'Nineteen'
-  DIRECTION_NUM:
+  direction_num:
     UP:         0
     UP_RIGHT:   1
     DOWN_RIGHT: 2
@@ -29,8 +29,14 @@ class nz.System
       {name:'default'   , rotation:   90, index:6, rotateIndex:[ 0, 1, 2, 3,-2,-1]}
     ]
     action_cost:
+      move:   1
       rotate: 1
       attack: 2
+      shot:   2
+    stamina_cost:
+      move:   1
+      rotate: 1
+      attack: 4
       shot:   2
   map:
     chip:
@@ -52,7 +58,7 @@ class nz.System
     character_test:
       type: 'tmss'
       src: 'data/character_test.json'
-  MESSAGES:
+  messages:
     battle:
       position:
         setiing: '{name} の開始位置を選択してください。'

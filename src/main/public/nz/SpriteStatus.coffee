@@ -3,6 +3,8 @@
 * ステータス表示用スプライト
 ###
 
+DIRECTIONS = nz.system.character.directions
+
 tm.define 'nz.SpriteStatus',
   superClass: tm.display.CanvasElement
 
@@ -10,6 +12,7 @@ tm.define 'nz.SpriteStatus',
     {
       @index
       @character
+      @characterSprite
       @detail
     } = param
     @superInit()
@@ -21,9 +24,7 @@ tm.define 'nz.SpriteStatus',
     @boundingType   = 'rect'
     @interactive    = true
     @checkHierarchy = true
-
-    @bgColor         = 'blanchedalmond'
-    gaugebBrderColor = 'gray'
+    @bgColor        = 'blanchedalmond'
 
     form =
       children:
@@ -40,77 +41,38 @@ tm.define 'nz.SpriteStatus',
           shadowColor:   'gray'
           originX:       @originX
           originY:       @originY
-        name:
-          type:          'Label'
+        name: @_label
           text:          @character.name
+          fontSize:      8
           fillStyle:     'black'
-          align:         'left'
-          baseline:      'top'
+          stroke:        false
           x:             8
           y:             10
-          originX:       @originX
-          originY:       @originY
+        action: @_label
+          text:          ''
           fontSize:      8
-        action:
-          type:          'Label'
           fillStyle:     'black'
-          align:         'left'
-          baseline:      'top'
+          stroke:        false
           x:             8
           y:             20
-          originX:       @originX
-          originY:       @originY
-          fontSize:      8
-        hpGauge:
-          type:          'tm.ui.GlossyGauge'
-          x:             8
+        hpGauge: @_gauge
           y:             38
-          width:         @width - 16
-          height:        6
-          originX:       @originX
-          originY:       @originY
-          borderWidth:   1
-          color:         'green'
-          bgColor:       @bgColor
-          borderColor:   gaugebBrderColor
-          animationTime: 1000
+          color:         'Green'
           _maxValue:     @character.maxhp
-        hpLabel:
-          type:          'Label'
-          fillStyle:     'black'
-          align:         'left'
-          baseline:      'top'
-          x:             10
-          y:             38 - 2
-          originX:       @originX
-          originY:       @originY
-          fontSize:      8
-          text:          'HP'
-        spGauge:
-          type:          'tm.ui.GlossyGauge'
-          x:             8
+        spGauge: @_gauge
           y:             50
-          width:         @width - 16
-          height:        6
-          originX:       @originX
-          originY:       @originY
-          borderWidth:   1
           color:         'DarkSlateBlue'
-          bgColor:       @bgColor
-          borderColor:   gaugebBrderColor
-          animationTime: 1000
           _maxValue:     @character.maxsp
-        spLabel:
-          type:          'Label'
-          fillStyle:     'black'
-          align:         'left'
-          baseline:      'top'
+        hpLabel: @_label
+          text:          'HP'
+          fontSize:      14
           x:             10
-          y:             50 - 2
-          originX:       @originX
-          originY:       @originY
-          fontSize:      8
+          y:             38 - 6
+        spLabel: @_label
           text:          'SP'
+          fontSize:      14
+          x:             10
+          y:             50 - 6
     #if @detail
     #  form.children.apGauge =
     #    type:          'tm.ui.GlossyGauge'
@@ -128,12 +90,51 @@ tm.define 'nz.SpriteStatus',
     #    _maxValue:     @character.maxap
     @fromJSON form
 
+    @sprite = tm.display.AnimationSprite(@characterSprite.ss).addChildTo @
+    @sprite.x = @width - 40
+    @sprite.y = 10
+    @sprite.setScale(0.5,0.5)
+    @sprite.setOrigin(0.0,0.0)
+
     @on 'refreshStatus', @refreshStatus
+
+  _gauge: (param) ->
+    {
+      type:          'tm.ui.GlossyGauge'
+      x:             8
+      y:             0
+      width:         @width - 16
+      height:        6
+      originX:       @originX
+      originY:       @originY
+      borderWidth:   1
+      color:         'green'
+      bgColor:       @bgColor
+      borderColor:   'gray'
+      animationTime: 1000
+    }.$extend param
+
+  _label: (param) ->
+    {
+      type:          'Label'
+      fillStyle:     'white'
+      strokeStyle:   'black'
+      lineWidth:     2
+      stroke:        true
+      align:         'left'
+      baseline:      'top'
+      originX:       @originX
+      originY:       @originY
+      fontSize:      12
+      text:          'null'
+    }.$extend param
 
   refreshStatus: (param) ->
     {
       turn
     } = param
+
+    @sprite.gotoAndPlay DIRECTIONS[@characterSprite.direction].name
 
     @_refreshActionText turn
 
