@@ -23,13 +23,13 @@ class nz.Character
   ###
   constructor: (param = {}) ->
     # 色変えする場合
-    #colorChanges: [
-    #  {from:[0,0,0],to:[255,0,0]}
-    #]
     nz.utils.marge @, {
       name: 'テストキャラクター'
       spriteSheet: 'character_001'
       team: 'teamA'
+      colorChanges: [
+        {from:[255,255,255],to:[255,0,0]}
+      ]
       ai:
         name: 'Default'
         # src: 'nz/ai/Default.js'
