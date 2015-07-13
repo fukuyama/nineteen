@@ -65,12 +65,12 @@ tm.define 'nz.SpriteStatus',
           _maxValue:     @character.maxsp
         hpLabel: @_label
           text:          'HP'
-          fontSize:      14
+          fontSize:      12
           x:             10
           y:             38 - 6
         spLabel: @_label
           text:          'SP'
-          fontSize:      14
+          fontSize:      12
           x:             10
           y:             50 - 6
     #if @detail
