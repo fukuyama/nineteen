@@ -41,7 +41,7 @@ tm.define 'nz.SceneBattle',
       replay: null
       startInfo: {}
 
-    @eventHandler = nz.EventHandlerBattle(scene:@)
+    @eventHandler = nz.EventHandlerBattle()
 
     @on 'enter', @load.bind @
     return
@@ -100,11 +100,16 @@ tm.define 'nz.SceneBattle',
         detail: @controlTeam.contains character.team
       )
       s.setPosition x, y
-      s.on 'pointingend', (e) ->
-        scene.activeStatus @
-        scene.blinkCharacter @index
       @status.addChildAt s, 0
       y += 32 * 2.5 - 8
+
+    @on 'selectStatus', (e) ->
+      {
+        scene
+        status
+      } = e
+      scene.activeStatus status
+      scene.blinkCharacter status.index
 
     # 基本操作
     @on 'map.pointingend', @_mapPointingend
@@ -254,6 +259,7 @@ tm.define 'nz.SceneBattle',
       target:     target
       callback:   callback
       mapSprite:  @mapSprite
+      status:     @status
       characters: @characters
     )
     @one 'resume', @_checkCommandConf.bind @

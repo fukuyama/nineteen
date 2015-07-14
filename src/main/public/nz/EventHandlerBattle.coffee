@@ -9,18 +9,18 @@ tm.define 'nz.EventHandlerBattle',
   * @classdesc 戦闘用イベントハンドラ
   * @constructor nz.EventHandlerBattle
   ###
-  init: (param) ->
-    {
-      @scene
-    } = param
+  init: ->
 
   _fireAll: (e,param={}) ->
+    app   = nz.system.app
+    scene = app.currentScene
     if typeof e is 'string'
       e       = tm.event.Event(e)
-      e.app   = @scene.app
-      e.turn  = @scene.turn
+      e.app   = app
+      e.scene = scene
+      e.turn  = scene.turn
       e.$extend param
-    @_dispatchEvent(e,@scene)
+    @_dispatchEvent(e,scene)
     return
 
   _dispatchEvent: (e,element) ->
@@ -62,3 +62,6 @@ tm.define 'nz.EventHandlerBattle',
     @_fireAll('removeBallet',param)
     return
 
+  selectStatus: (param) ->
+    @_fireAll('selectStatus',param)
+    return

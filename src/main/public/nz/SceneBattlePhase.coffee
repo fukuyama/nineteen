@@ -10,6 +10,7 @@ tm.define 'nz.SceneBattlePhase',
     @superInit()
     {
       @mapSprite
+      @status
       start
       end
     } = param
@@ -20,7 +21,7 @@ tm.define 'nz.SceneBattlePhase',
 
     @_balletCount = 0
 
-    @eventHandler = nz.EventHandlerBattle(scene:@)
+    @eventHandler = nz.EventHandlerBattle()
 
     @on 'enter', @_startPhase
     @on 'addBallet', @_addBallet
@@ -31,6 +32,17 @@ tm.define 'nz.SceneBattlePhase',
     @on 'enterframe'   , @createKeyboradHander()
     @on 'input_enter'  , @_openPauseMenu
 
+    @on 'selectStatus', (e) ->
+      {
+        scene
+        status
+      } = e
+      scene.activeStatus status
+
+    return
+
+  activeStatus: (status) ->
+    @status.addChild status
     return
 
   _openPauseMenu: ->

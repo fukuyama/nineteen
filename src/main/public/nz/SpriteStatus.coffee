@@ -98,6 +98,9 @@ tm.define 'nz.SpriteStatus',
 
     @on 'refreshStatus', @refreshStatus
 
+    @eventHandler = nz.EventHandlerBattle()
+    @on 'pointingend', -> @eventHandler.selectStatus(status:@)
+
   _gauge: (param) ->
     {
       type:          'tm.ui.GlossyGauge'
