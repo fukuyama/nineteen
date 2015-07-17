@@ -49,6 +49,8 @@ class nz.ai.Shooter
 
     @rule
       cond: (param) ->
+        param.setFriendsAndTargets()
+        param.setNearTarget()
         # 距離が６以下で射撃範囲にターゲットがいる場合
         return param.distance <= 6 and param.checkShotRange()
       setup: (param) ->

@@ -249,7 +249,7 @@ class nz.ai.Param
   * @memberof nz.ai.Param#
   * @method setMoveCommand
   ###
-  setMoveCommand: (args) ->
+  setMoveCommand: (args={}) ->
     target = args.target ? @target
     length = args.length ? 99
     route  = nz.utils.searchRoute @graph,@character,target,@characters

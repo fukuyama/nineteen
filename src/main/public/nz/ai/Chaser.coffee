@@ -29,9 +29,12 @@ class nz.ai.Chaser
         # どれでもない時
         return true
       setup: (param) ->
-        #console.log "turn #{param.turn} rule 3"
+        param.setFriendsAndTargets()
+        param.setNearTarget()
+        # 攻撃
+        param.setAttackCommand()
         # 近づく
-        param.setMoveCommand(length:3)
+        param.setMoveCommand()
         return true
 
 nz.system.addAI 'Chaser', new nz.ai.Chaser()

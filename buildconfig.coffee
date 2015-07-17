@@ -40,6 +40,7 @@ dataNames= [
 aiScripts= [
   'nz/ai/Sample'
   'nz/ai/Shooter'
+  'nz/ai/Chaser'
   'nz/ai/Runner'
 ]
 
