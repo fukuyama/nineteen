@@ -26,11 +26,14 @@ class nz.ai.Chaser
 
     @rule
       cond: (param) ->
+        param.setFriendsAndTargets()
+        param.setNearTarget()
+        return false
+    @rule
+      cond: (param) ->
         # どれでもない時
         return true
       setup: (param) ->
-        param.setFriendsAndTargets()
-        param.setNearTarget()
         # 攻撃
         param.setAttackCommand()
         # 近づく
