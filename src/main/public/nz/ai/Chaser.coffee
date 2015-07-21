@@ -36,7 +36,6 @@ class nz.ai.Chaser
     # 目的値
     g = tm.geom.Vector2().setRadian(r,d).add(t)
     a = nz.utils.screenxy2mapxy g
-    #console.log "t=#{t} s=#{s} d=#{d} r=#{r} g=#{g} a.mapx=#{a.mapx} a.mapy=#{a.mapy}"
     return a
 
   ###* 初期化
@@ -49,6 +48,7 @@ class nz.ai.Chaser
 
     @rule
       cond: (param) ->
+        # 敵味方分け
         param.setFriendsAndTargets()
         param.setNearTarget()
         return false
@@ -57,15 +57,15 @@ class nz.ai.Chaser
         p = @calcSlidePosition
           target: param.target
           character: param.character
-          length: 4
-        if param.checkMovePosition p
+          length: 2
+        if param.checkMovePosition(p) and param.distance <= 4
           return true
         return false
       setup: (param) ->
         p = @calcSlidePosition
           target: param.target
           character: param.character
-          length: 4
+          length: 2
         param.setAttackCommand()
         param.setMoveCommand(target:p)
         return true
@@ -74,10 +74,8 @@ class nz.ai.Chaser
         # どれでもない時
         return true
       setup: (param) ->
-        # 攻撃
-        param.setAttackCommand()
         # 近づく
-        param.setMoveCommand()
+        param.setMoveCommand(length:2)
         return true
 
 nz.system.addAI 'Chaser', new nz.ai.Chaser()

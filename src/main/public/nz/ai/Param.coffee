@@ -199,11 +199,10 @@ class nz.ai.Param
   * @param {Object} p {mapx,mapy}
   ###
   checkMovePosition: (p) ->
+    return false unless p?
     node = @graph.grid[p.mapx]?[p.mapy]
-    unless node?
-      return false
-    if node.isWall()
-      return false
+    return false unless node?
+    return false if node.isWall()
     for c in @characters
       if c.mapx is p.mapx and c.mapy is p.mapy
         return false
