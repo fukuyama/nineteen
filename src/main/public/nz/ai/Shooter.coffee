@@ -82,7 +82,6 @@ class nz.ai.Shooter
         # 距離が８以下
         return param.distance <= 8
       setup: (param) ->
-        #console.log "turn #{param.turn} rule 3"
         p = @calcSlidePosition
           target: param.target
           character: param.character
@@ -97,9 +96,9 @@ class nz.ai.Shooter
         # どれでもない時
         return true
       setup: (param) ->
-        #console.log "turn #{param.turn} rule 3"
         # 近づく
         param.setMoveCommand(length:3)
+        # TODO: 壁を意識した移動（中央へ）
         return true
 
 nz.system.addAI 'Shooter', new nz.ai.Shooter()
