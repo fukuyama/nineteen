@@ -74,8 +74,13 @@ class nz.ai.Chaser
         # どれでもない時
         return true
       setup: (param) ->
-        # 近づく
-        param.setMoveCommand(length:2)
+        # 中央へ
+        param.setMoveCommand(
+          target: {
+            mapx: 6
+            mapy: 6
+          }
+        )
         return true
 
 nz.system.addAI 'Chaser', new nz.ai.Chaser()
