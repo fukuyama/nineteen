@@ -5,7 +5,7 @@ concat     = require 'gulp-concat'
 uglify     = require 'gulp-uglify'
 sourcemaps = require 'gulp-sourcemaps'
 
-gulp.task 'build_ai_script', ['coffeelint','test_console'], ->
+gulp.task 'build_ai_script', ['coffeelint'], ->
   {
     files
     distDir

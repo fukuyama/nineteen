@@ -25,10 +25,10 @@ class nz.Character
     # 色変えする場合
     nz.utils.marge @, {
       name: 'テストキャラクター'
-      spriteSheet: 'character_001'
+      spriteSheet: 'character_test'
       team: 'teamA'
       colorChanges: [
-        {from:[255,255,255],to:[255,0,0]}
+        # {from:[255,255,255],to:[255,0,0]}
       ]
       ai:
         name: 'Default'
@@ -64,6 +64,11 @@ class nz.Character
         speed: 100
     }
     nz.utils.marge @, param
+    if @teamColor
+      @colorChanges.push {
+        from: [255,255,255]
+        to: @teamColor
+      }
     @commands = [] # 戦闘コマンドリスト
     return
 
