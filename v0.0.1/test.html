@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, user-scalable=no" />
+
+  <title>Nineteen(19)</title>
+
+  <style>
+  body {
+    font-family: "Meiryo", "メイリオ", "ヒラギノ角ゴ Pro W3", sans-serif;
+  }
+  </style>
+
+  <script src="lib/develop/Stats.js"></script>
+  <script src="lib/develop/astar.js"></script>
+  <script src="lib/develop/tmlib.js"></script>
+  <script src="main.min.js"></script>
+  <script>
+  nz.system.start = function () {
+  	console.log('system start');
+    nz.system.app.replaceScene(nz.SceneBattle({
+      mapId: 0,
+      controlTeam: [],
+      characters: [
+        {
+          name:'キャラクターA',
+          ai: {name: 'Chaser'},
+          team:'teamA',
+          teamColor: [198,0,0]
+        },
+        {
+          name:'キャラクターB',
+          ai: {name: 'Shooter'},
+          team:'teamB',
+          teamColor: [0,198,0]
+        },
+        {
+          name:'キャラクターC',
+          ai: {name: 'Runner'},
+          team:'teamC',
+          teamColor: [0,0,198]
+        },
+        {
+          name:'キャラクターD',
+          ai: {name: 'Runner'},
+          team:'teamD',
+          teamColor: [198,0,198]
+        }
+      ]
+    }));
+  }
+  </script>
+</head>
+
+<body>
+  <canvas id="world"></canvas>
+</body>
+
+</html>
