@@ -17,7 +17,6 @@ tm.define 'nz.SceneBattlePhase',
     @startTuen = start
     @endTurn   = end
     @turn      = start
-    @runing    = false
 
     @_balletCount = 0
 

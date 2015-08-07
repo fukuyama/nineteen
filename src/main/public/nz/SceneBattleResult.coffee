@@ -74,6 +74,10 @@ tm.define 'nz.SceneBattleResult',
     @app.popScene()
     return
 
+  _endBattle: ->
+    @app.popScene()
+    return
+
   _exitGame: ->
     nz.system.restart()
     return
@@ -83,7 +87,8 @@ tm.define 'nz.SceneBattleResult',
       self: @
       title: 'Battle End'
       menu: [
-        {name: 'Replay?',    func: @_startReplay}
-        {name: 'Exit Game?', func: @_exitGame}
+        {name: 'Replay',     func: @_startReplay}
+        {name: 'End Battle', func: @_endBattle}
+        {name: 'Exit Game',  func: @_exitGame}
       ]
     return

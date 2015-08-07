@@ -18,7 +18,7 @@ tm.main ->
   # 最初のシーンに切り替える
   app.pushScene tm.game.LoadingScene(
     assets: assets
-    width: screen.width
+    width:  screen.width
     height: screen.height
   ).on 'load', (e) ->
     @app.fitWindow()
@@ -26,7 +26,7 @@ tm.main ->
     return
 
   #app.pushScene SplashScene(
-  #  width: screen.width
+  #  width:  screen.width
   #  height: screen.height
   #)
 

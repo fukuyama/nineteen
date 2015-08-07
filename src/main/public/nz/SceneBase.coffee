@@ -3,8 +3,10 @@
 * シーンベース
 ###
 
-SCREEN_W    = nz.system.screen.width
-SCREEN_H    = nz.system.screen.height
+SCREEN_W = nz.system.screen.width
+SCREEN_H = nz.system.screen.height
+CENTER_X = SCREEN_W / 2
+CENTER_Y = SCREEN_H / 2
 
 tm.define 'nz.SceneBase',
   superClass: tm.app.Scene
@@ -12,6 +14,20 @@ tm.define 'nz.SceneBase',
   init: ->
     @superInit()
     return
+
+  popMessage: (param) ->
+    {message} = param
+    scene = nz.ScenePopMessage
+      message:  message
+      width:    SCREEN_W / 2
+      height:   50
+      start:    [CENTER_X,-25]
+      center:   [CENTER_X,CENTER_Y]
+      end:      [CENTER_X,SCREEN_H + 25]
+      duration: 1000
+      fillStyle:   nz.system.dialog.fillStyle
+      strokeStyle: nz.system.dialog.strokeStyle
+    @app.pushScene scene
 
   openMenuDialog: (param) ->
     dlg = nz.SceneMenu(param)

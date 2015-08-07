@@ -31,6 +31,7 @@ tm.define 'nz.SpriteCharacter',
 
     @checkHierarchy = true
     @ghost = null
+    @counter = new nz.BattleCounter()
 
     @body = tm.display.Shape(
       width:  @width
@@ -43,6 +44,12 @@ tm.define 'nz.SpriteCharacter',
     @setMapPosition @character.mapx, @character.mapy
     @setDirection @character.direction
 
+    @on 'startBattleScene', ->
+      @counter.clear()
+      return
+    @on 'endBattleScene', ->
+      console.log @counter
+      return
     @on 'startBattlePhase', ->
       @clearGhost()
       return
@@ -350,25 +357,30 @@ tm.define 'nz.SpriteCharacter',
     return
 
   _hitBallet: (shooter,ballet) ->
-    @_damage(shooter.character.shot.damage - @character.armor.defense)
+    d = shooter.character.shot.damage - @character.armor.defense
+    @_damage(d)
+    shooter.counter.hitBallet(d)
+    @counter.receiveBallet(d)
     return
 
   _hitWeapon: (attacker) ->
-    @_damage(attacker.character.weapon.damage - @character.armor.defense)
+    d = attacker.character.weapon.damage - @character.armor.defense
+    @_damage(d)
+    attacker.counter.hitWeapon(d)
+    @counter.receiveWeapon(d)
     return
 
   _damage: (n)->
     return if n <= 0
     @character.hp -= n
     h = @getRoot().eventHandler
-    h.refreshStatus()
-    if @character.hp <= 0
+    if @character.isDead()
       h.deadCharacter(@character)
+    h.refreshStatus()
     return
 
   _fatigue: (n) ->
     return if n <= 0
     @character.sp -= n
-    h = @getRoot().eventHandler
-    h.refreshStatus()
+    @getRoot().eventHandler.refreshStatus()
     return

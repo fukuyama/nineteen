@@ -123,6 +123,7 @@ tm.define 'nz.SceneBattle',
         )
       )
       @one 'resume', ->
+        @eventHandler.startBattleScene()
         @data.startInfo.characters = []
         for c in @characters
           @data.startInfo.characters.push
@@ -352,7 +353,11 @@ tm.define 'nz.SceneBattle',
       status: @status
       data: @data
     @one 'resume', ->
-      @_startReplay()
+      if @data.replay?
+        @_startReplay()
+      else
+        @eventHandler.endBattleScene()
+        @app.popScene()
       return
     return
 
@@ -391,6 +396,8 @@ tm.define 'nz.SceneBattle',
 
     if @controlTeam.length is 0
       @_startBattlePhase()
+    else
+      @popMessage(message:"Turn #{@data.turn}")
 
   _startBattlePhase: (param) ->
     {

@@ -38,6 +38,18 @@ tm.define 'nz.EventHandlerBattle',
     @_fireAll('deadCharacter',character:character)
     return
 
+  startBattleScene: ->
+    @_fireAll('startBattleScene')
+    return
+
+  endBattleScene: ->
+    @_fireAll('endBattleScene')
+    return
+
+  replayBattle: ->
+    @_fireAll('replayBattle')
+    return
+
   startBattlePhase: ->
     @_fireAll('startBattlePhase')
     return
