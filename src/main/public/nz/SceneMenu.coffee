@@ -16,8 +16,8 @@ tm.define 'nz.SceneMenu',
       screenHeight: SCREEN_H
     }.$extend param
     @menuFunc  = (m.func for m in param.menu when m.func?)
-    param.menu = (m.name for m in param.menu when m.name?)
     param.menuDesctiptions = (m.desctiption for m in param.menu when m.desctiption?)
+    param.menu = (m.name for m in param.menu when m.name?)
     @superInit(param)
 
     @box.setStrokeStyle nz.system.dialog.strokeStyle
