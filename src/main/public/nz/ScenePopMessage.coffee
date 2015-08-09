@@ -19,6 +19,7 @@ tm.define 'nz.ScenePopMessage',
       fillStyle
       strokeStyle
       message
+      popwait
     } = {
       width:  200
       height: 50
@@ -30,6 +31,7 @@ tm.define 'nz.ScenePopMessage',
       fillStyle: 'gray'
       strokeStyle: 'gray'
       message:     '(test message)'
+      popwait:     undefined
     }.$extend param
 
     @_param = {
@@ -46,6 +48,7 @@ tm.define 'nz.ScenePopMessage',
         y:        end[1]
         duration: end[2]    ? duration
         easing:   end[3]    ? easing
+      popwait: popwait
     }
 
     @superInit()
@@ -67,15 +70,24 @@ tm.define 'nz.ScenePopMessage',
     @on 'pointingend', -> @outAnimation()
     @on 'enter', -> @inAnimation()
 
+    @_out = false
+
   inAnimation: ->
     {x,y,duration,easing} = @_param.center
     @_board.tweener
       .clear()
       .move(x,y,duration,easing)
+    if @_param.popwait?
+      @_board.tweener
+        .wait @_param.popwait
+        .call @outAnimation, @, []
 
   outAnimation: ->
+    return if @_out
+    @_out = true
     {x,y,duration,easing} = @_param.end
     @_board.tweener
       .clear()
       .move(x,y,duration,easing)
+      .call (-> @_out = false), @, []
       .call (-> @app.popScene()), @, []

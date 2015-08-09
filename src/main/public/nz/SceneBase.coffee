@@ -27,6 +27,7 @@ tm.define 'nz.SceneBase',
       duration: 1000
       fillStyle:   nz.system.dialog.fillStyle
       strokeStyle: nz.system.dialog.strokeStyle
+      popwait:  500
     @app.pushScene scene
 
   openMenuDialog: (param) ->
