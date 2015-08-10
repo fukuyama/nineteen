@@ -46,18 +46,18 @@ class nz.System
     width:  640
     height: 480
   dialog:
-    strokeStyle:'rgba(255,255,255,1.0)'
-    fillStyle:'rgba(128,128,128,1.0)'
+    strokeStyle: 'rgba(255,255,255,1.0)'
+    fillStyle:   'rgba(128,128,128,1.0)'
   assets:
-    chipdata: 'data/chipdata.json'
-    map_object: 'img/map_object.png'
-    map_chip: 'img/map_chip.png'
+    chipdata:    'data/chipdata.json'
+    map_object:  'img/map_object.png'
+    map_chip:    'img/map_chip.png'
     character_001:
-      type: 'tmss'
-      src: 'data/character_001.json'
+      type:      'tmss'
+      src:       'data/character_001.json'
     character_test:
-      type: 'tmss'
-      src: 'data/character_test.json'
+      type:      'tmss'
+      src:       'data/character_test.json'
   messages:
     battle:
       position:

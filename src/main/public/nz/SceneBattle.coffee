@@ -382,7 +382,7 @@ tm.define 'nz.SceneBattle',
 
   _startInputPhase: () ->
     @data.turn += 1
-    console.log "battle turn #{@data.turn}"
+    #console.log "battle turn #{@data.turn}"
     characters = @characters.map (c) -> c.createAiInfo()
     for c,i in characters when not (@controlTeam.contains c.team) and c.isAlive()
       nz.system.ai[c.ai.name]?.setupAction new nz.ai.Param(
