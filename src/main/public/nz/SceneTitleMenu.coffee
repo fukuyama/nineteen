@@ -16,22 +16,22 @@ tm.define 'nz.SceneTitleMenu',
     menu = [
       {
         name: 'New Game'
-        desctiption: '新しいゲームをはじめる'
+        description: '新しいゲームをはじめる'
         func: @_new_game
       }
       {
         name: 'Load Game'
-        desctiption: '保存したゲームをはじめる'
+        description: '保存したゲームをはじめる'
         func: @_load_game
       }
       {
         name: 'Option'
-        desctiption: 'ゲームオプション'
+        description: 'ゲームオプション'
         func: @_option
       }
       {
         name: 'Debug Game'
-        desctiption: 'デバックゲーム'
+        description: 'デバックゲーム'
         func: @_debug_game
       }
     ]
@@ -91,21 +91,21 @@ tm.define 'nz.SceneTitleMenu',
       mapId: 0
       controlTeam: ['teamA']
       characters: [
-        #new nz.Character(
-        #  name:'キャラクター1'
-        #  team:'teamA'
-        #  spriteSheet:'character_test'
-        #  weapon:
-        #    damage: 20
-        #)
-        #new nz.Character(
-        #  name:'キャラクター2'
-        #  team:'teamA'
-        #  spriteSheet:'character_test'
-        #  ai:
-        #    name: 'Shooter'
-        #    src: 'nz/ai/Shooter.js'
-        #)
+        new nz.Character(
+          name:'キャラクター1'
+          team:'teamA'
+          spriteSheet:'character_test'
+          weapon:
+            damage: 20
+        )
+        new nz.Character(
+          name:'キャラクター2'
+          team:'teamA'
+          spriteSheet:'character_test'
+          ai:
+            name: 'Shooter'
+            src: 'nz/ai/Shooter.js'
+        )
         #new nz.Character(
         #  name:'キャラクター3'
         #  team:'teamA'
@@ -121,22 +121,22 @@ tm.define 'nz.SceneTitleMenu',
             name: 'Runner'
             src: 'nz/ai/Runner.js'
         }
-        #new nz.Character(
-        #  name:'キャラクター4'
-        #  team:'teamB'
-        #  spriteSheet:'character_test'
-        #  ai:
-        #    name: 'Shooter'
-        #    src: 'nz/ai/Shooter.js'
-        #)
-        #new nz.Character(
-        #  name:'キャラクター5'
-        #  team:'teamB'
-        #  spriteSheet:'character_test'
-        #  ai:
-        #    name: 'Runner'
-        #    src: 'nz/ai/Runner.js'
-        #)
+        new nz.Character(
+          name:'キャラクター4'
+          team:'teamB'
+          spriteSheet:'character_test'
+          ai:
+            name: 'Shooter'
+            src: 'nz/ai/Shooter.js'
+        )
+        new nz.Character(
+          name:'キャラクター5'
+          team:'teamB'
+          spriteSheet:'character_test'
+          ai:
+            name: 'Runner'
+            src: 'nz/ai/Runner.js'
+        )
         {
           name:'キャラクター6'
           team:'teamB'

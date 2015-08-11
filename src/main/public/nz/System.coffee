@@ -60,6 +60,14 @@ class nz.System
       src:       'data/character_test.json'
   messages:
     battle:
+      phase:
+        command: 'キャラクターを選択し行動を設定してください。'
+      command:
+        move:   '移動先の設定をします。'
+        attack: '攻撃範囲に入った敵に対して武器による攻撃をします'
+        shot:   '指定した方向へ、射撃を行います。'
+        rotate: '向いている方向を、変更します。'
+        reset:  '行動をリセッットします。'
       position:
         setiing: '{name} の開始位置を選択してください。'
 

@@ -13,6 +13,9 @@ tm.define 'nz.SceneBase',
 
   init: ->
     @superInit()
+    @on 'resume', ->
+      @_description?.show()
+      return
     return
 
   popMessage: (param) ->
@@ -28,23 +31,43 @@ tm.define 'nz.SceneBase',
       fillStyle:   nz.system.dialog.fillStyle
       strokeStyle: nz.system.dialog.strokeStyle
       popwait:  500
+    @descriptionOff()
     @app.pushScene scene
 
   openMenuDialog: (param) ->
     dlg = nz.SceneMenu(param)
+    @descriptionOff()
     @app.pushScene dlg
     return dlg
 
+  descriptionOff: ->
+    @_description?.hide()
+    return
+
   description: (text) ->
     unless @_description
-      @_description = tm.display.Label(
-        ''
-        14
+      @_description = tm.display.TextShape(
+        fontSize:  14
       ).addChildTo   @
-        .setAlign    'center'
-        .setBaseline 'middle'
-        .setPosition SCREEN_W / 2, SCREEN_H - 10
-    @_description.text = text
+        .setOrigin 0,0.5
+        .setPosition SCREEN_W, SCREEN_H - 16
+    d = @_description
+    d.text = text
+    if text isnt ''
+      d.fit()
+      d.render()
+      if d.width > SCREEN_W
+        # 長い場合にスクロールさせて表示
+        d.setOrigin 0.0,0.5
+        d.tweener.clear().setLoop(true)
+        d.tweener
+          .set(x:SCREEN_W,y:SCREEN_H - 16)
+          .move(-d.width,SCREEN_H - 16,d.width * 50)
+      else
+        d.setOrigin 0.5,0.5
+        d.setPosition CENTER_X, SCREEN_H - 16
+    else
+      d.tweener.clear()
 
   createKeyboradHander: ->
     eventKeys      = ['up','down','left','right','enter']

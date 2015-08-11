@@ -7,6 +7,7 @@ SCREEN_W    = nz.system.screen.width
 SCREEN_H    = nz.system.screen.height
 DIRECTIONS  = nz.system.character.directions
 ACTION_COST = nz.system.character.action_cost
+MSGS        = nz.system.messages
 
 tm.define 'nz.SceneBattle',
   superClass: nz.SceneBase
@@ -246,6 +247,7 @@ tm.define 'nz.SceneBattle',
       @status.addChildTo @
       @eventHandler.refreshStatus()
       return
+    @descriptionOff()
     @mapSprite.remove()
     @status.remove()
     @app.pushScene scene
@@ -304,10 +306,12 @@ tm.define 'nz.SceneBattle',
       if rap >= ACTION_COST.move
         menu.push
           name: 'Move'
+          description: MSGS.battle.command.move
           func: @_addMoveCommand
       if rap >= ACTION_COST.rotate
         menu.push
           name: 'Rotate'
+          description: MSGS.battle.command.rotate
           func: @_addRotateCommand
       if rap >= ACTION_COST.attack
         attack = sc.isAttackCommand(@turn)
@@ -315,13 +319,16 @@ tm.define 'nz.SceneBattle',
         if not attack and not shot
           menu.push
             name: 'Attack'
+            description: MSGS.battle.command.attack
             func: @_addAttackCommand
           menu.push
             name: 'Shot'
+            description: MSGS.battle.command.shot
             func: @_addShotCommand
     if acost > 0
       menu.push
         name: 'Reset Action'
+        description: MSGS.battle.command.reset
         func: @_resetCommand
     menu.push {name:'Close Menu'}
     @openMenuDialog
@@ -398,6 +405,7 @@ tm.define 'nz.SceneBattle',
       @_startBattlePhase()
     else
       @popMessage(message:"Turn #{@data.turn}")
+      @description MSGS.battle.phase.command
 
   _startBattlePhase: (param) ->
     {
@@ -424,6 +432,7 @@ tm.define 'nz.SceneBattle',
     return
 
   _addMoveCommand: ->
+    console.log '_addMoveCommand'
     @_commandScene(
       nz.SceneBattleMoveCommand
       ((route) ->
@@ -454,6 +463,7 @@ tm.define 'nz.SceneBattle',
     return
 
   _addShotCommand: ->
+    console.log '_addShotCommand'
     @_commandScene(
       nz.SceneBattleShotCommand
       ((rotation) ->
@@ -471,6 +481,7 @@ tm.define 'nz.SceneBattle',
     return
 
   _addRotateCommand: ->
+    console.log '_addRotateCommand'
     @_commandScene(
       nz.SceneBattleDirectionCommand
       ((direction1,direction2) ->

@@ -16,7 +16,7 @@ tm.define 'nz.SceneMenu',
       screenHeight: SCREEN_H
     }.$extend param
     @menuFunc  = (m.func for m in param.menu when m.func?)
-    param.menuDesctiptions = (m.desctiption for m in param.menu when m.desctiption?)
+    param.menuDesctiptions = (m.description for m in param.menu when m.description?)
     param.menu = (m.name for m in param.menu when m.name?)
     @superInit(param)
 

@@ -19,6 +19,7 @@ tm.define 'nz.SceneBattleShotCommand',
 
     @_keyInput = true
     @_keyRotate = 0
+    @_keyRotateMult = 5
     @on 'enterframe'  , @createKeyboradHander()
     @on 'input_left'  , @_inputLeft
     @on 'repeat_left' , @_inputLeft
@@ -32,13 +33,13 @@ tm.define 'nz.SceneBattleShotCommand',
 
   _inputLeft: ->
     @_keyInput = true
-    @_keyRotate -= 5
+    @_keyRotate -= @_keyRotateMult
     @_rotatePointer @_keyRotate
     return
 
   _inputRight: ->
     @_keyInput = true
-    @_keyRotate += 5
+    @_keyRotate += @_keyRotateMult
     @_rotatePointer @_keyRotate
     return
 
