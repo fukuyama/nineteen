@@ -432,7 +432,6 @@ tm.define 'nz.SceneBattle',
     return
 
   _addMoveCommand: ->
-    console.log '_addMoveCommand'
     @_commandScene(
       nz.SceneBattleMoveCommand
       ((route) ->
@@ -442,7 +441,7 @@ tm.define 'nz.SceneBattle',
           @selectCharacterSprite.createGhost(route[route.length-1]).addChildTo @mapSprite
         if sc.getRemnantAp(@turn) > 0
           @_selectGhost = true
-          @one 'enterframe', @_addRotateCommand
+          @one 'resume', @_addRotateCommand
         return
       ).bind @
     )
@@ -457,13 +456,12 @@ tm.define 'nz.SceneBattle',
     @eventHandler.refreshStatus()
     if sc.getRemnantAp(@turn) > 0
       @_selectGhost = true
-      @one 'enterframe', @_addMoveCommand
+      @_addMoveCommand()
     else
       @_checkCommandConf()
     return
 
   _addShotCommand: ->
-    console.log '_addShotCommand'
     @_commandScene(
       nz.SceneBattleShotCommand
       ((rotation) ->
@@ -474,14 +472,13 @@ tm.define 'nz.SceneBattle',
           scs.createGhost(scs).addChildTo @mapSprite
         if sc.getRemnantAp(@turn) > 0
           @_selectGhost = true
-          @one 'enterframe', @_addMoveCommand
+          @one 'resume', @_addMoveCommand
         return
       ).bind @
     )
     return
 
   _addRotateCommand: ->
-    console.log '_addRotateCommand'
     @_commandScene(
       nz.SceneBattleDirectionCommand
       ((direction1,direction2) ->
