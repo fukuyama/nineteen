@@ -189,7 +189,7 @@ tm.define 'nz.SpriteBattleMap',
     for blink in @_activeBlinks
       blink.visible = false
       blink.setAlpha(0.0)
-      blink.tweener.clear().setLoop(false)
+      blink.tweener.clear()
     @_activeBlinks.clear()
     return
 

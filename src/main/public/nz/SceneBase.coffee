@@ -59,10 +59,11 @@ tm.define 'nz.SceneBase',
       if d.width > SCREEN_W
         # 長い場合にスクロールさせて表示
         d.setOrigin 0.0,0.5
-        d.tweener.clear().setLoop(true)
         d.tweener
+          .clear()
           .set(x:SCREEN_W,y:SCREEN_H - 16)
           .move(-d.width,SCREEN_H - 16,d.width * 50)
+          .setLoop(true)
       else
         d.setOrigin 0.5,0.5
         d.setPosition CENTER_X, SCREEN_H - 16

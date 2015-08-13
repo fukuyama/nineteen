@@ -13559,16 +13559,14 @@ tm.app = tm.app || {};
 
             var task = this._tasks[this._index];
             if (!task) {
-
                 if (this.loop === true) {
                     this._index = 0;
-                    return this._updateTask(app);
+                    task = this._tasks[this._index];
                 }
-                else {
+                if (!task) {
                     this.isPlaying = false;
+                    return;
                 }
-
-                return ;
             }
             this._index++;
 
@@ -16854,13 +16852,14 @@ tm.ui = tm.ui || {};
                             this.dispatchEvent(e);
                         }.bind(this));
                 }.bind(this));
-            this.cursor.tweener
-                .clear()
-                .call(function() {
-                    this.visible = !this.visible;
-                }.bind(this.cursor))
-                .wait(0)
-                .setLoop(true);
+            this.cursor.on('enterframe', function () { this.visible = !this.visible; });
+            //this.cursor.tweener
+            //    .clear()
+            //    .call(function() {
+            //        this.visible = !this.visible;
+            //    }.bind(this.cursor))
+            //    .wait(0)
+            //    .setLoop(true);
         },
 
         /**
