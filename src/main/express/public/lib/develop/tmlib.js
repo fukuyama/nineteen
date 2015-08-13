@@ -13486,7 +13486,6 @@ tm.app = tm.app || {};
             this.superInit();
 
             this.setTarget(elm || {});
-            this.loop = false;
 
             this._init();
         },
@@ -13498,6 +13497,7 @@ tm.app = tm.app || {};
             this._index = 0;
             this._tasks = [];
             this._func = this._updateTask;
+            this.loop = false;
             this.isPlaying = true;
         },
 
@@ -13559,14 +13559,16 @@ tm.app = tm.app || {};
 
             var task = this._tasks[this._index];
             if (!task) {
-                if (this.loop === true) {
+
+                if (this.loop === true && this._index > 0) {
                     this._index = 0;
-                    task = this._tasks[this._index];
+                    return this._updateTask(app);
                 }
-                if (!task) {
+                else {
                     this.isPlaying = false;
-                    return;
                 }
+
+                return ;
             }
             this._index++;
 
@@ -16707,8 +16709,8 @@ tm.ui = tm.ui || {};
             this.menu = [].concat(params.menu);
             this._selected = ~~params.defaultSelected;
             this.showExit = !!params.showExit;
-            if (params.menuDesctiptions) {
-                this.descriptions = params.menuDesctiptions;
+            if (params.menuDescriptions) {
+                this.descriptions = params.menuDescriptions;
             } else {
                 this.descriptions = [].concat(params.menu);
             }
@@ -16853,13 +16855,6 @@ tm.ui = tm.ui || {};
                         }.bind(this));
                 }.bind(this));
             this.cursor.on('enterframe', function () { this.visible = !this.visible; });
-            //this.cursor.tweener
-            //    .clear()
-            //    .call(function() {
-            //        this.visible = !this.visible;
-            //    }.bind(this.cursor))
-            //    .wait(0)
-            //    .setLoop(true);
         },
 
         /**
