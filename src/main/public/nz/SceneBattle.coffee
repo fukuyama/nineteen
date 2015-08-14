@@ -138,7 +138,7 @@ tm.define 'nz.SceneBattle',
     @eventHandler.refreshStatus()
 
     # イベント
-    @on 'enterframe'   , @createKeyboradHander()
+    @setupKeyboradHander()
     @on 'input_enter'  , @inputEnter
     @setupCursorHandler @cursorHandler
     return

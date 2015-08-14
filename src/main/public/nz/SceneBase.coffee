@@ -25,8 +25,8 @@ tm.define 'nz.SceneBase',
       width:    SCREEN_W / 2
       height:   50
       start:    [CENTER_X,-25]
-      center:   [CENTER_X,CENTER_Y]
-      end:      [CENTER_X,SCREEN_H + 25]
+      center:   [CENTER_X,CENTER_Y,500]
+      end:      [CENTER_X,SCREEN_H + 25,500]
       duration: 1000
       fillStyle:   nz.system.dialog.fillStyle
       strokeStyle: nz.system.dialog.strokeStyle
@@ -69,6 +69,10 @@ tm.define 'nz.SceneBase',
         d.setPosition CENTER_X, SCREEN_H - 16
     else
       d.tweener.clear()
+
+  setupKeyboradHander: ->
+    @on 'enterframe', @createKeyboradHander()
+    return
 
   createKeyboradHander: ->
     eventKeys      = ['up','down','left','right','enter']

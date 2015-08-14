@@ -21,6 +21,7 @@ mainScripts = [
   'nz/SceneTitleMenu'
   'nz/SceneBattle'
   'nz/SceneBattlePosition'
+  'nz/SceneBattleRotatePointer'
   'nz/SceneBattleMoveCommand'
   'nz/SceneBattleShotCommand'
   'nz/SceneBattleDirectionCommand'

@@ -28,7 +28,7 @@ tm.define 'nz.SceneBattlePhase',
 
     @on 'map.pointingend', @_openPauseMenu
 
-    @on 'enterframe'   , @createKeyboradHander()
+    @setupKeyboradHander()
     @on 'input_enter'  , @_openPauseMenu
 
     @on 'selectStatus', (e) ->

@@ -50,7 +50,7 @@ tm.define 'nz.SceneBattlePosition',
     @on 'map.pointingend',  @_mapPointingend
     @on 'enter',            @_start
 
-    @on 'enterframe'   , @createKeyboradHander()
+    @setupKeyboradHander()
     @on 'input_enter'  , @inputEnter
     @setupCursorHandler @cursorHandler
 

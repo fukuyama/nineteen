@@ -63,7 +63,7 @@ tm.define 'nz.SceneBattleResult',
 
     @fromJSON form
 
-    @on 'enterframe' , @createKeyboradHander()
+    @setupKeyboradHander()
     @on 'pointingend', @_openBattleEndMenu
     @on 'input_enter', @_openBattleEndMenu
 

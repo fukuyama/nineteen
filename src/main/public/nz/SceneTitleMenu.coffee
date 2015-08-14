@@ -17,7 +17,8 @@ tm.define 'nz.SceneTitleMenu',
       {
         name: 'New Game'
         description: '新しいゲームをはじめる'
-        func: @_new_game
+        #func: @_new_game
+        func: @_debug_game
       }
       {
         name: 'Load Game'
@@ -28,11 +29,6 @@ tm.define 'nz.SceneTitleMenu',
         name: 'Option'
         description: 'ゲームオプション'
         func: @_option
-      }
-      {
-        name: 'Debug Game'
-        description: 'デバックゲーム'
-        func: @_debug_game
       }
     ]
 
@@ -106,13 +102,6 @@ tm.define 'nz.SceneTitleMenu',
             name: 'Shooter'
             src: 'nz/ai/Shooter.js'
         )
-        #new nz.Character(
-        #  name:'キャラクター3'
-        #  team:'teamA'
-        #  spriteSheet:'character_test'
-        #  ai:
-        #    name: 'Default'
-        #)
         {
           name:'キャラクター3'
           team:'teamA'
@@ -124,6 +113,7 @@ tm.define 'nz.SceneTitleMenu',
         new nz.Character(
           name:'キャラクター4'
           team:'teamB'
+          teamColor: [0,0,0]
           spriteSheet:'character_test'
           ai:
             name: 'Shooter'
@@ -132,6 +122,7 @@ tm.define 'nz.SceneTitleMenu',
         new nz.Character(
           name:'キャラクター5'
           team:'teamB'
+          teamColor: [0,0,0]
           spriteSheet:'character_test'
           ai:
             name: 'Runner'
@@ -140,6 +131,7 @@ tm.define 'nz.SceneTitleMenu',
         {
           name:'キャラクター6'
           team:'teamB'
+          teamColor: [0,0,0]
           spriteSheet:'character_test'
           ai:
             name: 'Shooter'

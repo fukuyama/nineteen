@@ -19,7 +19,7 @@ tm.define 'nz.SceneBattleMoveCommand',
     @on 'map.pointingover', @_over
     @on 'map.pointingend', @_end
 
-    @on 'enterframe'   , @createKeyboradHander()
+    @setupKeyboradHander()
     @setupCursorHandler (e) ->
       @mapSprite.fire e
       @_over @mapSprite.cursor

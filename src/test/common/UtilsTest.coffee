@@ -26,6 +26,30 @@ lineRouteTest = (p1,p2,data ... ) ->
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'UtilsTest', () ->
+  describe 'normalizRotation', () ->
+    it '90 = 90', ->
+      nz.utils.normalizRotation(90).should.equals 90
+    it '-90 = -90', ->
+      nz.utils.normalizRotation(-90).should.equals -90
+    it '190 = -170', ->
+      nz.utils.normalizRotation(190).should.equals -170
+    it '180 = 180', ->
+      nz.utils.normalizRotation(180).should.equals 180
+    it '-180 = -180', ->
+      nz.utils.normalizRotation(-180).should.equals -180
+    it '360 = 0', ->
+      nz.utils.normalizRotation(360).should.equals 0
+    it '-360 = 0', ->
+      nz.utils.normalizRotation(-360).should.equals 0
+    it '300 = -60', ->
+      nz.utils.normalizRotation(300).should.equals -60
+    it '400 = 40', ->
+      nz.utils.normalizRotation(400).should.equals 40
+    it '760 = 40', ->
+      nz.utils.normalizRotation(760).should.equals 40
+    it '-1090 = -10', ->
+      nz.utils.normalizRotation(-1090).should.equals -10
+
   describe 'mapxy2screenxy 1', () ->
     it '0,0', ->
       p = nz.utils.mapxy2screenxy mapx:0, mapy:0

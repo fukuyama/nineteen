@@ -100,6 +100,11 @@ class nz.Utils
       mapy: mapy
     }
 
+  normalizRotation: (r) ->
+    r -= 360 while r > 180
+    r += 360 while r < -180
+    return r
+
   relativeRotation: (rotation,p1,p2) ->
     r = 0
     if p2?

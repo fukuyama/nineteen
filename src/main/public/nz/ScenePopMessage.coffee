@@ -67,12 +67,16 @@ tm.define 'nz.ScenePopMessage',
     @_label = tm.display.Label message
     @_label.addChildTo @_board
 
+    @on 'enterframe', (e) ->
+      if e.app.keyboard.getKeyDown('enter')
+        @outAnimation()
     @on 'pointingend', -> @outAnimation()
     @on 'enter', -> @inAnimation()
 
     @_out = false
 
   inAnimation: ->
+    return if @_out
     {x,y,duration,easing} = @_param.center
     @_board.tweener
       .clear()
