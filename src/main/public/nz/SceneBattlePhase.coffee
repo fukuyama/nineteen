@@ -57,6 +57,7 @@ tm.define 'nz.SceneBattlePhase',
   _exitGame: (e) ->
     app = @app ? e.app
     app.popScene()
+    app.popScene()
     nz.system.restart()
     return
 
