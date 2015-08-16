@@ -17,7 +17,11 @@ tm.define 'nz.SceneTitleMenu',
       {
         name: 'New Game'
         description: '新しいゲームをはじめる'
-        #func: @_new_game
+        func: @_new_game
+      }
+      {
+        name: 'Debug Game'
+        description: 'デバッグゲームをはじめる'
         func: @_debug_game
       }
       {
