@@ -15,6 +15,7 @@ mainScripts = [
   'nz/SpriteBattleMap'
   'nz/SpriteCharacter'
   'nz/SpriteStatus'
+  'nz/SpriteHelpText'
   'nz/EventHandlerBattle'
   'nz/SceneBase'
   'nz/SceneMenu'

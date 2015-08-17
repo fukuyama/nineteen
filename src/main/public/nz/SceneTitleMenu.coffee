@@ -13,28 +13,27 @@ tm.define 'nz.SceneTitleMenu',
   init: () ->
     @superInit()
 
-    menu = [
-      {
-        name: 'New Game'
-        description: '新しいゲームをはじめる'
-        func: @_new_game
-      }
-      {
-        name: 'Debug Game'
-        description: 'デバッグゲームをはじめる'
-        func: @_debug_game
-      }
-      {
-        name: 'Load Game'
-        description: '保存したゲームをはじめる'
-        func: @_load_game
-      }
-      {
-        name: 'Option'
-        description: 'ゲームオプション'
-        func: @_option
-      }
-    ]
+    menu = [{
+      name: 'New Game'
+      description: '新しいゲームをはじめる'
+      func: @_new_game
+    #},{
+    #  name: 'Sample Game'
+    #  description: 'サンプルゲームをはじめる'
+    #  func: @_sample_game
+    },{
+      name: 'Debug Game'
+      description: 'デバッグゲームをはじめる'
+      func: @_debug_game
+    },{
+      name: 'Load Game'
+      description: '保存したゲームをはじめる'
+      func: @_load_game
+    },{
+      name: 'Option'
+      description: 'ゲームオプション'
+      func: @_option
+    }]
 
     @on 'enter', ->
       scene = tm.game.TitleScene(title:nz.system.title)
@@ -83,20 +82,32 @@ tm.define 'nz.SceneTitleMenu',
     console.log 'option'
     return
 
+  _sample_game: ->
+    @openMenuDialog
+      self: @
+      title: 'サンプルゲーム'
+      menu: [{
+        name: 'Player vs COM'
+      },{
+        name: 'COM vs COM'
+      }]
+    return
+
   ###* 新しいゲームを開始
   * @constructor nz.SceneTitleMenu#
   ###
   _debug_game: ->
     @app.replaceScene nz.SceneBattle(
       mapId: 0
-      controlTeam: ['teamA']
+      controlTeam: []
       characters: [
         new nz.Character(
           name:'キャラクター1'
           team:'teamA'
           spriteSheet:'character_test'
-          weapon:
-            damage: 20
+          ai:
+            name: 'Chaser'
+            src: 'nz/ai/Chaser.js'
         )
         new nz.Character(
           name:'キャラクター2'

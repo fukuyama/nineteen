@@ -45,30 +45,9 @@ tm.define 'nz.SceneBase',
     return
 
   description: (text) ->
-    unless @_description
-      @_description = tm.display.TextShape(
-        fontSize:  14
-      ).addChildTo   @
-        .setOrigin 0,0.5
-        .setPosition SCREEN_W, SCREEN_H - 16
-    d = @_description
-    d.text = text
-    if text isnt ''
-      d.fit()
-      d.render()
-      if d.width > SCREEN_W
-        # 長い場合にスクロールさせて表示
-        d.setOrigin 0.0,0.5
-        d.tweener
-          .clear()
-          .set(x:SCREEN_W,y:SCREEN_H - 16)
-          .move(-d.width,SCREEN_H - 16,d.width * 50)
-          .setLoop(true)
-      else
-        d.setOrigin 0.5,0.5
-        d.setPosition CENTER_X, SCREEN_H - 16
-    else
-      d.tweener.clear()
+    unless @_description?
+      @_description = nz.SpriteHelpText().addChildTo @
+    @_description.text = text
 
   setupKeyboradHander: ->
     @on 'enterframe', @createKeyboradHander()

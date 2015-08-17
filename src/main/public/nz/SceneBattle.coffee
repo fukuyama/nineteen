@@ -8,6 +8,7 @@ SCREEN_H    = nz.system.screen.height
 DIRECTIONS  = nz.system.character.directions
 ACTION_COST = nz.system.character.action_cost
 MSGS        = nz.system.messages
+MCD         = MSGS.battle.command
 
 tm.define 'nz.SceneBattle',
   superClass: nz.SceneBase
@@ -112,9 +113,6 @@ tm.define 'nz.SceneBattle',
       scene.activeStatus status
       scene.blinkCharacter status.index
 
-    # 基本操作
-    @on 'map.pointingend', @_mapPointingend
-
     # 開始時位置決め
     @one 'enterframe', ->
       @_pushScene(
@@ -125,22 +123,27 @@ tm.define 'nz.SceneBattle',
       )
       @one 'resume', ->
         @eventHandler.startBattleScene()
-        @data.startInfo.characters = []
-        for c in @characters
-          @data.startInfo.characters.push
-            mapx:      c.mapx
-            mapy:      c.mapy
-            direction: c.direction
-            hp:        c.hp
-            sp:        c.sp
-        @_startInputPhase()
+
+    @one 'startBattleScene', ->
+      # 基本操作
+      @on 'map.pointingend', @_mapPointingend
+      # イベント
+      @setupKeyboradHander()
+      @on 'input_enter'  , @inputEnter
+      @setupCursorHandler @cursorHandler
+
+      @data.startInfo.characters = []
+      for c in @characters
+        @data.startInfo.characters.push
+          mapx:      c.mapx
+          mapy:      c.mapy
+          direction: c.direction
+          hp:        c.hp
+          sp:        c.sp
+      @_startInputPhase()
+      return
 
     @eventHandler.refreshStatus()
-
-    # イベント
-    @setupKeyboradHander()
-    @on 'input_enter'  , @inputEnter
-    @setupCursorHandler @cursorHandler
     return
 
   cursorHandler: (e) ->
@@ -273,10 +276,10 @@ tm.define 'nz.SceneBattle',
       self: @
       title: 'Command?'
       menu: [
-        {name:'Next Turn', func: @_openTurnConfMenu}
-        {name:'Option',    func: -> return}
-        {name:'Exit Game', func: @_exitGame}
-        {name:'Close Menu'}
+        {name:'Next Turn'  , func: @_openTurnConfMenu, description: MCD.next_turn }
+        {name:'Option'     , func: @_option          , description: MCD.option    }
+        {name:'Exit Game'  , func: @_exitGame        , description: MCD.exit_game }
+        {name:'Close Menu'                           , description: MCD.close_menu}
       ]
     return
 

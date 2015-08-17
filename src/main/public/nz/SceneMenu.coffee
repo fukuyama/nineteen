@@ -31,16 +31,24 @@ tm.define 'nz.SceneMenu',
       @menuFunc[index]?.call(param.self,index) if index?
       return
 
-    @on 'enterframe', (e) ->
-      {app} = e
-      kb = app.keyboard
-      if kb.getKeyDown('up')
-        @up()
-      else if kb.getKeyDown('down')
-        @down()
-      else if kb.getKeyDown('enter')
-        @closeDialog(@_selected)
+    @on 'menuopened', ->
+      @_enter = false
+      @on 'enterframe', (e) ->
+        {app} = e
+        kb = app.keyboard
+        if kb.getKeyDown('up')
+          @up()
+        else if kb.getKeyDown('down')
+          @down()
+        else if kb.getKeyDown('enter')
+          unless @_enter
+            @_enter = true
+            @closeDialog(@_selected)
+        return
       return
+
+    @description.remove()
+    @description = nz.SpriteHelpText().addChildTo @
 
     return
 
