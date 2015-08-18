@@ -5,6 +5,10 @@ require('chai').should()
 require('../../main/public/nz/System.coffee')
 require('../../main/public/nz/Utils.coffee')
 
+Math.RAD_TO_DEG = 180/Math.PI
+Math.degToRad = (deg) -> deg * Math.DEG_TO_RAD
+Math.radToDeg = (rad) -> rad * Math.RAD_TO_DEG
+
 lineRouteTest = (p1,p2,data ... ) ->
   ret = nz.utils.lineRoute(
     {
@@ -26,7 +30,39 @@ lineRouteTest = (p1,p2,data ... ) ->
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'UtilsTest', () ->
-  describe 'normalizRotation', () ->
+  describe 'relativeRotation', () ->
+    it 'front target. relative 0', ->
+      r = nz.utils.relativeRotation(-90,{x:10,y:10},{x:10,y:5})
+      r.should.equals 0
+      r = nz.utils.relativeRotation(90,{x:10,y:10},{x:10,y:15})
+      r.should.equals 0
+      r = nz.utils.relativeRotation(0,{x:10,y:10},{x:15,y:10})
+      r.should.equals 0
+      r = nz.utils.relativeRotation(180,{x:10,y:10},{x:5,y:10})
+      r.should.equals 0
+      r = nz.utils.relativeRotation(-180,{x:10,y:10},{x:5,y:10})
+      r.should.equals 0
+      r = nz.utils.relativeRotation(90,90)
+      r.should.equals 0
+    it 'side target. relative 90', ->
+      r = nz.utils.relativeRotation(0,{x:10,y:10},{x:10,y:15})
+      r.should.equals 90
+      r = nz.utils.relativeRotation(0,{x:10,y:10},{x:10,y:5})
+      r.should.equals -90
+      r = nz.utils.relativeRotation(90,{x:10,y:10},{x:5,y:10})
+      r.should.equals 90
+      r = nz.utils.relativeRotation(90,{x:10,y:10},{x:15,y:10})
+      r.should.equals -90
+      r = nz.utils.relativeRotation(135,{x:10,y:10},{x:15,y:15})
+      r.should.equals -90
+      r = nz.utils.relativeRotation(190,100)
+      r.should.equals -90
+      r = nz.utils.relativeRotation(190,280)
+      r.should.equals 90
+      r = nz.utils.relativeRotation(170,-100)
+      r.should.equals 90
+
+  describe.skip 'normalizRotation', () ->
     it '90 = 90', ->
       nz.utils.normalizRotation(90).should.equals 90
     it '-90 = -90', ->
@@ -49,8 +85,7 @@ describe 'UtilsTest', () ->
       nz.utils.normalizRotation(760).should.equals 40
     it '-1090 = -10', ->
       nz.utils.normalizRotation(-1090).should.equals -10
-
-  describe 'mapxy2screenxy 1', () ->
+  describe.skip 'mapxy2screenxy 1', () ->
     it '0,0', ->
       p = nz.utils.mapxy2screenxy mapx:0, mapy:0
       p.x.should.equals 16,'x'
@@ -75,7 +110,7 @@ describe 'UtilsTest', () ->
       p = nz.utils.mapxy2screenxy mapx:6, mapy:5
       p.x.should.equals 208,'x'
       p.y.should.equals 192,'y'
-  describe 'screenxy2mapxy 1', () ->
+  describe.skip 'screenxy2mapxy 1', () ->
     it '16,32', ->
       p = nz.utils.screenxy2mapxy x:16, y:32
       p.mapx.should.equals 0,'mapx1'
@@ -163,7 +198,7 @@ describe 'UtilsTest', () ->
       p = nz.utils.screenxy2mapxy x:223, y:207
       p.mapx.should.equals 6,'mapx'
       p.mapy.should.equals 5,'mapy'
-  describe 'lineRoute 1', () ->
+  describe.skip 'lineRoute 1', () ->
     it '(5,5),(5,6)', ->
       lineRouteTest [5,5],[5,6],[5,5],[5,6]
     it '(5,5),(5,4)', ->
@@ -176,7 +211,7 @@ describe 'UtilsTest', () ->
       lineRouteTest [5,5],[4,5],[5,5],[4,5]
     it '(5,5),(4,4)', ->
       lineRouteTest [5,5],[4,4],[5,5],[4,4]
-  describe 'lineRoute 2', () ->
+  describe.skip 'lineRoute 2', () ->
     it '(5,5),(5,3)', ->
       lineRouteTest [5,5],[5,3],[5,5],[5,4],[5,3]
     it '(5,5),(4,3)', ->
@@ -201,7 +236,7 @@ describe 'UtilsTest', () ->
       lineRouteTest [5,5],[7,4],[5,5],[6,4],[7,4]
     it '(5,5),(6,3)', ->
       lineRouteTest [5,5],[6,3],[5,5],[6,4],[6,3]
-  describe 'lineRoute 3', () ->
+  describe.skip 'lineRoute 3', () ->
     it '(5,5),(5,2)', ->
       lineRouteTest [5,5],[5,2],[5,5],[5,4],[5,3],[5,2]
     it '(5,5),(4,2)', ->

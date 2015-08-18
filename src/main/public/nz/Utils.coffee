@@ -111,12 +111,7 @@ class nz.Utils
       r = Math.radToDeg(Math.atan2 p2.y - p1.y, p2.x - p1.x)
     else
       r = p1 % 360
-    r = r - rotation
-    if r > 180
-      r -= 360
-    else if r < -180
-      r += 360
-    return r
+    return @normalizRotation r - rotation
 
   lineRoute: (p1,p2) ->
     ret = [{

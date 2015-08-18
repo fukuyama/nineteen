@@ -115,12 +115,20 @@ class nz.ai.Param
     result = {
       target: null
       distance: 99
+      rotation: null
     }
     for t in @targets
       d = nz.Graph.distance(@character,t)
       if d < result.distance
         result.distance = d
         result.target = t
+    if result.target?
+      d = @character.getLastDirection @turn
+      r = DIRECTIONS[d].rotation
+      c = nz.utils.mapxy2screenxy @character
+      t = nz.utils.mapxy2screenxy result.target
+      #console.log "#{d} #{r} #{c} #{t}"
+      result.rotation = nz.utils.relativeRotation(r,c,t)
     return result
 
   ###* 周囲6方向の位置を座標を取得
@@ -165,7 +173,7 @@ class nz.ai.Param
         @targets.push c
     return
 
-  ###* 近くにいる敵キャラクターをターゲットに設定。距離も設定する。
+  ###* 近くにいる敵キャラクターをターゲットに設定。距離と方向も設定する。
   * @memberof nz.ai.Param#
   * @method setNearTarget
   ###
@@ -173,6 +181,7 @@ class nz.ai.Param
     r = @findNearTarget()
     @target   = r.target
     @distance = r.distance
+    @rotation = r.rotation
     return
 
   ###* 射撃範囲にターゲットがいるか確認する
@@ -271,7 +280,7 @@ class nz.ai.Param
   ###
   setShotCommand: ->
     direction = @character.getLastDirection @turn
-    rotation = nz.system.character.directions[direction].rotation
+    rotation = DIRECTIONS[direction].rotation
     @character.addShotCommand @turn,@rotation + rotation
     return
 

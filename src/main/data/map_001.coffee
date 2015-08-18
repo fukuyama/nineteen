@@ -19,8 +19,8 @@ area_check = (x,y) ->
   for area in mapdata.start.area
     for pos in area
       if pos[0] is x and pos[1] is y
-        return true
-  return false
+        return false
+  return true
 
 x = Math.floor(Math.random() * 7 + 3)
 y = Math.floor(Math.random() * 7 + 3)

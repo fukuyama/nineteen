@@ -14,14 +14,14 @@ tm.define 'nz.SceneTitleMenu',
     @superInit()
 
     menu = [{
-      name: 'New Game'
-      description: '新しいゲームをはじめる'
-      func: @_new_game
+    #  name: 'New Game'
+    #  description: '新しいゲームをはじめる'
+    #  func: @_new_game
     #},{
     #  name: 'Sample Game'
     #  description: 'サンプルゲームをはじめる'
     #  func: @_sample_game
-    },{
+    #},{
       name: 'Debug Game'
       description: 'デバッグゲームをはじめる'
       func: @_debug_game
@@ -51,7 +51,7 @@ tm.define 'nz.SceneTitleMenu',
     return
 
   ###* 新しいゲームを開始
-  * @constructor nz.SceneTitleMenu#
+  * @memberof nz.SceneTitleMenu#
   ###
   _new_game: ->
     @app.replaceScene nz.SceneBattle(
@@ -69,89 +69,91 @@ tm.define 'nz.SceneTitleMenu',
     return
 
   ###* ゲームをロード
-  * @constructor nz.SceneTitleMenu#
+  * @memberof nz.SceneTitleMenu#
   ###
   _load_game: ->
     console.log 'load game'
     return
 
   ###* システムオプション
-  * @constructor nz.SceneTitleMenu#
+  * @memberof nz.SceneTitleMenu#
   ###
   _option: ->
     console.log 'option'
     return
 
+  ###* 新しいゲームを開始
+  * @memberof nz.SceneTitleMenu#
+  ###
   _sample_game: ->
     @openMenuDialog
       self: @
       title: 'サンプルゲーム'
       menu: [{
         name: 'Player vs COM'
+        func: ->
+          return
       },{
         name: 'COM vs COM'
       }]
     return
 
   ###* 新しいゲームを開始
-  * @constructor nz.SceneTitleMenu#
+  * @memberof nz.SceneTitleMenu#
   ###
   _debug_game: ->
     @app.replaceScene nz.SceneBattle(
       mapId: 0
       controlTeam: []
       characters: [
-        new nz.Character(
+        {
           name:'キャラクター1'
           team:'teamA'
-          spriteSheet:'character_test'
           ai:
             name: 'Chaser'
-            src: 'nz/ai/Chaser.js'
-        )
-        new nz.Character(
-          name:'キャラクター2'
-          team:'teamA'
-          spriteSheet:'character_test'
-          ai:
-            name: 'Shooter'
-            src: 'nz/ai/Shooter.js'
-        )
-        {
-          name:'キャラクター3'
-          team:'teamA'
-          spriteSheet:'character_test'
-          ai:
-            name: 'Runner'
-            src: 'nz/ai/Runner.js'
+          weapon:
+            damage: 4
+            height: 48
+            width: 12
+            range:
+              start: -120
+              end: 120
+              anticlockwise: false
+            speed: 600
         }
-        new nz.Character(
+        #{
+        #  name:'キャラクター2'
+        #  team:'teamA'
+        #  ai:
+        #    name: 'Shooter'
+        #}
+        #{
+        #  name:'キャラクター3'
+        #  team:'teamA'
+        #  ai:
+        #    name: 'Runner'
+        #}
+        {
           name:'キャラクター4'
           team:'teamB'
           teamColor: [0,0,0]
-          spriteSheet:'character_test'
           ai:
             name: 'Shooter'
-            src: 'nz/ai/Shooter.js'
-        )
-        new nz.Character(
-          name:'キャラクター5'
-          team:'teamB'
-          teamColor: [0,0,0]
-          spriteSheet:'character_test'
-          ai:
-            name: 'Runner'
-            src: 'nz/ai/Runner.js'
-        )
-        {
-          name:'キャラクター6'
-          team:'teamB'
-          teamColor: [0,0,0]
-          spriteSheet:'character_test'
-          ai:
-            name: 'Shooter'
-            src: 'nz/ai/Shooter.js'
         }
+        #{
+        #  name:'キャラクター5'
+        #  team:'teamB'
+        #  teamColor: [0,0,0]
+        #  ai:
+        #    name: 'Runner'
+        #}
+        #{
+        #  name:'キャラクター6'
+        #  team:'teamB'
+        #  teamColor: [0,0,0]
+        #  ai:
+        #    name: 'Shooter'
+        #}
       ]
     )
     return

@@ -152,7 +152,8 @@ tm.define 'nz.SpriteBattleMap',
 
     chip.on 'pointingover', @setCursorPosition.bind @, chip
 
-    tm.display.Label("#{mapx},#{mapy}",{fontSize:8}).setPosition(0,h/2-8).addChildTo(chip)
+    # DEBUG:
+    #tm.display.Label("#{mapx},#{mapy}",{fontSize:8}).setPosition(0,h/2-8).addChildTo(chip)
 
     if node.object?
       tm.display.Sprite('map_object',w,h*2)
