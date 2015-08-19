@@ -34,6 +34,13 @@ mainScripts = [
   'nz/ai/Rule'
   'main'
 ]
+testTargets = [
+  'nz/Utils'
+  'nz/Graph'
+  'nz/GridNode'
+  'nz/Character'
+  'nz/BattleCounter'
+]
 dataNames= [
   'chipdata'
   'map_000'
@@ -75,6 +82,8 @@ config =
 
   test:
     files: testDir + '**/*.coffee'
+    watch:
+      files: (mainDir + 'public/' + s + '.coffee' for s in testTargets)
 
   server:
     rootDir: distDir

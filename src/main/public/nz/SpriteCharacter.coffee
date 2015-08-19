@@ -48,7 +48,6 @@ tm.define 'nz.SpriteCharacter',
       @counter.clear()
       return
     @on 'endBattleScene', ->
-      console.log @counter
       return
     @on 'startBattlePhase', ->
       @clearGhost()
@@ -73,12 +72,6 @@ tm.define 'nz.SpriteCharacter',
       @_hitBallet(e.owner,e.ballet)
       return
     @on 'deadCharacter', (e) ->
-      {
-        character
-      } = e
-      # TODO:アニメーション
-      if e.character is @character
-        @hide()
       return
     return
 
@@ -354,6 +347,7 @@ tm.define 'nz.SpriteCharacter',
     return
 
   _deadAnimation: (param) ->
+    # TODO:死亡時アニメーション
     return
 
   _hitBallet: (shooter,ballet) ->
@@ -372,15 +366,23 @@ tm.define 'nz.SpriteCharacter',
 
   _damage: (n)->
     return if n <= 0
-    @character.hp -= n
+    if @character.isAlive()
+      @character.hp -= n
     h = @getRoot().eventHandler
     if @character.isDead()
       h.deadCharacter(@character)
+      @_dead()
     h.refreshStatus()
+    return
+
+  _dead: ->
+    @attack = false
+    @_endAction()
+    @hide()
     return
 
   _fatigue: (n) ->
     return if n <= 0
     @character.sp -= n
-    @getRoot().eventHandler.refreshStatus()
+    @getRoot().eventHandler?.refreshStatus()
     return

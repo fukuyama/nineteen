@@ -13,5 +13,8 @@ gulp.task 'test_console', ->
 gulp.task 'test_console:watch', ->
   {
     files
+    watch
   } = config.test
   gulp.watch files, ['test_console']
+  if watch?
+    gulp.watch watch.files, ['test_console']

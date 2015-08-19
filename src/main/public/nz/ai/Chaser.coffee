@@ -71,6 +71,12 @@ class nz.ai.Chaser
         return true
     @rule
       cond: (param) ->
+        return param.distance >= 6
+      setup: (param) ->
+        param.setMoveCommand()
+        return true
+    @rule
+      cond: (param) ->
         # どれでもない時
         return true
       setup: (param) ->

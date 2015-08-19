@@ -116,9 +116,8 @@ tm.define 'nz.SceneTitleMenu',
             height: 48
             width: 12
             range:
-              start: -120
+              start: 0
               end: 120
-              anticlockwise: false
             speed: 600
         }
         #{

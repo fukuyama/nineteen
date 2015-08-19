@@ -15,6 +15,7 @@ tm.define 'nz.SceneBattleResult',
       @mapSprite
       @data
     } = param
+    @data.replay = undefined
 
     @setOrigin(0.0,0.0)
 
@@ -74,6 +75,9 @@ tm.define 'nz.SceneBattleResult',
     @app.popScene()
     return
 
+  _startRematch: ->
+    return
+
   _endBattle: ->
     @app.popScene()
     return
@@ -88,6 +92,7 @@ tm.define 'nz.SceneBattleResult',
       title: 'Battle End'
       menu: [
         {name: 'Replay',     func: @_startReplay}
+        {name: 'Rematch',    func: @_startRematch}
         {name: 'End Battle', func: @_endBattle}
         {name: 'Exit Game',  func: @_exitGame}
       ]

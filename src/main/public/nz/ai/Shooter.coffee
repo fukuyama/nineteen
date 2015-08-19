@@ -62,6 +62,9 @@ class nz.ai.Shooter
           target: param.target
           character: param.character
           length: 4
+        if Math.rand(1,100) >= 50
+          param.setMoveBackCommand(2)
+          return
         if param.checkMovePosition p
           param.setMoveCommand(target:p)
         else
