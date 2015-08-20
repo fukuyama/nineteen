@@ -14,6 +14,19 @@ tm.define 'nz.SceneTitleMenu',
     @superInit()
 
     menu = [{
+      name: 'Player1 vs Computer1'
+      description: 'プレイヤー１ vs コンピューター１'
+      func: -> @_test_game(
+        player: true
+        team: [[1],[1]]
+      )
+    },{
+      name: 'Computer1 vs Computer1'
+      description: 'コンピューター１ vs コンピューター１'
+      func: -> @_test_game(
+        player: false
+        team: [[1],[1]]
+      )
     #  name: 'New Game'
     #  description: '新しいゲームをはじめる'
     #  func: @_new_game
@@ -22,17 +35,17 @@ tm.define 'nz.SceneTitleMenu',
     #  description: 'サンプルゲームをはじめる'
     #  func: @_sample_game
     #},{
-      name: 'Debug Game'
-      description: 'デバッグゲームをはじめる'
-      func: @_debug_game
-    },{
-      name: 'Load Game'
-      description: '保存したゲームをはじめる'
-      func: @_load_game
-    },{
-      name: 'Option'
-      description: 'ゲームオプション'
-      func: @_option
+    #  name: 'Debug Game'
+    #  description: 'デバッグゲームをはじめる'
+    #  func: @_debug_game
+    #},{
+    #  name: 'Load Game'
+    #  description: '保存したゲームをはじめる'
+    #  func: @_load_game
+    #},{
+    #  name: 'Option'
+    #  description: 'ゲームオプション'
+    #  func: @_option
     }]
 
     @on 'enter', ->
@@ -103,7 +116,7 @@ tm.define 'nz.SceneTitleMenu',
   ###
   _debug_game: ->
     @app.replaceScene nz.SceneBattle(
-      mapId: 0
+      mapId: 1
       controlTeam: []
       characters: [
         {
@@ -154,5 +167,40 @@ tm.define 'nz.SceneTitleMenu',
         #    name: 'Shooter'
         #}
       ]
+    )
+    return
+
+  ###* 新しいゲームを開始
+  * @memberof nz.SceneTitleMenu#
+  ###
+  _test_game: (param)->
+    {
+      player
+      team
+    } = param
+    count = 0
+    ai = ['Shooter','Chaser']
+    controlTeam = []
+    characters = []
+    teamColor = [
+      [255,255,255]
+      [0,0,0]
+    ]
+    i = 0
+    for chara,n in team
+      for c in chara
+        characters.push
+          name:'プレイヤー' + (i + 1)
+          team:'team' + (n+1)
+          teamColor: teamColor[n]
+          ai:
+            name: ai.random()
+        i += 1
+    if player
+      controlTeam.push 'team1'
+    @app.replaceScene nz.SceneBattle(
+      mapId: 1
+      controlTeam: controlTeam
+      characters: characters
     )
     return

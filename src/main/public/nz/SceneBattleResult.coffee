@@ -94,8 +94,8 @@ tm.define 'nz.SceneBattleResult',
       title: 'Battle End'
       menu: [
         {name: 'Replay',     func: @_startReplay  , description: MBR.replay    }
-        {name: 'Rematch',    func: @_startRematch , description: MBR.rematch   }
-        {name: 'End Battle', func: @_endBattle    , description: MBR.end_battle}
+        #{name: 'Rematch',    func: @_startRematch , description: MBR.rematch   }
+        #{name: 'End Battle', func: @_endBattle    , description: MBR.end_battle}
         {name: 'Exit Game',  func: @_exitGame     , description: MBR.exit_game }
         {name: 'Close Menu',                        description: MBR.close_menu}
       ]
