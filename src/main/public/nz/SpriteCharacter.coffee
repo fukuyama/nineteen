@@ -355,6 +355,7 @@ tm.define 'nz.SpriteCharacter',
     @_damage(d)
     shooter.counter.hitBallet(d)
     @counter.receiveBallet(d)
+    # TODO: SE
     return
 
   _hitWeapon: (attacker) ->
@@ -362,6 +363,7 @@ tm.define 'nz.SpriteCharacter',
     @_damage(d)
     attacker.counter.hitWeapon(d)
     @counter.receiveWeapon(d)
+    # TODO: SE
     return
 
   _damage: (n)->

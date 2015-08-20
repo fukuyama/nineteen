@@ -289,7 +289,8 @@ tm.define 'nz.SceneBattle',
       menu.push
         name: t.character.name
         func: (i) -> @_openCommandMenu targets[i]
-    menu.push {name: 'Close Menu'}
+        description: t.character.name + 'を選択。'
+    menu.push {name: 'Close Menu',description: MCD.close_menu}
     @openMenuDialog
       self: @
       title: 'Select Character'

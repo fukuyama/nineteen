@@ -3,6 +3,8 @@
 * 戦闘フェーズの処理
 ###
 
+MSGS = nz.system.messages
+
 tm.define 'nz.SceneBattlePhase',
   superClass: nz.SceneBase
 
@@ -49,8 +51,8 @@ tm.define 'nz.SceneBattlePhase',
       self: @
       title: 'Pause'
       menu: [
-        {name: 'Continue',   func: -> return }
-        {name: 'Exit Game?', func: @_exitGame}
+        {name: 'Exit Game?', func: @_exitGame , description: MSGS.battle.phase.exit_game }
+        {name: 'Close Menu'                   , description: MSGS.battle.phase.close_menu}
       ]
     return
 

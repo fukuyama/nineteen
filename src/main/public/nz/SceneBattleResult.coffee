@@ -5,6 +5,7 @@
 
 SCREEN_W    = nz.system.screen.width
 SCREEN_H    = nz.system.screen.height
+MBR         = nz.system.messages.battle.result
 
 tm.define 'nz.SceneBattleResult',
   superClass: nz.SceneBase
@@ -21,7 +22,8 @@ tm.define 'nz.SceneBattleResult',
 
     @width          = SCREEN_W - 32 * 2
     @height         = SCREEN_H - 32 * 2
-    @bgColor        = 'gray'
+    @fillStyle      = nz.system.dialog.fillStyle
+    @strokeStyle    = nz.system.dialog.strokeStyle
     @boundingType   = 'rect'
     @interactive    = true
     @checkHierarchy = true
@@ -37,13 +39,13 @@ tm.define 'nz.SceneBattleResult',
           y:             32
           width:         @width
           height:        @height
-          strokeStyle:   'black'
-          fillStyle:     @bgColor
-          lineWidth:     1
-          shadowBlur:    1
-          shadowOffsetX: 2
-          shadowOffsetY: 2
-          shadowColor:   'gray'
+          strokeStyle:   @strokeStyle
+          fillStyle:     @fillStyle
+          #lineWidth:     1
+          #shadowBlur:    1
+          #shadowOffsetX: 2
+          #shadowOffsetY: 2
+          #shadowColor:   'gray'
           originX:       @originX
           originY:       @originY
         message:
@@ -91,9 +93,10 @@ tm.define 'nz.SceneBattleResult',
       self: @
       title: 'Battle End'
       menu: [
-        {name: 'Replay',     func: @_startReplay}
-        {name: 'Rematch',    func: @_startRematch}
-        {name: 'End Battle', func: @_endBattle}
-        {name: 'Exit Game',  func: @_exitGame}
+        {name: 'Replay',     func: @_startReplay  , description: MBR.replay    }
+        {name: 'Rematch',    func: @_startRematch , description: MBR.rematch   }
+        {name: 'End Battle', func: @_endBattle    , description: MBR.end_battle}
+        {name: 'Exit Game',  func: @_exitGame     , description: MBR.exit_game }
+        {name: 'Close Menu',                        description: MBR.close_menu}
       ]
     return

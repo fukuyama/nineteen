@@ -33,10 +33,10 @@ class nz.Character
       ai:
         name: 'Default'
         # src: 'nz/ai/Default.js'
-      maxhp: 10
+      maxhp: 100
       maxsp: 100
       maxap: 6
-      hp: 10
+      hp: 100
       sp: 100
       mapx: -1
       mapy: -1
@@ -44,9 +44,9 @@ class nz.Character
       move:
         speed: 300
       armor:
-        defense: 1
+        defense: 10
       weapon:
-        damage: 4
+        damage: 40
         height: 48
         width: 12
         range:
@@ -55,7 +55,7 @@ class nz.Character
           anticlockwise: false
         speed: 600
       shot:
-        damage: 2
+        damage: 20
         range:
           start: 0
           end: -120

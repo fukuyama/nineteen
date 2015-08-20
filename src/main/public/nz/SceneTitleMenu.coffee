@@ -112,7 +112,7 @@ tm.define 'nz.SceneTitleMenu',
           ai:
             name: 'Chaser'
           weapon:
-            damage: 4
+            damage: 40
             height: 48
             width: 12
             range:

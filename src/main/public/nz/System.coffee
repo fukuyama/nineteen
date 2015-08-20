@@ -61,7 +61,9 @@ class nz.System
   messages:
     battle:
       phase:
-        command: 'キャラクターを選択し行動を設定してください。'
+        command:    'キャラクターを選択し行動を設定してください。'
+        exit_game:  'ゲームを終了します。'
+        close_menu: 'メニューを閉じます。'
       command:
         move:       '移動先の設定をします。'
         attack:     '攻撃範囲に入った敵に対して武器による攻撃をします'
@@ -73,7 +75,13 @@ class nz.System
         exit_game:  'ゲームを終了します。'
         close_menu: 'メニューを閉じます。'
       position:
-        setiing: '{name} の開始位置を選択してください。'
+        setiing:    '{name} の開始位置を選択してください。'
+      result:
+        replay:     'リプレイします。'
+        rematch:    '再戦します。'
+        end_battle: '戦闘を終わります。'
+        exit_game:  'ゲームを終了します。'
+        close_menu: 'メニューを閉じます。'
 
   ###* 初期化
   * @classdesc システムクラス
