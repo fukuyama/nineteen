@@ -90,29 +90,35 @@ tm.define 'nz.SceneTitleMenu',
   ###
   _sample_game: ->
     menu = [{
-      name: 'Player(1) vs Computer(1)'
-      description: 'プレイヤー(1) vs コンピューター(1)'
+      name: 'Player vs Computer'
+      description: 'プレイヤー 対 コンピューター'
+      func: -> @_sample_game_2 true
+    },{
+      name: 'Computer vs Computer'
+      description: 'コンピューター 対 コンピューター'
+      func: -> @_sample_game_2 false
+    }]
+    @openMenuDialog
+      self: @
+      title: 'サンプルゲーム'
+      menu: menu
+    return
+
+  _sample_game_2: (flag) ->
+    menu = [{
+      name: '1 vs 1'
+      description: '1 対 1'
       func: -> @_generate_game
-        player: true
+        player: flag
         team: [1,1]
+        mapId: 1
     },{
-      name: 'Computer(1) vs Computer(1)'
-      description: 'コンピューター(1) vs コンピューター(1)'
+      name: '3 vs 3'
+      description: '3 対 3'
       func: -> @_generate_game
-        player: false
-        team: [1,1]
-    },{
-      name: 'Player(3) vs Computer(3)'
-      description: 'プレイヤー(3) vs コンピューター(3)'
-      func: -> @_generate_game
-        player: true
+        player: flag
         team: [3,3]
-    },{
-      name: 'Computer(3) vs Computer(3)'
-      description: 'コンピューター(3) vs コンピューター(3)'
-      func: -> @_generate_game
-        player: false
-        team: [3,3]
+        mapId: 1
     }]
     @openMenuDialog
       self: @

@@ -178,8 +178,9 @@ tm.define 'nz.SceneBattle',
   blinkCharacter: (index) ->
     s = @characterSprites[index]
     @mapSprite.clearBlink()
-    @mapSprite.blink(s.mapx,s.mapy)
-    @mapSprite.blink(s.ghost.mapx,s.ghost.mapy) if s.hasGhost()
+    if s.isAlive()
+      @mapSprite.blink(s.mapx,s.mapy)
+      @mapSprite.blink(s.ghost.mapx,s.ghost.mapy) if s.hasGhost()
     return
 
   _createResultTimeup: ->
