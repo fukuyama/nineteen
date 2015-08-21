@@ -58,6 +58,17 @@ class nz.System
     character_test:
       type:      'tmss'
       src:       'data/character_test.json'
+  team:
+    colors: [
+      [255,255,255]
+      [  0,255,255]
+      [255,  0,255]
+      [255,255,  0]
+      [255,  0,  0]
+      [  0,255,  0]
+      [  0,  0,255]
+      [  0,  0,  0]
+    ]
   messages:
     battle:
       phase:

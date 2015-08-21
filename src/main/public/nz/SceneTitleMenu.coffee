@@ -13,41 +13,6 @@ tm.define 'nz.SceneTitleMenu',
   init: () ->
     @superInit()
 
-    menu = [{
-      name: 'Player1 vs Computer1'
-      description: 'プレイヤー１ vs コンピューター１'
-      func: -> @_test_game(
-        player: true
-        team: [[1],[1]]
-      )
-    },{
-      name: 'Computer1 vs Computer1'
-      description: 'コンピューター１ vs コンピューター１'
-      func: -> @_test_game(
-        player: false
-        team: [[1],[1]]
-      )
-    #  name: 'New Game'
-    #  description: '新しいゲームをはじめる'
-    #  func: @_new_game
-    #},{
-    #  name: 'Sample Game'
-    #  description: 'サンプルゲームをはじめる'
-    #  func: @_sample_game
-    #},{
-    #  name: 'Debug Game'
-    #  description: 'デバッグゲームをはじめる'
-    #  func: @_debug_game
-    #},{
-    #  name: 'Load Game'
-    #  description: '保存したゲームをはじめる'
-    #  func: @_load_game
-    #},{
-    #  name: 'Option'
-    #  description: 'ゲームオプション'
-    #  func: @_option
-    }]
-
     @on 'enter', ->
       scene = tm.game.TitleScene(title:nz.system.title)
       scene.on 'enterframe', ->
@@ -56,12 +21,37 @@ tm.define 'nz.SceneTitleMenu',
       @app.pushScene scene
 
     @on 'resume', ->
-      @openMenuDialog
-        self: @
-        title: nz.system.title
-        menu: menu
+      @_sample_game()
+      return
 
     return
+
+  _main_menu: ->
+    menu = [{
+    #  name: 'New Game'
+    #  description: '新しいゲームをはじめる'
+    #  func: @_new_game
+    #},{
+    #  name: 'Sample Game'
+    #  description: 'サンプルゲームをはじめる'
+    #  func: @_sample_game
+    #},{
+      name: 'Debug Game'
+      description: 'デバッグゲームをはじめる'
+      func: @_debug_game
+    },{
+      name: 'Load Game'
+      description: '保存したゲームをはじめる'
+      func: @_load_game
+    },{
+      name: 'Option'
+      description: 'ゲームオプション'
+      func: @_option
+    }]
+    @openMenuDialog
+      self: @
+      title: nz.system.title
+      menu: menu
 
   ###* 新しいゲームを開始
   * @memberof nz.SceneTitleMenu#
@@ -99,16 +89,35 @@ tm.define 'nz.SceneTitleMenu',
   * @memberof nz.SceneTitleMenu#
   ###
   _sample_game: ->
+    menu = [{
+      name: 'Player(1) vs Computer(1)'
+      description: 'プレイヤー(1) vs コンピューター(1)'
+      func: -> @_generate_game
+        player: true
+        team: [1,1]
+    },{
+      name: 'Computer(1) vs Computer(1)'
+      description: 'コンピューター(1) vs コンピューター(1)'
+      func: -> @_generate_game
+        player: false
+        team: [1,1]
+    },{
+      name: 'Player(3) vs Computer(3)'
+      description: 'プレイヤー(3) vs コンピューター(3)'
+      func: -> @_generate_game
+        player: true
+        team: [3,3]
+    },{
+      name: 'Computer(3) vs Computer(3)'
+      description: 'コンピューター(3) vs コンピューター(3)'
+      func: -> @_generate_game
+        player: false
+        team: [3,3]
+    }]
     @openMenuDialog
       self: @
       title: 'サンプルゲーム'
-      menu: [{
-        name: 'Player vs COM'
-        func: ->
-          return
-      },{
-        name: 'COM vs COM'
-      }]
+      menu: menu
     return
 
   ###* 新しいゲームを開始
@@ -173,34 +182,39 @@ tm.define 'nz.SceneTitleMenu',
   ###* 新しいゲームを開始
   * @memberof nz.SceneTitleMenu#
   ###
-  _test_game: (param)->
+  _generate_game: (param)->
     {
       player
       team
-    } = param
-    count = 0
-    ai = ['Shooter','Chaser']
-    controlTeam = []
-    characters = []
-    teamColor = [
-      [255,255,255]
-      [0,0,0]
-    ]
+      mapId
+    } = {
+      player: true
+      mapId: 0
+    }.$extend param
+
+    ai = ['Shooter','Chaser','Runner']
+    teamColors = nz.system.team.colors.clone().shuffle()
+
     i = 0
-    for chara,n in team
-      for c in chara
-        characters.push
-          name:'プレイヤー' + (i + 1)
-          team:'team' + (n+1)
-          teamColor: teamColor[n]
-          ai:
-            name: ai.random()
+    characters = []
+    for num,n in team
+      teamName  = 'team ' + (n + 1)
+      teamColor = teamColors.pop()
+      for c in [0 ... num]
         i += 1
-    if player
-      controlTeam.push 'team1'
-    @app.replaceScene nz.SceneBattle(
-      mapId: 1
+        name = 'キャラクター ' + i
+        characters.push
+          name:      name
+          team:      teamName
+          teamColor: teamColor
+          ai:
+            name:    ai.random()
+
+    controlTeam = []
+    controlTeam.push 'team 1' if player
+
+    @app.replaceScene nz.SceneBattle
+      mapId:       mapId
       controlTeam: controlTeam
-      characters: characters
-    )
+      characters:  characters
     return

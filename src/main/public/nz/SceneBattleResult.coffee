@@ -3,10 +3,6 @@
 * 戦闘結果の処理
 ###
 
-SCREEN_W    = nz.system.screen.width
-SCREEN_H    = nz.system.screen.height
-MBR         = nz.system.messages.battle.result
-
 tm.define 'nz.SceneBattleResult',
   superClass: nz.SceneBase
 
@@ -20,8 +16,8 @@ tm.define 'nz.SceneBattleResult',
 
     @setOrigin(0.0,0.0)
 
-    @width          = SCREEN_W - 32 * 2
-    @height         = SCREEN_H - 32 * 2
+    @width          = nz.system.screen.width  - 32 * 2
+    @height         = nz.system.screen.height - 32 * 2
     @fillStyle      = nz.system.dialog.fillStyle
     @strokeStyle    = nz.system.dialog.strokeStyle
     @boundingType   = 'rect'
@@ -41,11 +37,6 @@ tm.define 'nz.SceneBattleResult',
           height:        @height
           strokeStyle:   @strokeStyle
           fillStyle:     @fillStyle
-          #lineWidth:     1
-          #shadowBlur:    1
-          #shadowOffsetX: 2
-          #shadowOffsetY: 2
-          #shadowColor:   'gray'
           originX:       @originX
           originY:       @originY
         message:
@@ -89,14 +80,15 @@ tm.define 'nz.SceneBattleResult',
     return
 
   _openBattleEndMenu: ->
+    msg = nz.system.messages.battle.result
     @openMenuDialog
       self: @
       title: 'Battle End'
       menu: [
-        {name: 'Replay',     func: @_startReplay  , description: MBR.replay    }
-        #{name: 'Rematch',    func: @_startRematch , description: MBR.rematch   }
-        #{name: 'End Battle', func: @_endBattle    , description: MBR.end_battle}
-        {name: 'Exit Game',  func: @_exitGame     , description: MBR.exit_game }
-        {name: 'Close Menu',                        description: MBR.close_menu}
+        {name: 'Replay',     func: @_startReplay  , description: msg.replay    }
+        #{name: 'Rematch',    func: @_startRematch , description: msg.rematch   }
+        #{name: 'End Battle', func: @_endBattle    , description: msg.end_battle}
+        {name: 'Exit Game',  func: @_exitGame     , description: msg.exit_game }
+        {name: 'Close Menu',                        description: msg.close_menu}
       ]
     return
