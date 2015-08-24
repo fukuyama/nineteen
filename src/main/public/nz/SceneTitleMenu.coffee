@@ -111,14 +111,14 @@ tm.define 'nz.SceneTitleMenu',
       func: -> @_generate_game
         player: flag
         team: [1,1]
-        mapId: 1
+        mapId: 0
     },{
       name: '3 vs 3'
       description: '3 対 3'
       func: -> @_generate_game
         player: flag
         team: [3,3]
-        mapId: 1
+        mapId: 0
     }]
     @openMenuDialog
       self: @
@@ -223,4 +223,7 @@ tm.define 'nz.SceneTitleMenu',
       mapId:       mapId
       controlTeam: controlTeam
       characters:  characters
+      endCondition:
+        type: 'time'
+        turn: 1
     return

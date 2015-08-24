@@ -166,7 +166,7 @@ class nz.ai.Param
   setFriendsAndTargets: ->
     @friends = []
     @targets = []
-    for c in @characters when c.name != @character.name
+    for c in @characters when c.name != @character.name and c.isAlive()
       if @character.team == c.team
         @friends.push c
       else

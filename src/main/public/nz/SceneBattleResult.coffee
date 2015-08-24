@@ -24,7 +24,7 @@ tm.define 'nz.SceneBattleResult',
     @interactive    = true
     @checkHierarchy = true
 
-    @one 'enterframe', @setup
+    @on 'enter', @setup
 
   setup: ->
     form =
@@ -39,27 +39,39 @@ tm.define 'nz.SceneBattleResult',
           fillStyle:     @fillStyle
           originX:       @originX
           originY:       @originY
-        message:
-          type:      'Label'
-          fillStyle: 'black'
-          align:     'left'
-          baseline:  'top'
-          x:         32 + 8
-          y:         32 + 10
-          originX:   @originX
-          originY:   @originY
-          fontSize:  8
-    form.children.message.text =
-      if @data.result.winner?
-        'Winner! ' + @data.result.winner.name
-      else
-        'Draw!!! ' + (o.name for o in @data.result.draw).join ','
+    #text =
+    #  if @data.result.winner?
+    #    'Winner! ' + @data.result.winner.name
+    #  else
+    #    'Draw!!! ' + (o.name for o in @data.result.draw).join ','
 
     @fromJSON form
+
+    x = 2
+    y = 2
+    for team in @data.teams
+      text = @textShape(x,y,team)
+      cx = x
+      cy = text.y + 16
+      for c in @mapSprite.characterSprites
+        c = c.character
+        if c.team is team
+          text = @textShape(cx,cy,c.name)
+          cx += @width / 3
+      y += @height / 2
 
     @setupKeyboradHander()
     @on 'pointingend', @_openBattleEndMenu
     @on 'input_enter', @_openBattleEndMenu
+
+  textShape: (x,y,text) ->
+    t = tm.display.TextShape(
+      text: text
+      fontSize: 14
+    ).addChildTo @bg
+    t.x = x + t.width / 2
+    t.y = y + t.height / 2
+    return t
 
   _startReplay: ->
     @data.replay =

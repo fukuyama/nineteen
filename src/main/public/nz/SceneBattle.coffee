@@ -33,15 +33,19 @@ tm.define 'nz.SceneBattle',
         type: 'team'
         turn: 20
 
+    teams = @controlTeam.clone()
     for c,i in @characters
       unless c instanceof nz.Character
         @characters[i] = new nz.Character(c)
+      unless teams.contains c.team
+        teams.push c.team
 
     @data =
       turn:   0    # 戦闘ターン数
       winner: null
       replay: null
       startInfo: {}
+      teams: teams
 
     @eventHandler = nz.EventHandlerBattle()
 
