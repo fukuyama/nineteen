@@ -23,6 +23,8 @@ class nz.BattleCounter
     return
 
   clear: ->
+    @dead = 0
+    @kill = []
     @ballet =
       atk:
         hit: 0
@@ -49,30 +51,41 @@ class nz.BattleCounter
           total: 0
     return
 
+  killing: (name) ->
+    @kill.push name
+    return
+  deadCount: ->
+    @dead += 1
+    return
+
   missBallet: ->
     @ballet.atk.miss += 1
     return
-  hitBallet: (d) ->
+  hitBallet: (n) ->
     @ballet.atk.hit += 1
-    @ballet.atk.damage.max = Math.max @ballet.atk.damage.max, d
-    @ballet.atk.damage.total += d
+    d = @ballet.atk.damage
+    d.max = Math.max d.max, n
+    d.total += n
     return
-  receiveBallet: (d) ->
+  receiveBallet: (n) ->
     @ballet.def.hit += 1
-    @ballet.def.damage.max = Math.max @ballet.def.damage.max, d
-    @ballet.def.damage.total += d
+    d = @ballet.atk.damage
+    d.max = Math.max d.max, n
+    d.total += n
     return
 
   missWeapon: ->
     @weapon.atk.miss += 1
     return
-  hitWeapon: (d) ->
+  hitWeapon: (n) ->
     @weapon.atk.hit += 1
-    @weapon.atk.damage.max = Math.max @weapon.atk.damage.max, d
-    @weapon.atk.damage.total += d
+    d = @weapon.atk.damage
+    d.max = Math.max d.max, n
+    d.total += n
     return
-  receiveWeapon: (d) ->
+  receiveWeapon: (n) ->
     @weapon.def.hit += 1
-    @weapon.def.damage.max = Math.max @weapon.def.damage.max, d
-    @weapon.def.damage.total += d
+    d = @weapon.atk.damage
+    d.max = Math.max d.max, n
+    d.total += n
     return

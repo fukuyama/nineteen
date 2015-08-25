@@ -223,7 +223,7 @@ tm.define 'nz.SceneTitleMenu',
       mapId:       mapId
       controlTeam: controlTeam
       characters:  characters
-      endCondition:
-        type: 'time'
-        turn: 1
+      #endCondition:
+      #  type: 'time'
+      #  turn: 1
     return

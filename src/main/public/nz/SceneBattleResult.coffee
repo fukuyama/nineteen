@@ -47,16 +47,27 @@ tm.define 'nz.SceneBattleResult',
 
     @fromJSON form
 
+    kv = ((x,y,w,k,v) ->
+      @textLabel(x    ,y,k)
+      @textLabel(x + w,y,v,'right')
+      return
+    ).bind @
+
+    pd = 16
     x = 2
     y = 2
     for team in @data.teams
-      text = @textShape(x,y,team)
-      cx = x
-      cy = text.y + 16
-      for c in @mapSprite.characterSprites
-        c = c.character
-        if c.team is team
-          text = @textShape(cx,cy,c.name)
+      @textShape(x,y,team)
+      cx = x + pd
+      cy = y + 16
+      for cs in @mapSprite.characterSprites
+        ch = cs.character
+        co = cs.counter
+        cw = @width / 3 - pd * 2
+        if ch.team is team
+          @textShape(cx              ,cy     ,ch.name)
+          kv cx, cy + 16, cw / 2 - pd, 'kill:', co.kill.length
+          kv cx, cy + 32, cw / 2 - pd, 'dead:', co.dead
           cx += @width / 3
       y += @height / 2
 
@@ -72,6 +83,18 @@ tm.define 'nz.SceneBattleResult',
     t.x = x + t.width / 2
     t.y = y + t.height / 2
     return t
+  textLabel: (x,y,text,align='left') ->
+    t = tm.display.Label(
+      text
+      14
+    ).addChildTo @bg
+    t.fillStyle = 'rgba(0,0,0,1.0)'
+    t.align     = align
+    t.baseline  = 'top'
+    t.x = x
+    t.y = y
+    return t
+
 
   _startReplay: ->
     @data.replay =

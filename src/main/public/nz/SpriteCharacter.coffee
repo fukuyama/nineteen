@@ -352,7 +352,7 @@ tm.define 'nz.SpriteCharacter',
 
   _hitBallet: (shooter,ballet) ->
     d = shooter.character.shot.damage - @character.armor.defense
-    @_damage(d)
+    @_damage(d,shooter)
     shooter.counter.hitBallet(d)
     @counter.receiveBallet(d)
     # TODO: SE
@@ -360,19 +360,21 @@ tm.define 'nz.SpriteCharacter',
 
   _hitWeapon: (attacker) ->
     d = attacker.character.weapon.damage - @character.armor.defense
-    @_damage(d)
+    @_damage(d,attacker)
     attacker.counter.hitWeapon(d)
     @counter.receiveWeapon(d)
     # TODO: SE
     return
 
-  _damage: (n)->
+  _damage: (n,s)->
     return if n <= 0
-    if @character.isAlive()
-      @character.hp -= n
+    c = @character
+    return if c.isDead()
+    c.hp -= n
     h = @getRoot().eventHandler
-    if @character.isDead()
-      h.deadCharacter(@character)
+    if c.isDead()
+      h.deadCharacter(c)
+      s.counter.killing(c.name)
       @_dead()
     h.refreshStatus()
     return
@@ -381,6 +383,7 @@ tm.define 'nz.SpriteCharacter',
     @attack = false
     @_endAction()
     @hide()
+    @counter.deadCount()
     return
 
   _fatigue: (n) ->
