@@ -65,9 +65,16 @@ tm.define 'nz.SceneBattleResult',
         co = cs.counter
         cw = @width / 3 - pd * 2
         if ch.team is team
-          @textShape(cx              ,cy     ,ch.name)
-          kv cx, cy + 16, cw / 2 - pd, 'kill:', co.kill.length
-          kv cx, cy + 32, cw / 2 - pd, 'dead:', co.dead
+          @textShape(cx,cy,ch.name)
+          tw = cw - pd
+          ty = cy
+          for d in [
+            ['kill:', co.kill.length]
+            ['dead:', co.dead]
+            ['attack damage:', co.weapon.atk.damage.total]
+          ]
+            ty += 16
+            kv cx, ty, tw, d[0], d[1]
           cx += @width / 3
       y += @height / 2
 
