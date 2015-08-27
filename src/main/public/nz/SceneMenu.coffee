@@ -32,7 +32,7 @@ tm.define 'nz.SceneMenu',
       return
 
     @on 'menuopened', ->
-      @_enter = false
+      @_flag = false
       @on 'enterframe', (e) ->
         {app} = e
         kb = app.keyboard
@@ -41,9 +41,13 @@ tm.define 'nz.SceneMenu',
         else if kb.getKeyDown('down')
           @down()
         else if kb.getKeyDown('enter')
-          unless @_enter
-            @_enter = true
+          unless @_flag
+            @_flag = true
             @closeDialog(@_selected)
+        else if kb.getKeyDown('escape')
+          unless @_flag
+            @_flag = true
+            @closeDialog(-1)
         return
       return
 

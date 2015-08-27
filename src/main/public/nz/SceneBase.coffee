@@ -54,7 +54,7 @@ tm.define 'nz.SceneBase',
     return
 
   createKeyboradHander: ->
-    eventKeys      = ['up','down','left','right','enter']
+    eventKeys      = ['up','down','left','right','enter','escape']
     repeatCount    = 0
     repeatDelay    = 10
     repeatIntarval = 0

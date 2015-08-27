@@ -27,6 +27,7 @@ tm.define 'nz.SceneBattleRotatePointer',
     @on 'input_right' , @_inputRight
     @on 'repeat_right', @_inputRight
     @on 'input_enter' , @_pointEnd
+    @on 'input_escape', @_endScene
 
     @on 'map.pointingover', -> @_keyInput = false
     @on 'map.pointingend', @_pointEnd
@@ -51,7 +52,6 @@ tm.define 'nz.SceneBattleRotatePointer',
 
   _pointEnd: (e) ->
     @_setupCommand()
-    @_removePointer()
     @_endScene()
     return
 
@@ -65,6 +65,7 @@ tm.define 'nz.SceneBattleRotatePointer',
     return
 
   _endScene: ->
+    @_removePointer()
     @one 'enterframe', -> @app.popScene()
     return
 

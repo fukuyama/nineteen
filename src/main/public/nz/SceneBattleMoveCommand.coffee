@@ -23,10 +23,12 @@ tm.define 'nz.SceneBattleMoveCommand',
     @setupCursorHandler (e) ->
       @mapSprite.fire e
       @_over @mapSprite.cursor
-    @on 'input_enter'  , @inputEnter
+    @on 'input_enter', @_inputEnter
+    @on 'input_escape', @_close
 
-  inputEnter: (e) ->
+  _inputEnter: (e) ->
     @_end @mapSprite.cursor
+    return
 
   searchRoute: (e)->
     op = {
@@ -42,16 +44,23 @@ tm.define 'nz.SceneBattleMoveCommand',
     )
     return r
 
-  _end: (e) ->
-    if @mapSprite.isBlink(e.mapx, e.mapy)
-      @callback @searchRoute(e)
+  _close: ->
     @mapSprite.clearBlink()
     @one 'enterframe', -> @app.popScene()
     return
 
+  _end: (e) ->
+    if @mapSprite.isBlink(e.mapx, e.mapy)
+      @callback @searchRoute(e)
+    @_close()
+    return
+
   _over: (e) ->
     @mapSprite.clearBlink()
-    ap = @target.character.getRemnantAp(@turn)
+    c = @target.character
+    if e.mapx is c.mapx and e.mapy is c.mapy
+      return
+    ap = c.getRemnantAp(@turn)
     route = @searchRoute(e)
     for r in route when r.cost <= ap
       @mapSprite.blink(r.mapx,r.mapy)

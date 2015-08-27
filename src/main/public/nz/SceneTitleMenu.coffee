@@ -119,6 +119,10 @@ tm.define 'nz.SceneTitleMenu',
         player: flag
         team: [3,3]
         mapId: 0
+    },{
+      name: 'Return'
+      description: '戻る'
+      func: -> @_sample_game()
     }]
     @openMenuDialog
       self: @

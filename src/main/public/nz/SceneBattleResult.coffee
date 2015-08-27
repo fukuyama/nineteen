@@ -39,68 +39,67 @@ tm.define 'nz.SceneBattleResult',
           fillStyle:     @fillStyle
           originX:       @originX
           originY:       @originY
-    #text =
-    #  if @data.result.winner?
-    #    'Winner! ' + @data.result.winner.name
-    #  else
-    #    'Draw!!! ' + (o.name for o in @data.result.draw).join ','
 
     @fromJSON form
 
-    kv = ((x,y,w,k,v) ->
-      @textLabel(x    ,y,k)
-      @textLabel(x + w,y,v,'right')
-      return
-    ).bind @
-
-    pd = 16
-    x = 2
     y = 2
     for team in @data.teams
-      @textShape(x,y,team)
-      cx = x + pd
-      cy = y + 16
+      x = 2
+      @textShape(x,y,team).addChildTo @bg
       for cs in @mapSprite.characterSprites
-        ch = cs.character
-        co = cs.counter
-        cw = @width / 3 - pd * 2
-        if ch.team is team
-          @textShape(cx,cy,ch.name)
-          tw = cw - pd
-          ty = cy
-          for d in [
-            ['kill:', co.kill.length]
-            ['dead:', co.dead]
-            ['attack damage:', co.weapon.atk.damage.total]
-          ]
-            ty += 16
-            kv cx, ty, tw, d[0], d[1]
-          cx += @width / 3
-      y += @height / 2
+        if cs.character.team is team
+          @_charaResult(x,y + 18,cs).addChildTo @bg
+          x += @width / 3 - 1
+      y += @height / 2 - 1
 
     @setupKeyboradHander()
     @on 'pointingend', @_openBattleEndMenu
     @on 'input_enter', @_openBattleEndMenu
+    @on 'input_escape', ->
+      @bg.visible = not @bg.visible
+      return
+
+  _charaResult: (x,y,cs) ->
+    o = tm.display.CanvasElement().setOrigin(0,0)
+    o.x = x
+    o.y = y
+    ch = cs.character
+    co = cs.counter
+    pd = 16
+    em = 16
+    cx = pd + 2
+    cy = 0
+    cw = @width / 3 - pd * 2
+    o.addChild @textShape(cx,cy,ch.name)
+    for {k,v} in [
+      {k:'kill:'         , v:co.kill.length}
+      {k:'dead:'         , v:co.dead}
+      {k:'attack damage:', v:co.weapon.atk.damage.total}
+      {k:'shot damage:'  , v:co.ballet.atk.damage.total}
+    ]
+      cy += em
+      o.addChild @textLabel(cx     ,cy,k)
+      o.addChild @textLabel(cx + cw,cy,v,'right')
+    return o
 
   textShape: (x,y,text) ->
-    t = tm.display.TextShape(
+    o = tm.display.TextShape
       text: text
       fontSize: 14
-    ).addChildTo @bg
-    t.x = x + t.width / 2
-    t.y = y + t.height / 2
-    return t
+    o.x = x + o.width / 2
+    o.y = y + o.height / 2
+    return o
   textLabel: (x,y,text,align='left') ->
-    t = tm.display.Label(
+    o = tm.display.Label(
       text
       14
-    ).addChildTo @bg
-    t.fillStyle = 'rgba(0,0,0,1.0)'
-    t.align     = align
-    t.baseline  = 'top'
-    t.x = x
-    t.y = y
-    return t
+    )
+    o.fillStyle = 'rgba(0,0,0,1.0)'
+    o.align     = align
+    o.baseline  = 'top'
+    o.x = x
+    o.y = y
+    return o
 
 
   _startReplay: ->
