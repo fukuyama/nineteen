@@ -24,7 +24,15 @@ tm.define 'nz.SceneBattleResult',
     @interactive    = true
     @checkHierarchy = true
 
-    @on 'enter', @setup
+    @on 'enter', ->
+      msg =
+        if @data.result.winner?
+          'Winner! ' + @data.result.winner.name
+        else
+          'Draw!!! ' + (o.name for o in @data.result.draw).join ','
+      @setDescription(msg)
+      @popMessage message: msg, popwait: 3000
+      @one 'resume', @setup
 
   setup: ->
     form =
@@ -72,6 +80,7 @@ tm.define 'nz.SceneBattleResult',
     cw = @width / 3 - pd * 2
     o.addChild @textShape(cx,cy,ch.name)
     for {k,v} in [
+      {k:'move distance:', v:co.move}
       {k:'kill:'         , v:co.kill.length}
       {k:'dead:'         , v:co.dead}
       {k:'attack damage:', v:co.weapon.atk.damage.total}

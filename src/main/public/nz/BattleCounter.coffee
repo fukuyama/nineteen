@@ -23,6 +23,7 @@ class nz.BattleCounter
     return
 
   clear: ->
+    @move = 0
     @dead = 0
     @kill = []
     @ballet =
@@ -57,6 +58,9 @@ class nz.BattleCounter
   deadCount: ->
     @dead += 1
     return
+  moveCount: ->
+    @move += 1
+    return
 
   missBallet: ->
     @ballet.atk.miss += 1
@@ -69,7 +73,7 @@ class nz.BattleCounter
     return
   receiveBallet: (n) ->
     @ballet.def.hit += 1
-    d = @ballet.atk.damage
+    d = @ballet.def.damage
     d.max = Math.max d.max, n
     d.total += n
     return
@@ -85,7 +89,7 @@ class nz.BattleCounter
     return
   receiveWeapon: (n) ->
     @weapon.def.hit += 1
-    d = @weapon.atk.damage
+    d = @weapon.def.damage
     d.max = Math.max d.max, n
     d.total += n
     return

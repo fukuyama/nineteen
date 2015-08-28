@@ -19,7 +19,13 @@ tm.define 'nz.SceneBase',
     return
 
   popMessage: (param) ->
-    {message} = param
+    {
+      message
+      popwait
+    } = {
+      message: ''
+      popwait: 500
+    }.$extend param
     scene = nz.ScenePopMessage
       message:  message
       width:    SCREEN_W / 2
@@ -30,7 +36,7 @@ tm.define 'nz.SceneBase',
       duration: 1000
       fillStyle:   nz.system.dialog.fillStyle
       strokeStyle: nz.system.dialog.strokeStyle
-      popwait:  500
+      popwait:  popwait
     @descriptionOff()
     @app.pushScene scene
 
@@ -44,6 +50,9 @@ tm.define 'nz.SceneBase',
     @_description?.hide()
     return
 
+  setDescription: (text) ->
+    @description(text)
+    return
   description: (text) ->
     unless @_description?
       @_description = nz.SpriteHelpText().addChildTo @

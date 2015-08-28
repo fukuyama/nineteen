@@ -276,7 +276,8 @@ tm.define 'nz.SpriteCharacter',
       y
     } = nz.utils.mapxy2screenxy(@)
     @tweener.move(x,y,speed)
-    @tweener.call @_fatigue,@,[ST_COST.move]
+      .call (->@counter.moveCount()),@,[]
+      .call @_fatigue,@,[ST_COST.move]
     return
 
   _setRotateAction: (param) ->

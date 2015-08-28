@@ -61,8 +61,7 @@ describe 'UtilsTest', () ->
       r.should.equals 90
       r = nz.utils.relativeRotation(170,-100)
       r.should.equals 90
-
-  describe.skip 'normalizRotation', () ->
+  describe 'normalizRotation', () ->
     it '90 = 90', ->
       nz.utils.normalizRotation(90).should.equals 90
     it '-90 = -90', ->
@@ -85,7 +84,7 @@ describe 'UtilsTest', () ->
       nz.utils.normalizRotation(760).should.equals 40
     it '-1090 = -10', ->
       nz.utils.normalizRotation(-1090).should.equals -10
-  describe.skip 'mapxy2screenxy 1', () ->
+  describe 'mapxy2screenxy 1', () ->
     it '0,0', ->
       p = nz.utils.mapxy2screenxy mapx:0, mapy:0
       p.x.should.equals 16,'x'
@@ -110,7 +109,7 @@ describe 'UtilsTest', () ->
       p = nz.utils.mapxy2screenxy mapx:6, mapy:5
       p.x.should.equals 208,'x'
       p.y.should.equals 192,'y'
-  describe.skip 'screenxy2mapxy 1', () ->
+  describe 'screenxy2mapxy 1', () ->
     it '16,32', ->
       p = nz.utils.screenxy2mapxy x:16, y:32
       p.mapx.should.equals 0,'mapx1'
@@ -198,7 +197,7 @@ describe 'UtilsTest', () ->
       p = nz.utils.screenxy2mapxy x:223, y:207
       p.mapx.should.equals 6,'mapx'
       p.mapy.should.equals 5,'mapy'
-  describe.skip 'lineRoute 1', () ->
+  describe 'lineRoute 1', () ->
     it '(5,5),(5,6)', ->
       lineRouteTest [5,5],[5,6],[5,5],[5,6]
     it '(5,5),(5,4)', ->
@@ -211,7 +210,7 @@ describe 'UtilsTest', () ->
       lineRouteTest [5,5],[4,5],[5,5],[4,5]
     it '(5,5),(4,4)', ->
       lineRouteTest [5,5],[4,4],[5,5],[4,4]
-  describe.skip 'lineRoute 2', () ->
+  describe 'lineRoute 2', () ->
     it '(5,5),(5,3)', ->
       lineRouteTest [5,5],[5,3],[5,5],[5,4],[5,3]
     it '(5,5),(4,3)', ->
@@ -236,7 +235,7 @@ describe 'UtilsTest', () ->
       lineRouteTest [5,5],[7,4],[5,5],[6,4],[7,4]
     it '(5,5),(6,3)', ->
       lineRouteTest [5,5],[6,3],[5,5],[6,4],[6,3]
-  describe.skip 'lineRoute 3', () ->
+  describe 'lineRoute 3', () ->
     it '(5,5),(5,2)', ->
       lineRouteTest [5,5],[5,2],[5,5],[5,4],[5,3],[5,2]
     it '(5,5),(4,2)', ->

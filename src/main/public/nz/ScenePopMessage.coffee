@@ -31,7 +31,7 @@ tm.define 'nz.ScenePopMessage',
       fillStyle: 'gray'
       strokeStyle: 'gray'
       message:     '(test message)'
-      popwait:     undefined
+      popwait:     0
     }.$extend param
 
     @_param = {
@@ -81,7 +81,7 @@ tm.define 'nz.ScenePopMessage',
     @_board.tweener
       .clear()
       .move(x,y,duration,easing)
-    if @_param.popwait?
+    if @_param.popwait > 0
       @_board.tweener
         .wait @_param.popwait
         .call @outAnimation, @, []
