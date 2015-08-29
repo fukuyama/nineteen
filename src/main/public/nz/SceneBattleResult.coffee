@@ -85,6 +85,8 @@ tm.define 'nz.SceneBattleResult',
       {k:'dead:'         , v:co.dead}
       {k:'attack damage:', v:co.weapon.atk.damage.total}
       {k:'shot damage:'  , v:co.ballet.atk.damage.total}
+      {k:'attack damage max:', v:co.weapon.atk.damage.max}
+      {k:'shot damage max:'  , v:co.ballet.atk.damage.max}
     ]
       cy += em
       o.addChild @textLabel(cx     ,cy,k)
