@@ -260,7 +260,9 @@ class nz.ai.Param
   setMoveCommand: (args={}) ->
     target = args.target ? @target
     length = args.length ? 99
-    route  = nz.utils.searchRoute @graph,@character,target,@characters
+    c = @character.getLastPosition(@turn)
+    c.direction = @character.getLastDirection(@turn)
+    route  = nz.utils.searchRoute @graph,c,target,@characters
     if length < route.length
       route = route[0 ... length]
     @character.addMoveCommand @turn,route

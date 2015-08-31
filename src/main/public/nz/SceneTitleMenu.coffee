@@ -203,6 +203,7 @@ tm.define 'nz.SceneTitleMenu',
     }.$extend param
 
     ai = ['Shooter','Chaser','Runner']
+    #ai = ['Runner']
     teamColors = nz.system.team.colors.clone().shuffle()
 
     i = 0
