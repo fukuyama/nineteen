@@ -217,15 +217,16 @@ class nz.ai.Param
         return false
     return true
 
-  getFrontPosition: ->
+  _getLastPositionData: ->
     c = @character.getLastPosition(@turn)
     c.direction = @character.getLastDirection(@turn)
-    return nz.Graph.frontPosition c
+    return c
+
+  getFrontPosition: ->
+    return nz.Graph.frontPosition @_getLastPositionData()
 
   getBackPosition: ->
-    c = @character.getLastPosition(@turn)
-    c.direction = @character.getLastDirection(@turn)
-    return nz.Graph.backPosition c
+    return nz.Graph.backPosition @_getLastPositionData()
 
   ###* 前に移動できるか確認する(コスト計算含む)
   * @memberof nz.ai.Param#
@@ -260,8 +261,7 @@ class nz.ai.Param
   setMoveCommand: (args={}) ->
     target = args.target ? @target
     length = args.length ? 99
-    c = @character.getLastPosition(@turn)
-    c.direction = @character.getLastDirection(@turn)
+    c = @_getLastPositionData()
     route  = nz.utils.searchRoute @graph,c,target,@characters
     if length < route.length
       route = route[0 ... length]
