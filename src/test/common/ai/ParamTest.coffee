@@ -43,29 +43,72 @@ describe 'nz.ai.ParamTest', () ->
       reset()
       characters[0].mapx = 5
       characters[0].mapy = 4
+      character.direction = 0 # 上を向く
       param = new nz.ai.Param(
         character:  character
         characters: characters
         graph:      graph
         turn:       1
       )
-      r = param.searchTargets(0,6)
+      r = param.searchTargets(0,1,1)
       r.length.should.equals 1,'length'
       r[0].name.should.equals 'char0'
     it 'back', ->
       reset()
       characters[1].mapx  = 5
       characters[1].mapy  = 4
-      character.direction = 3
+      character.direction = 3 # 下を向く
       param = new nz.ai.Param(
         character:  character
         characters: characters
         graph:      graph
         turn:       1
       )
-      r = param.searchTargets(3,6)
+      r = param.searchTargets(3,4,1)
       r.length.should.equals 1,'length'
       r[0].name.should.equals 'char1'
+    it 'front 0-120', ->
+      reset()
+      characters[0].mapx = 5
+      characters[0].mapy = 3
+      characters[1].mapx = 6
+      characters[1].mapy = 5
+      character.direction = 0 # 上を向く
+      param = new nz.ai.Param(
+        character:  character
+        characters: characters
+        graph:      graph
+        turn:       1
+      )
+      start = 0
+      end   = 120
+      r = param.searchTargets(start / 60, end / 60,1)
+      r.length.should.equals 1,'length'
+      r = param.searchTargets(start / 60, end / 60,2)
+      r.length.should.equals 2,'length'
+      r[0].name.should.equals 'char0'
+      r[1].name.should.equals 'char1'
+    it 'front 0- (-120)', ->
+      reset()
+      characters[0].mapx = 5
+      characters[0].mapy = 3
+      characters[1].mapx = 4
+      characters[1].mapy = 5
+      character.direction = 0 # 上を向く
+      param = new nz.ai.Param(
+        character:  character
+        characters: characters
+        graph:      graph
+        turn:       1
+      )
+      start = 0
+      end   = -120
+      r = param.searchTargets(start / 60, end / 60,1)
+      r.length.should.equals 1,'length'
+      r = param.searchTargets(start / 60, end / 60,2)
+      r.length.should.equals 2,'length'
+      r[0].name.should.equals 'char1'
+      r[1].name.should.equals 'char0'
 
   describe 'getHexPosition', ->
     checkPosition = (n,src,test) ->

@@ -90,22 +90,38 @@ class nz.ai.Param
   ###* 敵の範囲検索
   * @memberof nz.ai.Param#
   * @method searchTargets
-  * @param {number} rotatedir 向いている方向に対する検索する回転方向
-  * @param {number} distance  検索距離
+  * @param {number} s 向いている方向に対する検索する回転方向（開始）
+  * @param {number} e 向いている方向に対する検索する回転方向（終了）
+  * @param {number} d 検索距離
   * @return {Array<nz.Character>} 見つかったキャラクター配列
   ###
-  searchTargets: (rotatedir,distance) ->
-    return @_searchCharacters rotatedir,distance,@targets
+  searchTargets: (s,e,d) ->
+    if s > e
+      t = s
+      s = e
+      e = t
+    rs = []
+    for r in [s ... e]
+      rs = rs.concat @_searchCharacters r,d,@targets
+    return rs
 
   ###* 味方の範囲検索
   * @memberof nz.ai.Param#
   * @method searchFriends
-  * @param {number} rotatedir 向いている方向に対する検索する回転方向
-  * @param {number} distance  検索距離
+  * @param {number} s 向いている方向に対する検索する回転方向（開始）
+  * @param {number} e 向いている方向に対する検索する回転方向（終了）
+  * @param {number} d 検索距離
   * @return {Array<nz.Character>} 見つかったキャラクター配列
   ###
-  searchFriends: (rotatedir,distance) ->
-    return @_searchCharacters rotatedir,distance,@friends
+  searchFriends: (s,e,d) ->
+    if s > e
+      t = s
+      s = e
+      e = t
+    rs = []
+    for r in [s ... e]
+      rs = rs.concat @_searchCharacters r,d,@friends
+    return rs
 
   ###* 近くの敵をターゲットとして検索する
   * @memberof nz.ai.Param#
