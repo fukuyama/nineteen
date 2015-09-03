@@ -926,11 +926,14 @@ describe 'GraphTest', () ->
       frontAreaCheck = (r,params ... ) ->
         r.length.should.equals params.length,'length'
         for a,i in params
-          r[i].mapx.should.equals      a[0],"x #{i},#{a[0]}"
-          r[i].mapy.should.equals      a[1],"y #{i},#{a[1]}"
+          r[i].mapx.should.equals a[0],"x #{i},#{a[0]}"
+          r[i].mapy.should.equals a[1],"y #{i},#{a[1]}"
       it '5,5,0,1', ->
         r = nz.Graph.frontArea mapx:5,mapy:5,direction:0,distance:1
         frontAreaCheck r, [5,4],[6,4]
+      it '5,5,1,1', ->
+        r = nz.Graph.frontArea mapx:5,mapy:5,direction:1,distance:1
+        frontAreaCheck r, [6,4],[6,5]
       it '6,5,2,2', ->
         r = nz.Graph.frontArea mapx:6,mapy:5,direction:2,distance:2
         frontAreaCheck(

@@ -30,6 +30,7 @@ describe 'nz.ai.ParamTest', () ->
   # ---
 
   reset = ->
+    character = new nz.Character(mapx:5,mapy:5,direction:0,name:'user',team:'X')
     characters = [
       new nz.Character(mapx: 0,mapy: 0,direction:0,name:'char0',team:'A')
       new nz.Character(mapx:10,mapy: 0,direction:0,name:'char1',team:'A')
@@ -37,6 +38,21 @@ describe 'nz.ai.ParamTest', () ->
       new nz.Character(mapx: 0,mapy:10,direction:0,name:'char3',team:'B')
     ]
   reset()
+
+  describe 'checkMapPosition', ->
+    it '中心にいる場合は、差が０になる', ->
+      character.mapx = 8
+      character.mapy = 8
+      param = new nz.ai.Param(
+        character:  character
+        characters: characters
+        graph:      graph
+        turn:       1
+      )
+      p = param.checkMapPosition()
+      p.mapx.should.equals 0,'mapx'
+      p.mapy.should.equals 0,'mapy'
+
 
   describe 'searchTargets', ->
     it 'front', ->
@@ -72,7 +88,7 @@ describe 'nz.ai.ParamTest', () ->
       characters[0].mapx = 5
       characters[0].mapy = 3
       characters[1].mapx = 6
-      characters[1].mapy = 5
+      characters[1].mapy = 4
       character.direction = 0 # 上を向く
       param = new nz.ai.Param(
         character:  character
@@ -86,8 +102,8 @@ describe 'nz.ai.ParamTest', () ->
       r.length.should.equals 1,'length'
       r = param.searchTargets(start / 60, end / 60,2)
       r.length.should.equals 2,'length'
-      r[0].name.should.equals 'char0'
-      r[1].name.should.equals 'char1'
+      r[0].name.should.equals 'char1'
+      r[1].name.should.equals 'char0'
     it 'front 0- (-120)', ->
       reset()
       characters[0].mapx = 5

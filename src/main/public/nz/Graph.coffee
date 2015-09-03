@@ -42,8 +42,10 @@ class nz.Graph
       mapdata
       chipdata
     } = param
-    @nodes = []
-    @grid = []
+    @width   = mapdata.width
+    @height  = mapdata.height
+    @nodes   = []
+    @grid    = []
     @grid[x] = [] for x in [0...mapdata.width]
     for y in [0...mapdata.height]
       for x in [0...mapdata.width]

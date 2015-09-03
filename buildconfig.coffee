@@ -40,6 +40,7 @@ testTargets = [
   'nz/GridNode'
   'nz/Character'
   'nz/BattleCounter'
+  'nz/ai/Param'
 ]
 dataNames= [
   'chipdata'

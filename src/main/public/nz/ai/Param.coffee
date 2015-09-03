@@ -68,24 +68,32 @@ class nz.ai.Param
   ###*
   * @private
   ###
-  _searchCharacters: (rotatedir, distance, characters, character = @character) ->
+  _searchCharacters: (s, e, d, characters, character = @character) ->
     {
       mapx
       mapy
       direction
     } = character
-    nodes = nz.Graph.frontArea(
-      mapx:      mapx
-      mapy:      mapy
-      direction: direction + rotatedir
-      distance:  distance
-    )
-    r = []
+    if s > e
+      t = s
+      s = e
+      e = t
+    nodes = []
+    for r in [s ... e]
+      nodes = nodes.concat nz.Graph.frontArea(
+        mapx:      mapx
+        mapy:      mapy
+        direction: direction + r
+        distance:  d
+      )
+    rs = []
     for n in nodes
       for c in characters
         if n.mapx is c.mapx and n.mapy is c.mapy
-          r.push c
-    return r
+          # unless rs.some((o) -> o is c)
+          if rs.indexOf(c) < 0
+            rs.push c
+    return rs
 
   ###* 敵の範囲検索
   * @memberof nz.ai.Param#
@@ -95,15 +103,7 @@ class nz.ai.Param
   * @param {number} d 検索距離
   * @return {Array<nz.Character>} 見つかったキャラクター配列
   ###
-  searchTargets: (s,e,d) ->
-    if s > e
-      t = s
-      s = e
-      e = t
-    rs = []
-    for r in [s ... e]
-      rs = rs.concat @_searchCharacters r,d,@targets
-    return rs
+  searchTargets: (s,e,d) -> @_searchCharacters s,e,d,@targets
 
   ###* 味方の範囲検索
   * @memberof nz.ai.Param#
@@ -113,15 +113,7 @@ class nz.ai.Param
   * @param {number} d 検索距離
   * @return {Array<nz.Character>} 見つかったキャラクター配列
   ###
-  searchFriends: (s,e,d) ->
-    if s > e
-      t = s
-      s = e
-      e = t
-    rs = []
-    for r in [s ... e]
-      rs = rs.concat @_searchCharacters r,d,@friends
-    return rs
+  searchFriends: (s,e,d) -> @_searchCharacters s,e,d,@friends
 
   ###* 近くの敵をターゲットとして検索する
   * @memberof nz.ai.Param#
@@ -269,6 +261,20 @@ class nz.ai.Param
     if @character.getRemnantAp() < node.weight + 1
       return false
     return true
+
+  ###* マップ上での位置を調べる
+  * @memberof nz.ai.Param#
+  * @method checkMapPosition
+  ###
+  checkMapPosition: (character=@character)->
+    {
+      mapx
+      mapy
+    } = character
+    return {
+      mapx: mapx - Math.ceil @graph.width  / 2
+      mapy: mapy - Math.ceil @graph.height / 2
+    }
 
   ###* 移動コマンドを設定する
   * @memberof nz.ai.Param#

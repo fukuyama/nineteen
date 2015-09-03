@@ -32,7 +32,7 @@ class nz.Utils
   * @param {nz.Graph} graph  グラフ（マップ情報）
   * @param {Object}   source 開始位置のキャラクター({mapx,mapy,direction})
   * @param {Object}   target 終了位置のキャラクターか位置情報({mapx,mapy})
-  * @param {Array}    characters 配列({mapx,mapy})
+  * @param {Array}    characters 配列(Character)
   * @param {Object}   [options] オプション
   * @param {boolean}  [options.closest] 到達できない場合に近くまで探索する場合 true
   * @param {Object}   [options.grid] グリッドオプション
@@ -47,7 +47,7 @@ class nz.Utils
       }
     unless options.closest?
       options.closest = true
-
+    # FIXME:キャラクターとは重なれない(途中のキャラクターは重なっても良いような…それともZOCみたいにする？)
     for c in characters when c.isAlive() and (source.mapx != c.mapx or source.mapy != c.mapy)
       options.grid.push {
         mapx: c.mapx
