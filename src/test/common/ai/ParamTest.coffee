@@ -76,6 +76,30 @@ describe 'nz.ai.ParamTest', () ->
       p = param.checkMapPosition()
       p.mapx.should.equals 0,'mapx'
       p.mapy.should.equals 1,'mapy'
+    it '左（西）に居る場合は、マイナスになる', ->
+      character.mapx = 4
+      character.mapy = 8
+      param = new nz.ai.Param(
+        character:  character
+        characters: characters
+        graph:      graph
+        turn:       1
+      )
+      p = param.checkMapPosition()
+      p.mapx.should.equals -4,'mapx'
+      p.mapy.should.equals 0,'mapy'
+    it '右（東）に居る場合は、プラスになる', ->
+      character.mapx = 13
+      character.mapy = 8
+      param = new nz.ai.Param(
+        character:  character
+        characters: characters
+        graph:      graph
+        turn:       1
+      )
+      p = param.checkMapPosition()
+      p.mapx.should.equals 5,'mapx'
+      p.mapy.should.equals 0,'mapy'
 
 
   describe 'searchTargets', ->
