@@ -230,11 +230,9 @@ class nz.ai.Param
     c.direction = @character.getLastDirection(@turn)
     return c
 
-  getFrontPosition: ->
-    return nz.Graph.frontPosition @_getLastPositionData()
+  getFrontPosition: -> nz.Graph.frontPosition @_getLastPositionData()
 
-  getBackPosition: ->
-    return nz.Graph.backPosition @_getLastPositionData()
+  getBackPosition: -> nz.Graph.backPosition @_getLastPositionData()
 
   ###* 前に移動できるか確認する(コスト計算含む)
   * @memberof nz.ai.Param#
