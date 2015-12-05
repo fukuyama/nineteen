@@ -5,8 +5,8 @@
 
 DIRECTIONS = nz.system.character.directions
 
-tm.define 'nz.SpriteStatus',
-  superClass: tm.display.CanvasElement
+phina.define 'nz.SpriteStatus',
+  superClass: phina.display.CanvasElement
 
   init: (param) ->
     {

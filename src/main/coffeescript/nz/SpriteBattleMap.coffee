@@ -6,8 +6,8 @@
 MAP_CHIP_W = nz.system.map.chip.width
 MAP_CHIP_H = nz.system.map.chip.height
 
-tm.define 'nz.SpriteBattleMap',
-  superClass: tm.display.CanvasElement
+phina.define 'nz.SpriteBattleMap',
+  superClass: phina.display.CanvasElement
 
   ###* 初期化
   * @classdesc 戦闘マップスプライト
@@ -20,11 +20,11 @@ tm.define 'nz.SpriteBattleMap',
     @_activeBlinks = []
     @characterSprites = []
 
-    @map = tm.asset.Manager.get(mapName).data
+    @map = phina.asset.Manager.get(mapName).data
 
     @graph = new nz.Graph
       mapdata: @map
-      chipdata: tm.asset.Manager.get('chipdata').data
+      chipdata: phina.asset.Manager.get('chipdata').data
 
     @width  = @map.width  * MAP_CHIP_W
     @height = @map.height * MAP_CHIP_H
@@ -100,7 +100,7 @@ tm.define 'nz.SpriteBattleMap',
     return res
 
   _createCursor: ->
-    cursor = tm.display.Shape(
+    cursor = phina.display.Shape(
       x:           0
       y:           0
       width:       MAP_CHIP_W
@@ -115,7 +115,7 @@ tm.define 'nz.SpriteBattleMap',
 
   # MapChip用イベントハンドラ
   _dispatchMapChipEvent: (_e) ->
-    e = tm.event.Event('map.' + _e.type)
+    e = phina.event.Event('map.' + _e.type)
     e.app = _e.app
     e.pointing = _e.pointing
     e.mapx = @mapx
@@ -137,7 +137,7 @@ tm.define 'nz.SpriteBattleMap',
     frameIndex = node.frame
 
     # TODO: マップごとに画像を変更したい
-    chip = tm.display.Sprite('map_chip',w,h)
+    chip = phina.display.Sprite('map_chip',w,h)
       .addChildTo(@)
       .setPosition(x,y)
       .setFrameIndex(frameIndex)
@@ -153,15 +153,15 @@ tm.define 'nz.SpriteBattleMap',
     chip.on 'pointingover', @setCursorPosition.bind @, chip
 
     # DEBUG:
-    #tm.display.Label("#{mapx},#{mapy}",{fontSize:8}).setPosition(0,h/2-8).addChildTo(chip)
+    #phina.display.Label("#{mapx},#{mapy}",{fontSize:8}).setPosition(0,h/2-8).addChildTo(chip)
 
     if node.object?
-      tm.display.Sprite('map_object',w,h*2)
+      phina.display.Sprite('map_object',w,h*2)
         .setOrigin(0.5,0.75)
         .addChildTo(chip)
         .setFrameIndex(node.object.frame)
 
-    blink = tm.display.RectangleShape(
+    blink = phina.display.RectangleShape(
       width: w
       height: h
       strokeStyle: 'white'

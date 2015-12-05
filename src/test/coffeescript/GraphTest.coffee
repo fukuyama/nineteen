@@ -5,9 +5,9 @@ require('chai').should()
 {
   astar
   Graph
-} = require('../../main/express/public/lib/develop/astar.js')
-require('../../main/public/nz/Graph.coffee')
-require('../../main/public/nz/GridNode.coffee')
+} = require('../../main/express/public/javascripts/astar.js')
+require('../../main/coffeescript/nz/Graph.coffee')
+require('../../main/coffeescript/nz/GridNode.coffee')
 global.astar = astar
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か

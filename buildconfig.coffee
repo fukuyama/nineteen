@@ -32,6 +32,7 @@ mainScripts = [
   'nz/ai/Param'
   'nz/ai/Default'
   'nz/ai/Rule'
+  'config'
   'main'
 ]
 testTargets = [
@@ -59,15 +60,15 @@ aiScripts= [
 # ------------
 config =
   main:
-    files: (mainDir + 'public/' + s + '.coffee' for s in mainScripts)
-    outputFile: 'main.min.js'
-    distDir: distDir + 'public/'
+    files: (mainDir + 'coffeescript/' + name + '.coffee' for name in mainScripts)
+    outputFile: 'main'
+    distDir: distDir + 'public/javascripts/'
 
   ai:
     files: (mainDir + 'public/' + s + '.coffee' for s in aiScripts)
     srcOption:
-      base: mainDir + 'public/'
-    distDir: distDir + 'public/'
+      base: mainDir + 'public/javascripts/'
+    distDir: distDir + 'public/javascripts/ai/'
 
   express:
     files: mainDir + 'express/**'
@@ -82,9 +83,10 @@ config =
     files: mainDir + '**/*.coffee'
 
   test:
-    files: testDir + '**/*.coffee'
-    watch:
-      files: (mainDir + 'public/' + s + '.coffee' for s in testTargets)
+    console:
+      files: testDir + 'coffeescript/**/*.coffee'
+      watch:
+        files: (mainDir + 'coffeescript/' + name + '.coffee' for name in testTargets)
 
   server:
     rootDir: distDir

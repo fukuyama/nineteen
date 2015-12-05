@@ -6,7 +6,7 @@
 MSGS   = nz.system.messages
 DIRNUM = nz.system.direction_num
 
-tm.define 'nz.SceneBattlePosition',
+phina.define 'nz.SceneBattlePosition',
   superClass: nz.SceneBase
 
   init: (param) ->

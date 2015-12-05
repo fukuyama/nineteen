@@ -8,8 +8,8 @@ MAP_CHIP_H = nz.system.map.chip.height
 DIRECTIONS = nz.system.character.directions
 ST_COST    = nz.system.character.stamina_cost
 
-tm.define 'nz.SpriteCharacter',
-  superClass: tm.display.AnimationSprite
+phina.define 'nz.SpriteCharacter',
+  superClass: phina.display.AnimationSprite
 
   ###* 初期化
   * @classdesc キャラクタースプライトクラス
@@ -20,20 +20,20 @@ tm.define 'nz.SpriteCharacter',
     @superInit(@character.spriteSheet)
 
     if @character.colorChanges?
-      @ss = tm.asset.SpriteSheet(@ss) # 複製…ちょっと無理やり感
+      @ss = phina.asset.SpriteSheet(@ss) # 複製…ちょっと無理やり感
       w   = @ss.image.width
       h   = @ss.image.height
       bmp = @ss.image.getBitmap(0,0,w,h)
       for c in @character.colorChanges
         f = @_createColorFilter c.from, c.to
         bmp.filter f if f?
-      @ss.image = tm.graphics.Canvas().resize(w,h).drawBitmap(bmp,0,0)
+      @ss.image = phina.graphics.Canvas().resize(w,h).drawBitmap(bmp,0,0)
 
     @checkHierarchy = true
     @ghost = null
     @counter = new nz.BattleCounter()
 
-    @body = tm.display.Shape(
+    @body = phina.display.Shape(
       width:  @width
       height: @height
     ).addChildTo @
@@ -94,7 +94,7 @@ tm.define 'nz.SpriteCharacter',
     return undefined
 
   createWeapon: ->
-    w = tm.display.RectangleShape(
+    w = phina.display.RectangleShape(
       width: @character.weapon.height
       height: @character.weapon.width
       strokeStyle: 'black'
@@ -207,7 +207,7 @@ tm.define 'nz.SpriteCharacter',
 
   _isHitWeapon: (enemy) ->
     for w in [16 ... @weapon.width] by 8
-      rt = tm.geom.Vector2 0,0
+      rt = phina.geom.Vector2 0,0
       rt.setDegree(@weapon.rotation + @body.rotation, w)
       rt = @localToGlobal rt
       if enemy.isHitPoint(rt.x,rt.y)
@@ -317,7 +317,7 @@ tm.define 'nz.SpriteCharacter',
     } = param
     scene = @getRoot()
     bv = scene.mapSprite.globalToLocal @localToGlobal(@body.position)
-    ballet = tm.display.CircleShape(
+    ballet = phina.display.CircleShape(
       x:      bv.x
       y:      bv.y
       width:  10

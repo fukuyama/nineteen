@@ -3,7 +3,7 @@
 * 射撃コマンドシーン
 ###
 
-tm.define 'nz.SceneBattleShotCommand',
+phina.define 'nz.SceneBattleShotCommand',
 
   superClass: nz.SceneBattleRotatePointer
 

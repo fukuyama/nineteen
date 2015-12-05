@@ -2,8 +2,8 @@
 
 require('chai').should()
 
-require('../../main/public/nz/System.coffee')
-require('../../main/public/nz/Utils.coffee')
+require('../../main/coffeescript/nz/System.coffee')
+require('../../main/coffeescript/nz/Utils.coffee')
 
 Math.RAD_TO_DEG = 180/Math.PI
 Math.degToRad = (deg) -> deg * Math.DEG_TO_RAD

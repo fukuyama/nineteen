@@ -8,8 +8,8 @@ SCREEN_H = nz.system.screen.height
 CENTER_X = SCREEN_W / 2
 CENTER_Y = SCREEN_H / 2
 
-tm.define 'nz.SpriteHelpText',
-  superClass: tm.display.TextShape
+phina.define 'nz.SpriteHelpText',
+  superClass: phina.display.TextShape
 
   init: (param = {}) ->
     {

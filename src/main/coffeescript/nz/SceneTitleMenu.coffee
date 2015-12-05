@@ -3,7 +3,7 @@
 * タイトルシーン
 ###
 
-tm.define 'nz.SceneTitleMenu',
+phina.define 'nz.SceneTitleMenu',
   superClass: nz.SceneBase
 
   ###* 初期化
@@ -14,7 +14,7 @@ tm.define 'nz.SceneTitleMenu',
     @superInit()
 
     @on 'enter', ->
-      scene = tm.game.TitleScene(title:nz.system.title)
+      scene = phina.game.TitleScene(title:nz.system.title)
       scene.on 'enterframe', ->
         if @app.keyboard.getKeyDown('enter')
           @onpointingstart()

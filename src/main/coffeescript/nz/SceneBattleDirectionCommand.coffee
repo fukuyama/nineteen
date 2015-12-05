@@ -5,7 +5,7 @@
 
 DIRECTIONS  = nz.system.character.directions
 
-tm.define 'nz.SceneBattleDirectionCommand',
+phina.define 'nz.SceneBattleDirectionCommand',
 
   superClass: nz.SceneBattleRotatePointer
 

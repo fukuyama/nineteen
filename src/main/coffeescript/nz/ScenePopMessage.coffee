@@ -3,7 +3,7 @@
 * POP Message シーン
 ###
 
-tm.define 'nz.ScenePopMessage',
+phina.define 'nz.ScenePopMessage',
 
   superClass: 'tm.app.Scene'
 

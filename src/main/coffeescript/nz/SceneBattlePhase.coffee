@@ -5,7 +5,7 @@
 
 MSGS = nz.system.messages
 
-tm.define 'nz.SceneBattlePhase',
+phina.define 'nz.SceneBattlePhase',
   superClass: nz.SceneBase
 
   init: (param) ->

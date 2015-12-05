@@ -3,7 +3,7 @@
 * 方向指示用のポインターを操作するシーンクラス
 ###
 
-tm.define 'nz.SceneBattleRotatePointer',
+phina.define 'nz.SceneBattleRotatePointer',
 
   superClass: nz.SceneBase
 

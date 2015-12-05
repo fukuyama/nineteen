@@ -7,7 +7,7 @@ gulp.task 'server:start', ->
   {rootDir} = config.server
   server.listen {path: rootDir + 'bin/www'}, livereload.listen
 
-gulp.task 'server', ['build_express','server:start'], ->
+gulp.task 'server:watch', ['build_express','server:start'], ->
   restart = (file) ->
     server.changed (err) ->
       livereload.changed file.path unless err?

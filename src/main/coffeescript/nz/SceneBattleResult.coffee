@@ -3,7 +3,7 @@
 * 戦闘結果の処理
 ###
 
-tm.define 'nz.SceneBattleResult',
+phina.define 'nz.SceneBattleResult',
   superClass: nz.SceneBase
 
   init: (param) ->

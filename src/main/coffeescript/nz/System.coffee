@@ -48,16 +48,6 @@ class nz.System
   dialog:
     strokeStyle: 'rgba(255,255,255,1.0)'
     fillStyle:   'rgba(128,128,128,1.0)'
-  assets:
-    chipdata:    'data/chipdata.json'
-    map_object:  'img/map_object.png'
-    map_chip:    'img/map_chip.png'
-    character_001:
-      type:      'tmss'
-      src:       'data/character_001.json'
-    character_test:
-      type:      'tmss'
-      src:       'data/character_test.json'
   team:
     colors: [
       [255,255,255]

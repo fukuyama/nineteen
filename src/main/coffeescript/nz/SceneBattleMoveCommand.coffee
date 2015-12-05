@@ -3,7 +3,7 @@
 * 移動コマンド
 ###
 
-tm.define 'nz.SceneBattleMoveCommand',
+phina.define 'nz.SceneBattleMoveCommand',
   superClass: nz.SceneBase
 
   init: (param) ->

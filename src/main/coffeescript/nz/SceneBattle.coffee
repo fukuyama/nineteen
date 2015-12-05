@@ -10,7 +10,7 @@ ACTION_COST = nz.system.character.action_cost
 MSGS        = nz.system.messages
 MCD         = MSGS.battle.command
 
-tm.define 'nz.SceneBattle',
+phina.define 'nz.SceneBattle',
   superClass: nz.SceneBase
 
   ###* 初期化

@@ -2,9 +2,9 @@
 
 require('chai').should()
 
-require('../../main/public/nz/System.coffee')
-require('../../main/public/nz/Utils.coffee')
-require('../../main/public/nz/Character.coffee')
+require('../../main/coffeescript/nz/System.coffee')
+require('../../main/coffeescript/nz/Utils.coffee')
+require('../../main/coffeescript/nz/Character.coffee')
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'nz.CharacterTest', () ->

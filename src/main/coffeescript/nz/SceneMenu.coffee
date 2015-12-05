@@ -6,8 +6,8 @@
 SCREEN_W    = nz.system.screen.width
 SCREEN_H    = nz.system.screen.height
 
-tm.define 'nz.SceneMenu',
-  superClass: tm.ui.MenuDialog
+phina.define 'nz.SceneMenu',
+  superClass: phina.ui.MenuDialog
 
   init: (param) ->
     param = {
@@ -67,5 +67,5 @@ tm.define 'nz.SceneMenu',
     @_selected = (i + @menu.length) % @menu.length
     @selectValue = @menu[@_selected]
     @selectIndex = @_selected
-    @dispatchEvent tm.event.Event('menuselect')
+    @dispatchEvent phina.event.Event('menuselect')
     return

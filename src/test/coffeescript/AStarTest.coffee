@@ -5,7 +5,7 @@ require('chai').should()
 {
   astar
   Graph
-} = require('../../main/express/public/lib/develop/astar.js')
+} = require('../../main/express/public/javascripts/astar.js')
 global.astar = astar
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か

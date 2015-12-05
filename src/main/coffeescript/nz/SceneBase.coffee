@@ -8,8 +8,8 @@ SCREEN_H = nz.system.screen.height
 CENTER_X = SCREEN_W / 2
 CENTER_Y = SCREEN_H / 2
 
-tm.define 'nz.SceneBase',
-  superClass: tm.app.Scene
+phina.define 'nz.SceneBase',
+  superClass: phina.app.Scene
 
   init: ->
     @superInit()
@@ -73,11 +73,11 @@ tm.define 'nz.SceneBase',
       kb = app.keyboard
       for key in eventKeys when kb.getKeyDown(key)
         repeatCount = 0
-        @fire tm.event.Event('input_' + key)
+        @fire phina.event.Event('input_' + key)
 
       for key in eventKeys when kb.getKey(key)
         if repeatDelay < repeatCount++
-          @fire tm.event.Event('repeat_' + key)
+          @fire phina.event.Event('repeat_' + key)
           repeatCount -= repeatIntarval
 
   setupCursorHandler: (handler) ->

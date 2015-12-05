@@ -3,7 +3,7 @@
 * 戦闘用イベントハンドラ
 ###
 
-tm.define 'nz.EventHandlerBattle',
+phina.define 'nz.EventHandlerBattle',
 
   ###* 初期化
   * @classdesc 戦闘用イベントハンドラ
@@ -15,7 +15,7 @@ tm.define 'nz.EventHandlerBattle',
     app   = nz.system.app
     scene = app.currentScene
     if typeof e is 'string'
-      e       = tm.event.Event(e)
+      e       = phina.event.Event(e)
       e.app   = app
       e.scene = scene
       e.turn  = scene.turn
