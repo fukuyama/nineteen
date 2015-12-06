@@ -15,23 +15,31 @@ phina.main ->
     app.run()
     return
 
-  scene = (param) ->
-    {
+  scene = (label, param) ->
+    param.$safe
+      label:     label
       arguments: config
       nextLabel: 'title'
-    }.$safe param
 
   run [
-    scene
+    scene 'loading',
       className: 'LoadingScene'
-      label:     'loading'
       nextLabel: 'splash'
-    scene
+
+    scene 'splash',
       className: 'SplashScene'
-      label:     'splash'
-    scene
+
+    scene 'title',
       className: 'TitleScene'
-      label:     'title'
+      nextLabel: 'menu'
+
+    scene 'menu',
+      className: 'MenuScene'
+      arguments: {
+        bg:
+          width: 100
+          height: 100
+      }.$safe config
   ]
 
   return
