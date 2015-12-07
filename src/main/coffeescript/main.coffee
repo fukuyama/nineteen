@@ -24,7 +24,8 @@ phina.main ->
   run [
     scene 'loading',
       className: 'LoadingScene'
-      nextLabel: 'splash'
+      # nextLabel: 'splash'
+      nextLabel: 'menu'
 
     scene 'splash',
       className: 'SplashScene'
@@ -35,11 +36,6 @@ phina.main ->
 
     scene 'menu',
       className: 'MenuScene'
-      arguments: {
-        bg:
-          width: 100
-          height: 100
-      }.$safe config
   ]
 
   return
