@@ -10,6 +10,7 @@ gulp.task 'default', [
 
 gulp.task 'build', [
   'build_express'
+  'build_lib'
   'build_main_script'
   'build_main_script:uglify'
   'build_ai_script'

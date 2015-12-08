@@ -49,6 +49,10 @@ config =
     files: mainDir + 'express/**'
     distDir: distDir
 
+  lib: [
+    {files: 'lib/phina.js/build/phina.js', distDir: distDir + 'public/javascripts/'}
+  ]
+
   data:
     dataNames: dataNames
     srcDir: mainDir + 'data/'

@@ -16,12 +16,23 @@ phina.main ->
     return
 
   scene = (label, param) ->
+    if param.arguments?
+      param.arguments.$safe config
     param.$safe
       label:     label
       arguments: config
       nextLabel: 'title'
 
   run [
+    scene 'menu',
+      className: 'MenuScene'
+      arguments:
+        menus: [
+          {text: 'menu1'}
+          {text: 'menu2test'}
+          {text: 'menu3'}
+        ]
+
     scene 'loading',
       className: 'LoadingScene'
       # nextLabel: 'splash'
@@ -32,10 +43,6 @@ phina.main ->
 
     scene 'title',
       className: 'TitleScene'
-      nextLabel: 'menu'
-
-    scene 'menu',
-      className: 'MenuScene'
   ]
 
   return
