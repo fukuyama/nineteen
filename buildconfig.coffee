@@ -6,6 +6,8 @@ testDir = './src/test/'
 distDir = './target/'
 
 mainScripts = [
+  'nz/SceneBase'
+  'nz/SceneTitleMenu'
   'MenuScene'
   'config'
   'main'

@@ -3,16 +3,11 @@
 * シーンベース
 ###
 
-SCREEN_W = nz.system.screen.width
-SCREEN_H = nz.system.screen.height
-CENTER_X = SCREEN_W / 2
-CENTER_Y = SCREEN_H / 2
-
 phina.define 'nz.SceneBase',
-  superClass: phina.app.Scene
+  superClass: phina.display.CanvasScene
 
-  init: ->
-    @superInit()
+  init: (options) ->
+    @superInit(options)
     @on 'resume', ->
       @_description?.show()
       return
@@ -28,11 +23,11 @@ phina.define 'nz.SceneBase',
     }.$extend param
     scene = nz.ScenePopMessage
       message:  message
-      width:    SCREEN_W / 2
+      width:    @width / 2
       height:   50
-      start:    [CENTER_X,-25]
-      center:   [CENTER_X,CENTER_Y,500]
-      end:      [CENTER_X,SCREEN_H + 25,500]
+      start:    [@gridX.center(),-25]
+      center:   [@gridX.center(),@gridY.center(),500]
+      end:      [@gridX.center(),@height + 25,500]
       duration: 1000
       fillStyle:   nz.system.dialog.fillStyle
       strokeStyle: nz.system.dialog.strokeStyle
@@ -41,10 +36,10 @@ phina.define 'nz.SceneBase',
     @app.pushScene scene
 
   openMenuDialog: (param) ->
-    dlg = nz.SceneMenu(param)
+    menu = MenuScene(param.$safe config)
     @descriptionOff()
-    @app.pushScene dlg
-    return dlg
+    @app.pushScene menu
+    return menu
 
   descriptionOff: ->
     @_description?.hide()

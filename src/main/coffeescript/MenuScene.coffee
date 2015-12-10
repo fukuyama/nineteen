@@ -5,62 +5,61 @@ phina.define 'MenuScene',
 
   _static:
     defaults:
-      init:
-        cols:     1
-        padding:  8
-        menuOptions: {}
-        labelOptions: {}
-      menuOptions:
-        fill: '#008'
-      labelOptions:
-        fontSize:   32
-        fontFamily: "'HiraKakuProN-W3'"
-        fill:       'white'
-        stroke:     false
-        backgroundColor: '#aaa'
-        lineHeight: 1.2
+      cols:     1
+      padding:  8
+      menuOptions: {}
+      labelOptions: {}
 
+      fontSize: 32
+      fontWeight: ''
+      fontFamily: "'HiraKakuProN-W3'"
+
+      menuFill: 'blue'
 
   init: (options={}) ->
     @superInit(options)
-
     {
       @cols
       @rows
       @padding
       @menus
-      menuOptions
-      labelOptions
-    } = {}.$safe(options).$safe MenuScene.defaults.init
-    @menuOptions  = menuOptions.$safe MenuScene.defaults.menuOptions
-    @labelOptions = labelOptions.$safe MenuScene.defaults.labelOptions
+      @fontFamily
+      @fontSize
+      @fontWeight
+    } = {}.$safe(options).$safe MenuScene.defaults
 
-    @rows = (@menus.length / @cols).ceil() unless @rows?
-    @menuWidth  = @_calcMenuWidth()
-    @menuHeight = @_calcMenuHeight()
+    @rows       = @_calcRows()
+    @itemWidth  = @_calcItemWidth()
+    @itemHeight = @_calcItemHeight()
 
-    @width  = @menuWidth  * @cols + (@cols + 1) * @padding
-    @height = @menuHeight * @rows + (@rows + 1) * @padding
+    @width  = @itemWidth  * @cols + (@cols + 1) * @padding
+    @height = @itemHeight * @rows + (@rows + 1) * @padding
     
-    @menu = phina.display.RectangleShape(@menuOptions).addChildTo @
+    @menu = phina.display.RectangleShape().addChildTo @
     @menu.x = @gridX.center()
     @menu.y = @gridY.center()
     @menu.width  = @width
     @menu.height = @height
     @menu.gridX = phina.util.Grid(@width  - @padding, @cols, true)
-    @menu.gridY = phina.util.Grid(@height - @padding, @rows, true, - @menu.height / 2 + @menuHeight / 2 + @padding)
+    @menu.gridY = phina.util.Grid(@height - @padding, @rows, true, - @menu.height / 2 + @itemHeight / 2 + @padding)
 
     for m,i in @menus
       btn = phina.ui.Button
-        width:  @menuWidth
-        height: @menuHeight
+        text:   m.text
+        width:  @itemWidth
+        height: @itemHeight
         stroke: false
         fill:   false
-        text:   m.text
+      .addChildTo @menu
+      .on 'push', @_selectMenu.bind @
+      btn.index = i
       btn.x = @menu.gridX.span i % @cols
       btn.y = @menu.gridY.span (i / @cols).floor()
-      btn.addChildTo @menu
 
+    return
+
+  _selectMenu: (e) ->
+    console.log e.target.text
     return
 
   _measureText: (text,options) ->
@@ -69,13 +68,15 @@ phina.define 'MenuScene',
     context.font = "{fontWeight} {fontSize}px {fontFamily}".format(options)
     context.measureText(text + '').width
 
-  _calcMenuWidth: ->
+  _calcRows: ->
+    @rows ? (@menus.length / @cols).ceil()
+
+  _calcItemWidth: ->
     width = 0
     for m,i in @menus
-      w = @_measureText(m.text,@labelOptions)
+      w = @_measureText(m.text,@)
       width = w if width < w
     width + 4
 
-  _calcMenuHeight: ->
-    @labelOptions.fontSize
-
+  _calcItemHeight: ->
+    @fontSize

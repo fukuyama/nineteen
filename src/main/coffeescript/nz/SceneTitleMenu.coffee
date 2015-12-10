@@ -10,15 +10,12 @@ phina.define 'nz.SceneTitleMenu',
   * @classdesc タイトルシーンクラス
   * @constructor nz.SceneTitleMenu
   ###
-  init: () ->
-    @superInit()
+  init: (options) ->
+    @superInit(options)
 
-    @on 'enter', ->
-      scene = phina.game.TitleScene(title:nz.system.title)
-      scene.on 'enterframe', ->
-        if @app.keyboard.getKeyDown('enter')
-          @onpointingstart()
-      @app.pushScene scene
+    @one 'enter', ->
+      @_main_menu()
+      return
 
     @on 'resume', ->
       @_sample_game()
@@ -27,7 +24,7 @@ phina.define 'nz.SceneTitleMenu',
     return
 
   _main_menu: ->
-    menu = [{
+    menus = [{
     #  name: 'New Game'
     #  description: '新しいゲームをはじめる'
     #  func: @_new_game
@@ -36,22 +33,22 @@ phina.define 'nz.SceneTitleMenu',
     #  description: 'サンプルゲームをはじめる'
     #  func: @_sample_game
     #},{
-      name: 'Debug Game'
+      text: 'Debug Game'
       description: 'デバッグゲームをはじめる'
-      func: @_debug_game
+      fn: @_debug_game
     },{
-      name: 'Load Game'
+      text: 'Load Game'
       description: '保存したゲームをはじめる'
-      func: @_load_game
+      fn: @_load_game
     },{
-      name: 'Option'
+      text: 'Option'
       description: 'ゲームオプション'
-      func: @_option
+      fn: @_option
     }]
     @openMenuDialog
       self: @
-      title: nz.system.title
-      menu: menu
+      title: 'title'
+      menus: menus
 
   ###* 新しいゲームを開始
   * @memberof nz.SceneTitleMenu#
@@ -61,12 +58,12 @@ phina.define 'nz.SceneTitleMenu',
       mapId: 1
       controlTeam: ['teamA']
       characters: [
-        {name:'キャラクター1',team:'teamA'}
-        {name:'キャラクター2',team:'teamA'}
-        {name:'キャラクター3',team:'teamA'}
-        {name:'キャラクター4',team:'teamB'}
-        {name:'キャラクター5',team:'teamB'}
-        {name:'キャラクター6',team:'teamB'}
+        {text:'キャラクター1',team:'teamA'}
+        {text:'キャラクター2',team:'teamA'}
+        {text:'キャラクター3',team:'teamA'}
+        {text:'キャラクター4',team:'teamB'}
+        {text:'キャラクター5',team:'teamB'}
+        {text:'キャラクター6',team:'teamB'}
       ]
     )
     return
@@ -90,11 +87,11 @@ phina.define 'nz.SceneTitleMenu',
   ###
   _sample_game: ->
     menu = [{
-      name: 'Player vs Computer'
+      text: 'Player vs Computer'
       description: 'プレイヤー 対 コンピューター'
       func: -> @_sample_game_2 true
     },{
-      name: 'Computer vs Computer'
+      text: 'Computer vs Computer'
       description: 'コンピューター 対 コンピューター'
       func: -> @_sample_game_2 false
     }]
@@ -106,21 +103,21 @@ phina.define 'nz.SceneTitleMenu',
 
   _sample_game_2: (flag) ->
     menu = [{
-      name: '1 vs 1'
+      text: '1 vs 1'
       description: '1 対 1'
       func: -> @_generate_game
         player: flag
         team: [1,1]
         mapId: 0
     },{
-      name: '3 vs 3'
+      text: '3 vs 3'
       description: '3 対 3'
       func: -> @_generate_game
         player: flag
         team: [3,3]
         mapId: 0
     },{
-      name: 'Return'
+      text: 'Return'
       description: '戻る'
       func: -> @_sample_game()
     }]

@@ -24,25 +24,29 @@ phina.main ->
       nextLabel: 'title'
 
   run [
-    scene 'menu',
-      className: 'MenuScene'
-      arguments:
-        menus: [
-          {text: 'menu1'}
-          {text: 'menu2test'}
-          {text: 'menu3'}
-        ]
-
     scene 'loading',
       className: 'LoadingScene'
       # nextLabel: 'splash'
-      nextLabel: 'menu'
 
     scene 'splash',
       className: 'SplashScene'
 
     scene 'title',
       className: 'TitleScene'
+      nextLabel: 'title_menu'
+
+    scene 'title_menu',
+      className: 'nz.SceneTitleMenu'
+
+    scene 'menu',
+      className: 'MenuScene'
+      arguments:
+        fontSize: 24
+        menus: [
+          {text: 'menu1'}
+          {text: 'menu2test'}
+          {text: 'menu3'}
+        ]
   ]
 
   return
