@@ -4,6 +4,10 @@ phina.globalize()
 # メイン処理(ページ読み込み後に実行される)
 phina.main ->
 
+  config =
+    assets: nz.system.assets
+  config.$safe nz.system.screen
+
   run = (scenes) ->
     # アプリケーション生成
     app = CanvasApp(config)

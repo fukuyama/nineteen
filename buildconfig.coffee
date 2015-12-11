@@ -6,10 +6,10 @@ testDir = './src/test/'
 distDir = './target/'
 
 mainScripts = [
+  'nz/System'
   'nz/SceneBase'
   'nz/SceneTitleMenu'
   'MenuScene'
-  'config'
   'main'
 ]
 testTargets = [

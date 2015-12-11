@@ -36,7 +36,7 @@ phina.define 'nz.SceneBase',
     @app.pushScene scene
 
   openMenuDialog: (param) ->
-    menu = MenuScene(param.$safe config)
+    menu = MenuScene(param.$safe nz.system.screen)
     @descriptionOff()
     @app.pushScene menu
     return menu
