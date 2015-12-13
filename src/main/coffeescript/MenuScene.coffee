@@ -59,7 +59,7 @@ phina.define 'MenuScene',
     return
 
   _selectMenu: (e) ->
-    console.log e.target.text
+    @menus[e.target.index].fn(e)
     return
 
   _measureText: (text,options) ->

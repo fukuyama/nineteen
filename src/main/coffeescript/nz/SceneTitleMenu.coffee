@@ -35,15 +35,15 @@ phina.define 'nz.SceneTitleMenu',
     #},{
       text: 'Debug Game'
       description: 'デバッグゲームをはじめる'
-      fn: @_debug_game
+      fn: @_debug_game.bind @
     },{
       text: 'Load Game'
       description: '保存したゲームをはじめる'
-      fn: @_load_game
+      fn: @_load_game.bind @
     },{
       text: 'Option'
       description: 'ゲームオプション'
-      fn: @_option
+      fn: @_option.bind @
     }]
     @openMenuDialog
       self: @

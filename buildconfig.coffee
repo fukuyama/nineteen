@@ -9,6 +9,7 @@ mainScripts = [
   'nz/System'
   'nz/SceneBase'
   'nz/SceneTitleMenu'
+  'nz/SceneBattle'
   'MenuScene'
   'main'
 ]
