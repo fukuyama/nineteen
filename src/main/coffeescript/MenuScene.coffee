@@ -59,7 +59,9 @@ phina.define 'MenuScene',
     return
 
   _selectMenu: (e) ->
-    @menus[e.target.index].fn(e)
+    menu = @menus[e.target.index]
+    if menu?
+      menu.fn()
     return
 
   _measureText: (text,options) ->

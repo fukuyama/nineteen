@@ -46,7 +46,6 @@ phina.define 'nz.SceneTitleMenu',
       fn: @_option.bind @
     }]
     @openMenuDialog
-      self: @
       title: 'title'
       menus: menus
 

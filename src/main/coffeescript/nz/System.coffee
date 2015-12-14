@@ -11,21 +11,6 @@ _g = undefined
 class nz.System
 
   title: 'Nineteen'
-  screen:
-    width:  640
-    height: 480
-    backgroundColor: '#ddd'
-  assets:
-    #file:
-    #  chipdata:
-    #    path: 'data/chipdata.json'
-    #    dataType: 'json'
-    image:
-      map_object:  'img/map_object.png'
-      map_chip:    'img/map_chip.png'
-    spritesheet:
-      character_001:  'data/character_001.json'
-      character_test: 'data/character_test.json'
   direction_num:
     UP:         0
     UP_RIGHT:   1
@@ -57,6 +42,10 @@ class nz.System
     chip:
       width:  32
       height: 32
+  screen:
+    width:  640
+    height: 480
+    backgroundColor: '#ddd'
   dialog:
     strokeStyle: 'rgba(255,255,255,1.0)'
     fillStyle:   'rgba(128,128,128,1.0)'
@@ -71,6 +60,15 @@ class nz.System
       [  0,  0,255]
       [  0,  0,  0]
     ]
+  assets:
+    #json:
+    #  chipdata: 'data/chipdata.json'
+    image:
+      map_object:  'img/map_object.png'
+      map_chip:    'img/map_chip.png'
+    spritesheet:
+      character_001:  'data/character_001.json'
+      character_test: 'data/character_test.json'
   messages:
     battle:
       phase:

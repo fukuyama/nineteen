@@ -3,8 +3,9 @@ phina.globalize()
 
 # メイン処理(ページ読み込み後に実行される)
 phina.main ->
-
-  config =
+  config = {}
+  config.$safe
+    title: nz.system.title
     assets: nz.system.assets
   config.$safe nz.system.screen
 
