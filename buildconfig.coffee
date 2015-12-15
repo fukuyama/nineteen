@@ -10,6 +10,10 @@ mainScripts = [
   'nz/SceneBase'
   'nz/SceneTitleMenu'
   'nz/SceneBattle'
+  'nz/Character'
+  'nz/Utils'
+  'nz/Graph'
+  'nz/GridNode'
   'MenuScene'
   'main'
 ]
