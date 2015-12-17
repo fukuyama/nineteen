@@ -1,3 +1,4 @@
 [submodule "lib/phina.js"]
 	path = lib/phina.js
 	url = git@github.com:fukuyama/phina.js.git
+	branch = develop
