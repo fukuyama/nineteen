@@ -9,7 +9,7 @@ DIRECTIONS = nz.system.character.directions
 ST_COST    = nz.system.character.stamina_cost
 
 phina.define 'nz.SpriteCharacter',
-  superClass: phina.display.AnimationSprite
+  superClass: 'phina.display.Sprite'
 
   ###* 初期化
   * @classdesc キャラクタースプライトクラス
@@ -17,8 +17,12 @@ phina.define 'nz.SpriteCharacter',
   * @param {nz.Character} character
   ###
   init: (@index,@character) ->
-    @superInit(@character.spriteSheet)
+    @frame = phina.accessory.FrameAnimation @character.spriteSheet
+    fm = @frame.ss.getFrame 0
+    @superInit @character.image,fm.width,fm.height
+    @attach @frame
 
+    ###
     if @character.colorChanges?
       @ss = phina.asset.SpriteSheet(@ss) # 複製…ちょっと無理やり感
       w   = @ss.image.width
@@ -28,6 +32,7 @@ phina.define 'nz.SpriteCharacter',
         f = @_createColorFilter c.from, c.to
         bmp.filter f if f?
       @ss.image = phina.graphics.Canvas().resize(w,h).drawBitmap(bmp,0,0)
+    ###
 
     @checkHierarchy = true
     @ghost = null
@@ -131,7 +136,7 @@ phina.define 'nz.SpriteCharacter',
   setDirection: (@direction) ->
     d = DIRECTIONS[@direction]
     @body.rotation = d.rotation
-    @gotoAndPlay(d.name)
+    @frame.gotoAndPlay(d.name)
     return @
 
   updateBattle: ->

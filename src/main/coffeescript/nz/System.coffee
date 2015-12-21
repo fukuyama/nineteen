@@ -61,14 +61,14 @@ class nz.System
       [  0,  0,  0]
     ]
   assets:
-    #json:
-    #  chipdata: 'data/chipdata.json'
+    json:
+      chipdata:   'data/chipdata.json'
     image:
-      map_object:  'img/map_object.png'
-      map_chip:    'img/map_chip.png'
+      map_object: 'img/map_object.png'
+      map_chip:   'img/map_chip.png'
+      character:  'img/character_test.png'
     spritesheet:
-      character_001:  'data/character_001.json'
-      character_test: 'data/character_test.json'
+      character:  'data/character_test.json'
   messages:
     battle:
       phase:

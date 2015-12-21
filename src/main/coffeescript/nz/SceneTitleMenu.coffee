@@ -17,9 +17,9 @@ phina.define 'nz.SceneTitleMenu',
       @_main_menu()
       return
 
-    @on 'resume', ->
-      @_sample_game()
-      return
+    #@on 'resume', ->
+    #  @_sample_game()
+    #  return
 
     return
 
@@ -130,8 +130,7 @@ phina.define 'nz.SceneTitleMenu',
   * @memberof nz.SceneTitleMenu#
   ###
   _debug_game: ->
-    @app.replaceScene nz.SceneBattle(
-      mapId: 1
+    @exit 'battle',
       controlTeam: []
       characters: [
         {
@@ -182,7 +181,6 @@ phina.define 'nz.SceneTitleMenu',
         #    name: 'Shooter'
         #}
       ]
-    )
     return
 
   ###* 新しいゲームを開始

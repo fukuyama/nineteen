@@ -1,4 +1,8 @@
 
+phina.asset.AssetLoader.assetLoadFunctions.json = (key, path) ->
+  file = phina.asset.File()
+  return file.load(path)
+
 phina.globalize()
 
 # メイン処理(ページ読み込み後に実行される)
@@ -38,10 +42,15 @@ phina.main ->
 
     scene 'title',
       className: 'TitleScene'
-      nextLabel: 'title_menu'
+      nextLabel: 'titleMenu'
 
-    scene 'title_menu',
+    scene 'titleMenu',
       className: 'nz.SceneTitleMenu'
+
+    scene 'battle',
+      className: 'nz.SceneBattle'
+      arguments:
+        mapId: 1
 
     scene 'menu',
       className: 'MenuScene'

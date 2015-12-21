@@ -47,34 +47,27 @@ phina.define 'nz.SceneBattle',
       startInfo: {}
       teams: teams
 
-    @eventHandler = nz.EventHandlerBattle()
+    @eventHandler = nz.EventHandlerBattle(@)
 
     @on 'enter', @load.bind @
     return
 
   load: ->
     loaded = true
-    assets = {}
-    unless tm.asset.Manager.contains(@mapName)
-      assets[@mapName] = "data/#{@mapName}.json"
+    assets = json:{}
+    unless phina.asset.AssetManager.get('json',@mapName)
+      assets.json[@mapName] = "data/#{@mapName}.json"
       loaded = false
-    for c in @characters when not tm.asset.Manager.contains(c.ai.name)
-      src = c.ai.src ? "nz/ai/#{c.ai.name}.js"
-      unless nz.system.ai[c.ai.name]?
-        assets[c.ai.name] = src
-        loaded = false
+    #for c in @characters when not phina.asset.AssetManager.get(c.ai.name)
+    #  src = c.ai.src ? "nz/ai/#{c.ai.name}.js"
+    #  unless nz.system.ai[c.ai.name]?
+    #    assets[c.ai.name] = src
+    #    loaded = false
 
     unless loaded
-      scene = tm.game.LoadingScene(
-        assets:  assets
-        width:   SCREEN_W
-        height:  SCREEN_H
-        autopop: true
-      )
-
-      scene.on 'load', @setup.bind @
-
+      scene = LoadingScene {assets: assets}.$safe nz.system.screen
       @app.pushScene scene
+      @one 'resume', @setup.bind @
     else
       @setup()
     return
@@ -88,8 +81,9 @@ phina.define 'nz.SceneBattle',
     @mapSprite.y = (SCREEN_H - @mapSprite.height) / 2
 
     # ステータスフォルダ
-    @status = tm.display.CanvasElement().addChildTo @
+    @status = phina.display.CanvasElement().addChildTo @
 
+    ###
     x = y = 0
     for character,i in @characters
       # キャラクター
@@ -108,6 +102,7 @@ phina.define 'nz.SceneBattle',
       s.setPosition x, y
       @status.addChildAt s, 0
       y += 32 * 2.5 - 8
+    ###
 
     @on 'selectStatus', (e) ->
       {
@@ -118,13 +113,10 @@ phina.define 'nz.SceneBattle',
       scene.blinkCharacter status.index
 
     # 開始時位置決め
-    @one 'enterframe', ->
-      @_pushScene(
-        nz.SceneBattlePosition(
-          mapSprite: @mapSprite
-          controlTeam: @controlTeam
-        )
-      )
+    @_one 'enterframe', ->
+      @_pushScene nz.SceneBattlePosition
+        mapSprite:   @mapSprite
+        controlTeam: @controlTeam
       @one 'resume', ->
         @eventHandler.startBattleScene()
 

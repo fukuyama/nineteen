@@ -25,7 +25,8 @@ class nz.Character
     # 色変えする場合
     nz.utils.marge @, {
       name: 'テストキャラクター'
-      spriteSheet: 'character_test'
+      image: 'character'
+      spriteSheet: 'character'
       team: 'teamA'
       colorChanges: [
         # {from:[255,255,255],to:[255,0,0]}

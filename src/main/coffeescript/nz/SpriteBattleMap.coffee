@@ -20,11 +20,11 @@ phina.define 'nz.SpriteBattleMap',
     @_activeBlinks = []
     @characterSprites = []
 
-    @map = phina.asset.Manager.get(mapName).data
+    @map = phina.asset.AssetManager.get('json',mapName)
 
     @graph = new nz.Graph
       mapdata: @map
-      chipdata: phina.asset.Manager.get('chipdata').data
+      chipdata: phina.asset.AssetManager.get('json','chipdata')
 
     @width  = @map.width  * MAP_CHIP_W
     @height = @map.height * MAP_CHIP_H
@@ -109,8 +109,9 @@ phina.define 'nz.SpriteBattleMap',
       lineWidth:   3
       visible:     true
     )
-    cursor._render = -> @canvas.strokeRect(0, 0, @width, @height)
-    cursor.render()
+    cursor._render = ->
+      @_renderBackground()
+      @canvas.strokeRect(0, 0, @width, @height)
     return cursor
 
   # MapChip用イベントハンドラ

@@ -61,6 +61,7 @@ phina.define 'MenuScene',
   _selectMenu: (e) ->
     menu = @menus[e.target.index]
     if menu?
+      @app.popScene()
       menu.fn()
     return
 

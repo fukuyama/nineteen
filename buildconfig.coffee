@@ -7,13 +7,19 @@ distDir = './target/'
 
 mainScripts = [
   'nz/System'
-  'nz/SceneBase'
-  'nz/SceneTitleMenu'
-  'nz/SceneBattle'
-  'nz/Character'
   'nz/Utils'
   'nz/Graph'
   'nz/GridNode'
+  'nz/Character'
+  'nz/BattleCounter'
+  'nz/EventHandlerBattle'
+  'nz/SpriteBattleMap'
+  'nz/SpriteCharacter'
+  'nz/SpriteStatus'
+  'nz/SpriteHelpText'
+  'nz/SceneBase'
+  'nz/SceneTitleMenu'
+  'nz/SceneBattle'
   'MenuScene'
   'main'
 ]
@@ -26,11 +32,10 @@ testTargets = [
   'nz/ai/Param'
 ]
 dataNames= [
+  'character_test'
   'chipdata'
   'map_000'
   'map_001'
-  'character_001'
-  'character_test'
 ]
 aiScripts= [
   'nz/ai/Sample'
