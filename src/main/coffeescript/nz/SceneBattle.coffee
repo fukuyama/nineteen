@@ -113,12 +113,12 @@ phina.define 'nz.SceneBattle',
       scene.blinkCharacter status.index
 
     # 開始時位置決め
-    @_one 'enterframe', ->
-      @_pushScene nz.SceneBattlePosition
-        mapSprite:   @mapSprite
-        controlTeam: @controlTeam
-      @one 'resume', ->
-        @eventHandler.startBattleScene()
+    #@one 'enterframe', ->
+    #  @pushScene nz.SceneBattlePosition
+    #    mapSprite:   @mapSprite
+    #    controlTeam: @controlTeam
+    #  @one 'resume', ->
+    #    @eventHandler.startBattleScene()
 
     @one 'startBattleScene', ->
       # 基本操作
