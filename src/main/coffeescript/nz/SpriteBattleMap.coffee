@@ -20,11 +20,11 @@ phina.define 'nz.SpriteBattleMap',
     @_activeBlinks = []
     @characterSprites = []
 
-    @map = phina.asset.AssetManager.get('json',mapName)
+    @map = phina.asset.AssetManager.get('json',mapName).data
 
     @graph = new nz.Graph
       mapdata: @map
-      chipdata: phina.asset.AssetManager.get('json','chipdata')
+      chipdata: phina.asset.AssetManager.get('json','chipdata').data
 
     @width  = @map.width  * MAP_CHIP_W
     @height = @map.height * MAP_CHIP_H
@@ -141,7 +141,7 @@ phina.define 'nz.SpriteBattleMap',
     chip = phina.display.Sprite('map_chip',w,h)
       .addChildTo(@)
       .setPosition(x,y)
-      .setFrameIndex(frameIndex)
+      .setFrameIndex(frameIndex,w,h)
       .setInteractive(true)
       .setBoundingType('rect')
       .on 'pointingstart', @_dispatchMapChipEvent
@@ -170,8 +170,8 @@ phina.define 'nz.SpriteBattleMap',
     ).addChildTo(@)
       .setPosition(x,y)
       .setInteractive(true)
-      .setAlpha(0.0)
       .setVisible(false)
+    #  .setAlpha(0.0)
 
     @_chips[mapx] = [] unless @_chips[mapx]?
     @_chips[mapx][mapy] = chip

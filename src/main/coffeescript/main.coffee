@@ -1,7 +1,9 @@
 
 phina.asset.AssetLoader.assetLoadFunctions.json = (key, path) ->
   file = phina.asset.File()
-  return file.load(path)
+  return file.load
+    path: path
+    dataType: 'json'
 
 phina.globalize()
 
