@@ -100,19 +100,15 @@ phina.define 'nz.SpriteBattleMap',
     return res
 
   _createCursor: ->
-    cursor = phina.display.Shape(
-      x:           0
-      y:           0
-      width:       MAP_CHIP_W
-      height:      MAP_CHIP_H
-      strokeStyle: 'red'
-      lineWidth:   3
-      visible:     true
-    )
-    cursor._render = ->
-      @_renderBackground()
-      @canvas.strokeRect(0, 0, @width, @height)
-    return cursor
+    phina.display.RectangleShape
+      width:        MAP_CHIP_W
+      height:       MAP_CHIP_H
+      stroke:       'red'
+      strokeWidth:  3
+      visible:      true
+      cornerRadius: 5
+      fill:         null
+      backgroundColor: 'transparent'
 
   # MapChip用イベントハンドラ
   _dispatchMapChipEvent: (_e) ->
