@@ -1,7 +1,7 @@
 # MenuScene
 
 phina.define 'MenuScene',
-  superClass: 'phina.display.CanvasScene'
+  superClass: 'nz.SceneBase'
 
   _static:
     defaults:
@@ -56,6 +56,10 @@ phina.define 'MenuScene',
       btn.x = @menu.gridX.span i % @cols
       btn.y = @menu.gridY.span (i / @cols).floor()
 
+    @setupKeyboradHander()
+    @setupCursorHandler (e) ->
+      console.log e.type
+      return
     return
 
   _selectMenu: (e) ->
@@ -83,3 +87,4 @@ phina.define 'MenuScene',
 
   _calcItemHeight: ->
     @fontSize
+

@@ -68,14 +68,15 @@ phina.define 'nz.SceneBase',
       kb = app.keyboard
       for key in eventKeys when kb.getKeyDown(key)
         repeatCount = 0
-        @fire phina.event.Event('input_' + key)
+        @flare('input_' + key)
 
       for key in eventKeys when kb.getKey(key)
         if repeatDelay < repeatCount++
-          @fire phina.event.Event('repeat_' + key)
+          @flare('repeat_' + key)
           repeatCount -= repeatIntarval
 
   setupCursorHandler: (handler) ->
+    console.log 'setupCursorHandler'
     for k in ['up','down','left','right']
       @on 'input_'  + k, handler
       @on 'repeat_' + k, handler
