@@ -1,7 +1,7 @@
 # MenuScene
 
 phina.define 'MenuScene',
-  superClass: 'nz.SceneBase'
+  superClass: 'phina.display.CanvasScene'
 
   _static:
     defaults:
@@ -28,6 +28,8 @@ phina.define 'MenuScene',
       @fontWeight
     } = {}.$safe(options).$safe MenuScene.defaults
 
+    @index = 0
+
     @rows       = @_calcRows()
     @itemWidth  = @_calcItemWidth()
     @itemHeight = @_calcItemHeight()
@@ -43,6 +45,17 @@ phina.define 'MenuScene',
     @menu.gridX = phina.util.Grid(@width  - @padding, @cols, true)
     @menu.gridY = phina.util.Grid(@height - @padding, @rows, true, - @menu.height / 2 + @itemHeight / 2 + @padding)
 
+    @cursor = phina.display.RectangleShape
+      width:  @itemWidth
+      height: @itemHeight
+      stroke:       'red'
+      strokeWidth:  3
+      visible:      true
+      cornerRadius: 5
+      fill:         null
+      backgroundColor: 'transparent'
+    @cursor.addChildTo @menu
+    @btns = []
     for m,i in @menus
       btn = phina.ui.Button
         text:   m.text
@@ -55,10 +68,27 @@ phina.define 'MenuScene',
       btn.index = i
       btn.x = @menu.gridX.span i % @cols
       btn.y = @menu.gridY.span (i / @cols).floor()
+      @btns.push btn
 
-    @setupKeyboradHander()
-    @setupCursorHandler (e) ->
-      console.log e.type
+    @cursor.x = @btns[@index].x
+    @cursor.y = @btns[@index].y
+
+    #@setupKeyboradHander()
+    #@setupCursorHandler (e) ->
+    #  console.log e.type
+    #  return
+    @on 'keydown', (e) ->
+      switch e.keyCode
+        when phina.input.Keyboard.KEY_CODE['up']
+          @index -= 1 if @index > 0
+        when phina.input.Keyboard.KEY_CODE['down']
+          @index += 1 if @index < @menus.length - 1
+        when phina.input.Keyboard.KEY_CODE['left']
+          @index -= 1 if @index > 0
+        when phina.input.Keyboard.KEY_CODE['right']
+          @index += 1 if @index < @menus.length - 1
+      @cursor.x = @btns[@index].x
+      @cursor.y = @btns[@index].y
       return
     return
 
