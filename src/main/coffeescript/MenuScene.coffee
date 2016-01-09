@@ -48,11 +48,11 @@ phina.define 'MenuScene',
     @cursor = phina.display.RectangleShape
       width:  @itemWidth
       height: @itemHeight
-      stroke:       'red'
+      stroke:       'white'
       strokeWidth:  3
       visible:      true
       cornerRadius: 5
-      fill:         null
+      fill:         'rgba(255,255,255,0.2)'
       backgroundColor: 'transparent'
     @cursor.addChildTo @menu
     @btns = []
