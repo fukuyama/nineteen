@@ -80,13 +80,25 @@ phina.define 'MenuScene',
     @on 'keydown', (e) ->
       switch e.keyCode
         when phina.input.Keyboard.KEY_CODE['up']
-          @index -= 1 if @index > 0
+          if @index > 0
+            @index -= 1
+          else
+            @index = @menus.length - 1
         when phina.input.Keyboard.KEY_CODE['down']
-          @index += 1 if @index < @menus.length - 1
+          if @index < @menus.length - 1
+            @index += 1
+          else
+            @index = 0
         when phina.input.Keyboard.KEY_CODE['left']
-          @index -= 1 if @index > 0
+          if @index > 0
+            @index -= 1
+          else
+            @index = @menus.length - 1
         when phina.input.Keyboard.KEY_CODE['right']
-          @index += 1 if @index < @menus.length - 1
+          if @index < @menus.length - 1
+            @index += 1
+          else
+            @index = 0
       @cursor.x = @btns[@index].x
       @cursor.y = @btns[@index].y
       return
