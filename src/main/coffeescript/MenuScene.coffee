@@ -99,6 +99,9 @@ phina.define 'MenuScene',
             @index += 1
           else
             @index = 0
+        when phina.input.Keyboard.KEY_CODE['enter']
+          @btns[@index].flare('push')
+          return
       @cursor.x = @btns[@index].x
       @cursor.y = @btns[@index].y
       return
