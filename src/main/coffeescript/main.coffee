@@ -49,6 +49,12 @@ phina.main ->
     scene 'titleMenu',
       className: 'nz.SceneTitleMenu'
 
+    scene 'battleStart',
+      className: 'nz.SceneBattleStart'
+
+    scene 'battlePosition',
+      className: 'nz.SceneBattlePosition'
+
     scene 'battle',
       className: 'nz.SceneBattle'
       arguments:

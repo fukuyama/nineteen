@@ -130,57 +130,8 @@ phina.define 'nz.SceneTitleMenu',
   * @memberof nz.SceneTitleMenu#
   ###
   _debug_game: ->
-    @exit 'battle',
-      controlTeam: []
-      characters: [
-        {
-          name:'キャラクター1'
-          team:'teamA'
-          ai:
-            name: 'Chaser'
-          weapon:
-            damage: 40
-            height: 48
-            width: 12
-            range:
-              start: 0
-              end: 120
-            speed: 600
-        }
-        #{
-        #  name:'キャラクター2'
-        #  team:'teamA'
-        #  ai:
-        #    name: 'Shooter'
-        #}
-        #{
-        #  name:'キャラクター3'
-        #  team:'teamA'
-        #  ai:
-        #    name: 'Runner'
-        #}
-        {
-          name:'キャラクター4'
-          team:'teamB'
-          teamColor: [0,0,0]
-          ai:
-            name: 'Shooter'
-        }
-        #{
-        #  name:'キャラクター5'
-        #  team:'teamB'
-        #  teamColor: [0,0,0]
-        #  ai:
-        #    name: 'Runner'
-        #}
-        #{
-        #  name:'キャラクター6'
-        #  team:'teamB'
-        #  teamColor: [0,0,0]
-        #  ai:
-        #    name: 'Shooter'
-        #}
-      ]
+    @exit 'battleStart',
+      mapId: 1
     return
 
   ###* 新しいゲームを開始
