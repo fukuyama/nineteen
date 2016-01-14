@@ -25,24 +25,23 @@ phina.define 'nz.SceneBattleStart',
 
   loadMap: ->
     unless phina.asset.AssetManager.get('json',@mapName)
-      @one 'enterframe', ->
-        assets = json:{}
-        assets.json[@mapName] = "data/#{@mapName}.json"
-        @loadAsset assets, @loadCharacter
+      assets = json:{}
+      assets.json[@mapName] = "data/#{@mapName}.json"
+      @loadAsset assets, @loadCharacter
     else
       @loadCharacter()
     return
 
   loadCharacter: ->
     unless phina.asset.AssetManager.get('json','character_001')
-      @one 'enterframe', ->
-        assets = json:{}
-        assets.json['character_001'] = "data/character_001.json"
-        @loadAsset assets, ->
-          console.log 'end'
+      assets = json:{}
+      assets.json['character_001'] = "data/character_001.json"
+      @loadAsset assets, ->
+        console.log 'end'
     return
 
   loadAsset: (assets,cb) ->
-    @app.pushScene phina.game.LoadingScene assets: assets
     if cb?
       @one 'resume', cb
+    @one 'enterframe', ->
+      @app.pushScene phina.game.LoadingScene assets: assets
