@@ -19,7 +19,6 @@ mainScripts = [
   'nz/SpriteHelpText'
   'nz/SceneBase'
   'nz/SceneTitleMenu'
-  'nz/SceneBattleStart'
   'nz/SceneBattle'
   'MenuScene'
   'main'

@@ -26,6 +26,11 @@ phina.define 'nz.SceneBattle',
     } = param
     @superInit()
     @mapName = 'map_' + "#{@mapId}".paddingLeft(3,'0')
+    @loadMap()
+    @eventHandler = nz.EventHandlerBattle(@)
+    return
+
+  _init: ->
     @_selectCharacterIndex = 0
 
     unless @endCondition?
@@ -48,9 +53,39 @@ phina.define 'nz.SceneBattle',
       teams: teams
 
     @eventHandler = nz.EventHandlerBattle(@)
-
-    @on 'enter', @load.bind @
     return
+
+  loadMap: ->
+    _loaded = ->
+      @createMap()
+      @loadCharacter()
+    unless phina.asset.AssetManager.get('json',@mapName)
+      json = {}
+      json[@mapName] = "data/#{@mapName}.json"
+      @loadAsset {json:json}, _loaded.bind @
+    else
+      _loaded.call(@)
+    return
+
+  createMap: ->
+    # マップ
+    @mapSprite = nz.SpriteBattleMap(@mapName).addChildTo(@)
+    @mapSprite.x = (SCREEN_W - @mapSprite.width ) - 32
+    @mapSprite.y = (SCREEN_H - @mapSprite.height) / 2
+
+  loadCharacter: ->
+    unless phina.asset.AssetManager.get('json','character_001')
+      assets = json:{}
+      assets.json['character_001'] = "data/character_001.json"
+      @loadAsset assets, ->
+        console.log 'end'
+    return
+
+  loadAsset: (assets,cb) ->
+    if cb?
+      @one 'resume', cb
+    @one 'enterframe', ->
+      @app.pushScene phina.game.LoadingScene assets: assets
 
   load: ->
     loaded = true
