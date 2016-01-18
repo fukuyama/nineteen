@@ -32,7 +32,9 @@ testTargets = [
   'nz/ai/Param'
 ]
 dataNames= [
-  'character_test'
+  'character_001'
+  'character_001_ss'
+  'character_test_ss'
   'chipdata'
   'map_000'
   'map_001'
