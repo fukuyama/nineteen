@@ -33,56 +33,8 @@ phina.define 'nz.SpriteBattleMap',
       for mapy in [0...h]
         @_initMapChip(mapx,mapy)
 
-    @cursor = @_createCursor().addChildTo(@)
     @setCursorPosition @getMapChip(0,0)
 
-    @on 'startBattlePhase', (e) ->
-      @cursor.visible = false
-      return
-    @on 'endBattlePhase', (e) ->
-      @cursor.visible = true
-      return
-
-    @on 'input_up'     , @cursorUp
-    @on 'input_down'   , @cursorDown
-    @on 'input_left'   , @cursorLeft
-    @on 'input_right'  , @cursorRight
-    @on 'repeat_up'    , @cursorUp
-    @on 'repeat_down'  , @cursorDown
-    @on 'repeat_left'  , @cursorLeft
-    @on 'repeat_right' , @cursorRight
-
-    return
-
-  setCursorPosition: (param) ->
-    return unless param?
-    @cursor.mapx = param.mapx if param.mapx?
-    @cursor.mapy = param.mapy if param.mapy?
-    @cursor.x = param.x
-    @cursor.y = param.y
-    return
-
-  cursorUp: ->
-    {mapx,mapy} = @cursor
-    @setCursorPosition @getMapChip(mapx,mapy - 1)
-    return
-  cursorDown: ->
-    {mapx,mapy} = @cursor
-    @setCursorPosition @getMapChip(mapx,mapy + 1)
-    return
-  cursorLeft: ->
-    {mapx,mapy} = @cursor
-    chip = @getMapChip(mapx - 1,mapy)
-    unless chip?
-      chip = @getMapChip(mapx - 1,mapy - 1)
-    @setCursorPosition chip
-    return
-  cursorRight: ->
-    {mapx,mapy} = @cursor
-    chip = @getMapChip(mapx + 1,mapy)
-    unless chip?
-      chip = @getMapChip(mapx + 1,mapy - 1)
-    @setCursorPosition chip
     return
 
   # 指定された座標のキャラクターを探す
