@@ -57,7 +57,9 @@ phina.define 'nz.SceneBattle',
 
   loadMap: ->
     _loaded = ->
-      @createMap()
+      @mapSprite = nz.SpriteBattleMap(@mapName).addChildTo(@)
+      @mapSprite.x = (SCREEN_W - @mapSprite.width ) - 32
+      @mapSprite.y = (SCREEN_H - @mapSprite.height) / 2
       @loadCharacter()
     unless phina.asset.AssetManager.get('json',@mapName)
       json = {}
@@ -66,12 +68,6 @@ phina.define 'nz.SceneBattle',
     else
       _loaded.call(@)
     return
-
-  createMap: ->
-    # マップ
-    @mapSprite = nz.SpriteBattleMap(@mapName).addChildTo(@)
-    @mapSprite.x = (SCREEN_W - @mapSprite.width ) - 32
-    @mapSprite.y = (SCREEN_H - @mapSprite.height) / 2
 
   loadCharacter: ->
     unless phina.asset.AssetManager.get('json','character_001')

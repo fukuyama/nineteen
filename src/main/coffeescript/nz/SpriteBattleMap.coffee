@@ -33,7 +33,7 @@ phina.define 'nz.SpriteBattleMap',
       for mapy in [0...h]
         @_initMapChip(mapx,mapy)
 
-    @setCursorPosition @getMapChip(0,0)
+    #@setCursorPosition @getMapChip(0,0)
 
     return
 
@@ -99,7 +99,7 @@ phina.define 'nz.SpriteBattleMap',
     chip.mapx = mapx
     chip.mapy = mapy
 
-    chip.on 'pointingover', @setCursorPosition.bind @, chip
+    #chip.on 'pointingover', @setCursorPosition.bind @, chip
 
     # DEBUG:
     #phina.display.Label("#{mapx},#{mapy}",{fontSize:8}).setPosition(0,h/2-8).addChildTo(chip)
