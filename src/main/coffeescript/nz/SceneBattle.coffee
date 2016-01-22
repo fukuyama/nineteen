@@ -56,32 +56,35 @@ phina.define 'nz.SceneBattle',
     return
 
   loadMap: ->
-    _loaded = ->
+    json = {}
+    json[@mapName] = "data/#{@mapName}.json"
+    @loadAsset {json:json}, ->
       @mapSprite = nz.SpriteBattleMap(@mapName).addChildTo(@)
       @mapSprite.x = (SCREEN_W - @mapSprite.width ) - 32
       @mapSprite.y = (SCREEN_H - @mapSprite.height) / 2
       @loadCharacter()
-    unless phina.asset.AssetManager.get('json',@mapName)
-      json = {}
-      json[@mapName] = "data/#{@mapName}.json"
-      @loadAsset {json:json}, _loaded.bind @
-    else
-      _loaded.call(@)
     return
 
   loadCharacter: ->
-    unless phina.asset.AssetManager.get('json','character_001')
-      assets = json:{}
-      assets.json['character_001'] = "data/character_001.json"
-      @loadAsset assets, ->
-        console.log 'end'
+    assets = json:{}
+    assets.json['character_001'] = "data/character_001.json"
+    @loadAsset assets, ->
+      console.log 'end'
     return
 
   loadAsset: (assets,cb) ->
-    if cb?
+    for type,data of assets
+      for key,val of data
+        if phina.asset.AssetManager.get(type,key)
+          delete data[key]
+      if Object.keys(data).length == 0
+        delete assets[type]
+    if Object.keys(assets).length == 0
+      @one 'enterframe', cb
+    else
       @one 'resume', cb
-    @one 'enterframe', ->
-      @app.pushScene phina.game.LoadingScene assets: assets
+      @one 'enterframe', -> @app.pushScene phina.game.LoadingScene assets: assets
+ 
 
   load: ->
     loaded = true
