@@ -62,6 +62,7 @@ phina.define 'nz.SceneBattle',
       @mapSprite = nz.SpriteBattleMap(@mapName).addChildTo(@)
       @mapSprite.x = (SCREEN_W - @mapSprite.width ) - 32
       @mapSprite.y = (SCREEN_H - @mapSprite.height) / 2
+      nz.SpriteMapCursor().addChildTo @mapSprite
       @loadCharacter()
     return
 
