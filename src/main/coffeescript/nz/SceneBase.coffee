@@ -81,3 +81,17 @@ phina.define 'nz.SceneBase',
       @on 'input_'  + k, handler
       @on 'repeat_' + k, handler
     return
+
+  loadAsset: (assets,cb) ->
+    for type,data of assets
+      for key,val of data
+        if phina.asset.AssetManager.get(type,key)
+          delete data[key]
+      if Object.keys(data).length == 0
+        delete assets[type]
+    if Object.keys(assets).length == 0
+      @one 'enterframe', cb
+    else
+      @one 'resume', cb
+      @one 'enterframe', -> @app.pushScene phina.game.LoadingScene assets: assets
+    return

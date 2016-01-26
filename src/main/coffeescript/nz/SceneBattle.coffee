@@ -68,25 +68,9 @@ phina.define 'nz.SceneBattle',
     return
 
   loadCharacter: ->
-    assets = json:{}
-    assets.json['character_001'] = "data/character_001.json"
-    @loadAsset assets, ->
+    @loadAsset json:{character_001:"data/character_001.json"}, ->
       console.log 'end'
     return
-
-  loadAsset: (assets,cb) ->
-    for type,data of assets
-      for key,val of data
-        if phina.asset.AssetManager.get(type,key)
-          delete data[key]
-      if Object.keys(data).length == 0
-        delete assets[type]
-    if Object.keys(assets).length == 0
-      @one 'enterframe', cb
-    else
-      @one 'resume', cb
-      @one 'enterframe', -> @app.pushScene phina.game.LoadingScene assets: assets
- 
 
   load: ->
     loaded = true

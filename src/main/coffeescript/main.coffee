@@ -17,7 +17,7 @@ phina.main ->
 
   run = (scenes) ->
     # アプリケーション生成
-    app = CanvasApp(config)
+    nz.system.app = app = CanvasApp(config)
 
     # シーン設定
     app.replaceScene ManagerScene scenes: scenes

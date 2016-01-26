@@ -112,5 +112,4 @@ class nz.System
     @start()
     return
 
-
 nz.system = new nz.System()
