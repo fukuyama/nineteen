@@ -26,7 +26,7 @@ phina.define 'nz.SceneBattle',
     } = param
     @superInit()
     @mapName = 'map_' + "#{@mapId}".paddingLeft(3,'0')
-    @loadMap()
+    @preLoad()
     @eventHandler = nz.EventHandlerBattle(@)
     return
 
@@ -55,21 +55,17 @@ phina.define 'nz.SceneBattle',
     @eventHandler = nz.EventHandlerBattle(@)
     return
 
-  loadMap: ->
+  preLoad: ->
     json = {}
     json[@mapName] = "data/#{@mapName}.json"
+    for character in @characters when typeof character is 'string'
+      json[character] = "data/character_#{character}.json"
     @loadAsset {json:json}, ->
       @mapSprite = nz.SpriteBattleMap(@mapName).addChildTo(@)
       @mapSprite.x = (SCREEN_W - @mapSprite.width ) - 32
       @mapSprite.y = (SCREEN_H - @mapSprite.height) / 2
       @cursor = nz.SpriteMapCursor().addChildTo @mapSprite
       @cursor.setMapPosition @mapSprite.getMapChip 0,0
-      @loadCharacter()
-    return
-
-  loadCharacter: ->
-    @loadAsset json:{character_001:"data/character_001.json"}, ->
-      console.log 'end'
     return
 
   load: ->

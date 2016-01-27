@@ -132,7 +132,9 @@ phina.define 'nz.SceneTitleMenu',
   _debug_game: ->
     @exit 'battle',
       mapId: 1
-      characters: []
+      characters: [
+        '001'
+      ]
     return
 
   ###* 新しいゲームを開始
