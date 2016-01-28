@@ -59,13 +59,18 @@ phina.define 'nz.SceneBattle',
     json = {}
     json[@mapName] = "data/#{@mapName}.json"
     for character in @characters when typeof character is 'string'
-      json[character] = "data/character_#{character}.json"
+      json["character_#{character}"] = "data/character_#{character}.json"
     @loadAsset {json:json}, ->
       @mapSprite = nz.SpriteBattleMap(@mapName).addChildTo(@)
       @mapSprite.x = (SCREEN_W - @mapSprite.width ) - 32
       @mapSprite.y = (SCREEN_H - @mapSprite.height) / 2
       @cursor = nz.SpriteMapCursor().addChildTo @mapSprite
       @cursor.setMapPosition @mapSprite.getMapChip 0,0
+      characters = []
+      for character in @characters when typeof character is 'string'
+        data = phina.asset.AssetManager.get('json',"character_#{character}").data
+        characters.push new nz.Character(data)
+      @characters = characters
     return
 
   load: ->
