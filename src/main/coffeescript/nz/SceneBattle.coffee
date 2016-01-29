@@ -67,9 +67,13 @@ phina.define 'nz.SceneBattle',
       @cursor = nz.SpriteMapCursor().addChildTo @mapSprite
       @cursor.setMapPosition @mapSprite.getMapChip 0,0
       characters = []
-      for character in @characters when typeof character is 'string'
+      for character,i in @characters when typeof character is 'string'
         data = phina.asset.AssetManager.get('json',"character_#{character}").data
-        characters.push new nz.Character(data)
+        character = new nz.Character(data)
+        characters.push character
+        sprite = nz.SpriteCharacter(i,character)
+          .setVisible(true)
+          .addChildTo(@mapSprite)
       @characters = characters
     return
 
