@@ -68,7 +68,7 @@ class nz.System
       map_chip:   'img/map_chip.png'
       character:  'img/character_test.png'
     spritesheet:
-      character:  'data/character_test.json'
+      character:  'data/character_test_ss.json'
   messages:
     battle:
       phase:

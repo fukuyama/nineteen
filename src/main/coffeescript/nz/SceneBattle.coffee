@@ -72,8 +72,9 @@ phina.define 'nz.SceneBattle',
         character = new nz.Character(data)
         characters.push character
         sprite = nz.SpriteCharacter(i,character)
-          .setVisible(false)
+          .setVisible(true)
           .addChildTo(@mapSprite)
+        console.log character.name
       @characters = characters
     return
 
