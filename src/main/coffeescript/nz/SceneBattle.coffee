@@ -75,6 +75,9 @@ phina.define 'nz.SceneBattle',
           .setVisible(true)
           .addChildTo(@mapSprite)
         console.log character.name
+        map = @mapSprite.getMapChip 0,0
+        sprite.x = map.x
+        sprite.y = map.y
       @characters = characters
     return
 

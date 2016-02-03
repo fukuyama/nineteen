@@ -42,6 +42,7 @@ phina.define 'nz.SpriteCharacter',
       width:  @width
       height: @height
     ).addChildTo @
+    @body.setVisible false
 
     @weapon = @createWeapon()
     @weapon.on 'enterframe', @_enterframeWeapon.bind @
@@ -136,7 +137,7 @@ phina.define 'nz.SpriteCharacter',
   setDirection: (@direction) ->
     d = DIRECTIONS[@direction]
     @body.rotation = d.rotation
-    @frame.gotoAndPlay(d.name)
+    # @frame.gotoAndPlay(d.name)
     return @
 
   updateBattle: ->
