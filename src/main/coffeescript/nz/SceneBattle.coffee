@@ -61,6 +61,7 @@ phina.define 'nz.SceneBattle',
     for character in @characters when typeof character is 'string'
       json["character_#{character}"] = "data/character_#{character}.json"
     @loadAsset {json:json}, ->
+      # マップ
       @mapSprite = nz.SpriteBattleMap(@mapName).addChildTo(@)
       @mapSprite.x = (SCREEN_W - @mapSprite.width ) - 32
       @mapSprite.y = (SCREEN_H - @mapSprite.height) / 2
@@ -81,34 +82,9 @@ phina.define 'nz.SceneBattle',
       @characters = characters
     return
 
-  load: ->
-    loaded = true
-    assets = json:{}
-    unless phina.asset.AssetManager.get('json',@mapName)
-      assets.json[@mapName] = "data/#{@mapName}.json"
-      loaded = false
-    #for c in @characters when not phina.asset.AssetManager.get(c.ai.name)
-    #  src = c.ai.src ? "nz/ai/#{c.ai.name}.js"
-    #  unless nz.system.ai[c.ai.name]?
-    #    assets[c.ai.name] = src
-    #    loaded = false
-
-    unless loaded
-      scene = LoadingScene {assets: assets}.$safe nz.system.screen
-      @app.pushScene scene
-      @one 'resume', @setup.bind @
-    else
-      @setup()
-    return
-
   setup: ->
     console.log 'setup'
     scene = @
-
-    # マップ
-    @mapSprite = nz.SpriteBattleMap(@mapName).addChildTo(@)
-    @mapSprite.x = (SCREEN_W - @mapSprite.width ) - 32
-    @mapSprite.y = (SCREEN_H - @mapSprite.height) / 2
 
     # ステータスフォルダ
     @status = phina.display.CanvasElement().addChildTo @

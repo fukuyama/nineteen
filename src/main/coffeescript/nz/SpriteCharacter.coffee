@@ -137,7 +137,7 @@ phina.define 'nz.SpriteCharacter',
   setDirection: (@direction) ->
     d = DIRECTIONS[@direction]
     @body.rotation = d.rotation
-    # @frame.gotoAndPlay(d.name)
+    @frame.gotoAndPlay(d.name)
     return @
 
   updateBattle: ->
