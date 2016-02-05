@@ -3,6 +3,8 @@
 * 戦闘マップスプライト
 ###
 
+SCREEN_W   = nz.system.screen.width
+SCREEN_H   = nz.system.screen.height
 MAP_CHIP_W = nz.system.map.chip.width
 MAP_CHIP_H = nz.system.map.chip.height
 
@@ -33,7 +35,8 @@ phina.define 'nz.SpriteBattleMap',
       for mapy in [0...h]
         @_initMapChip(mapx,mapy)
 
-    #@setCursorPosition @getMapChip(0,0)
+    @x = (SCREEN_W - @width ) - 32
+    @y = (SCREEN_H - @height) / 2
 
     return
 

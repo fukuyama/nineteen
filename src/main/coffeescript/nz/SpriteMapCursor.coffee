@@ -41,32 +41,30 @@ phina.define 'nz.SpriteMapCursor',
 
     return
 
-  setMapPosition: (param) ->
-    return unless param?
-    @mapx = param.mapx if param.mapx?
-    @mapy = param.mapy if param.mapy?
-    @x = param.x
-    @y = param.y
-    return
+  setMapPosition: (mapx,mapy) ->
+    return false unless @parent?
+    chip = @parent.getMapChip mapx,mapy
+    return false unless chip?
+    @mapx = chip.mapx if chip.mapx?
+    @mapy = chip.mapy if chip.mapy?
+    @x = chip.x
+    @y = chip.y
+    return true
 
   cursorUp: ->
-    @setMapPosition @getMapChip(@mapx,@mapy - 1)
+    @setMapPosition @mapx,@mapy - 1
     return
 
   cursorDown: ->
-    @setMapPosition @getMapChip(@mapx,@mapy + 1)
+    @setMapPosition @mapx,@mapy + 1
     return
 
   cursorLeft: ->
-    chip = @getMapChip(@mapx - 1,@mapy)
-    unless chip?
-      chip = @getMapChip(@mapx - 1,@mapy - 1)
-    @setMapPosition chip
+    unless @setMapPosition(@mapx - 1,@mapy)
+      @getMsetMapPositionapChip(@mapx - 1,@mapy - 1)
     return
 
   cursorRight: ->
-    chip = @getMapChip(@mapx + 1,@mapy)
-    unless chip?
-      chip = @getMapChip(@mapx + 1,@mapy - 1)
-    @setMapPosition chip
+    unless @setMapPosition(@mapx + 1,@mapy)
+      @setMapPosition(@mapx + 1,@mapy - 1)
     return
