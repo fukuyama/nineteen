@@ -78,6 +78,10 @@ phina.define 'nz.SceneBattle',
         sprite.x = map.x
         sprite.y = map.y
       @characters = characters
+      @setupKeyboradHander()
+      @setupCursorHandler (e) ->
+        console.log e
+        return
     return
 
   setup: ->
