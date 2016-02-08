@@ -61,7 +61,7 @@ phina.define 'nz.SpriteMapCursor',
 
   cursorLeft: ->
     unless @setMapPosition(@mapx - 1,@mapy)
-      @getMsetMapPositionapChip(@mapx - 1,@mapy - 1)
+      @setMapPosition(@mapx - 1,@mapy - 1)
     return
 
   cursorRight: ->

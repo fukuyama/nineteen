@@ -80,8 +80,7 @@ phina.define 'nz.SceneBattle',
       @characters = characters
       @setupKeyboradHander()
       @setupCursorHandler (e) ->
-        console.log e
-        return
+        @cursor.fire e
     return
 
   setup: ->
@@ -149,9 +148,6 @@ phina.define 'nz.SceneBattle',
 
     @eventHandler.refreshStatus()
     return
-
-  cursorHandler: (e) ->
-    @mapSprite.fire e
 
   inputEnter: (e) ->
     @_mapPointingend @mapSprite.cursor
