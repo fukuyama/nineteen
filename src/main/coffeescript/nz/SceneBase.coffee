@@ -53,17 +53,15 @@ phina.define 'nz.SceneBase',
       @_description = nz.SpriteHelpText().addChildTo @
     @_description.text = text
 
-  setupKeyboradHander: ->
-    @on 'enterframe', @createKeyboradHander()
-    return
+  asset: (t,k) -> phina.asset.AssetManager.get t, k
 
-  createKeyboradHander: ->
+  setupKeyboradHander: ->
     eventKeys      = ['up','down','left','right','enter','escape']
     repeatCount    = 0
     repeatDelay    = 10
     repeatIntarval = 0
 
-    return (e) ->
+    @on 'enterframe', (e) ->
       app = @app ? e.app
       kb = app.keyboard
       for key in eventKeys when kb.getKeyDown(key)
@@ -74,9 +72,9 @@ phina.define 'nz.SceneBase',
         if repeatDelay < repeatCount++
           @flare('repeat_' + key)
           repeatCount -= repeatIntarval
+    return
 
   setupCursorHandler: (handler) ->
-    console.log 'setupCursorHandler'
     for k in ['up','down','left','right']
       @on 'input_'  + k, handler
       @on 'repeat_' + k, handler

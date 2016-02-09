@@ -67,8 +67,7 @@ phina.define 'nz.SceneBattle',
       @cursor.setMapPosition 0,0
       characters = []
       for character,i in @characters when typeof character is 'string'
-        data = phina.asset.AssetManager.get('json',"character_#{character}").data
-        character = new nz.Character(data)
+        character = new nz.Character @asset('json',"character_#{character}").data
         characters.push character
         sprite = nz.SpriteCharacter(i,character)
           .setVisible(true)
