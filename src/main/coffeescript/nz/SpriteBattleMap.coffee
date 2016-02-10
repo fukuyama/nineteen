@@ -38,6 +38,8 @@ phina.define 'nz.SpriteBattleMap',
     @x = (SCREEN_W - @width ) - 32
     @y = (SCREEN_H - @height) / 2
 
+    @cursor = nz.SpriteMapCursor().addChildTo @
+    @cursor.setMapPosition 0,0
     return
 
   # 指定された座標のキャラクターを探す

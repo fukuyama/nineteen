@@ -19,13 +19,15 @@ phina.define 'nz.SceneBattle',
   ###
   init: (param) ->
     {
-      @mapId
+      mapId
       @characters
       @controlTeam
       @endCondition
     } = param
     @superInit()
-    @mapName = 'map_' + "#{@mapId}".paddingLeft(3,'0')
+    @mapName = 'map_' + "#{mapId}".paddingLeft(3,'0')
+    for character,i in @characters when typeof character is 'number'
+      @characters[i] = 'character_' + "#{character}".paddingLeft(3,'0')
     @preLoad()
     @eventHandler = nz.EventHandlerBattle(@)
     return
@@ -59,27 +61,26 @@ phina.define 'nz.SceneBattle',
     json = {}
     json[@mapName] = "data/#{@mapName}.json"
     for character in @characters when typeof character is 'string'
-      json["character_#{character}"] = "data/character_#{character}.json"
+      json[character] = "data/#{character}.json"
+
     @loadAsset {json:json}, ->
       # マップ
       @mapSprite = nz.SpriteBattleMap(@mapName).addChildTo @
-      @cursor = nz.SpriteMapCursor().addChildTo @mapSprite
-      @cursor.setMapPosition 0,0
-      characters = []
+
+      # キャラクター
       for character,i in @characters when typeof character is 'string'
-        character = new nz.Character @asset('json',"character_#{character}").data
-        characters.push character
+        @characters[i] = new nz.Character @asset('json',character).data
+
+      # キャラクタースプライト
+      for character,i in @characters
         sprite = nz.SpriteCharacter(i,character)
           .setVisible(true)
           .addChildTo(@mapSprite)
-        console.log character.name
         map = @mapSprite.getMapChip 0,0
         sprite.x = map.x
         sprite.y = map.y
-      @characters = characters
       @setupKeyboradHander()
-      @setupCursorHandler (e) ->
-        @cursor.fire e
+      @setupCursorHandler (e) -> @mapSprite.cursor.fire e
     return
 
   setup: ->
