@@ -52,7 +52,7 @@ phina.define 'nz.SceneBattlePosition',
 
     @setupKeyboradHander()
     @on 'input_enter'  , @inputEnter
-    @setupCursorHandler @cursorHandler
+    @setupArrowKeyHandler @cursorHandler
 
   cursorHandler: (e) ->
     @mapSprite.fire e

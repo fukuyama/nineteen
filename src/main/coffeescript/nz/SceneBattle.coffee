@@ -80,7 +80,7 @@ phina.define 'nz.SceneBattle',
         sprite.x = map.x
         sprite.y = map.y
       @setupKeyboradHander()
-      @setupCursorHandler (e) -> @mapSprite.cursor.fire e
+      @setupArrowKeyHandler (e) -> @mapSprite.cursor.fire e
     return
 
   setup: ->
@@ -133,7 +133,7 @@ phina.define 'nz.SceneBattle',
       # イベント
       @setupKeyboradHander()
       @on 'input_enter'  , @inputEnter
-      @setupCursorHandler @cursorHandler
+      @setupArrowKeyHandler @cursorHandler
 
       @data.startInfo.characters = []
       for c in @characters

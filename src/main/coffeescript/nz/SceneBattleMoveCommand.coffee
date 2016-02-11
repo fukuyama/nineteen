@@ -20,7 +20,7 @@ phina.define 'nz.SceneBattleMoveCommand',
     @on 'map.pointingend', @_end
 
     @setupKeyboradHander()
-    @setupCursorHandler (e) ->
+    @setupArrowKeyHandler (e) ->
       @mapSprite.fire e
       @_over @mapSprite.cursor
     @on 'input_enter', @_inputEnter

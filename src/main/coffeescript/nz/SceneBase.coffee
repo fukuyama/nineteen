@@ -74,7 +74,7 @@ phina.define 'nz.SceneBase',
           repeatCount -= repeatIntarval
     return
 
-  setupCursorHandler: (handler) ->
+  setupArrowKeyHandler: (handler) ->
     for k in ['up','down','left','right']
       @on 'input_'  + k, handler
       @on 'repeat_' + k, handler
