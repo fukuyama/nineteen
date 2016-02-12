@@ -19,17 +19,14 @@ phina.define 'nz.SceneBattle',
   ###
   init: (param) ->
     {
-      mapId
+      @mapId
       @characters
       @controlTeam
       @endCondition
     } = param
     @superInit()
-    @mapName = 'map_' + "#{mapId}".paddingLeft(3,'0')
-    for character,i in @characters when typeof character is 'number'
-      @characters[i] = 'character_' + "#{character}".paddingLeft(3,'0')
-    @preLoad()
     @eventHandler = nz.EventHandlerBattle(@)
+    @preLoad()
     return
 
   _init: ->
@@ -58,29 +55,34 @@ phina.define 'nz.SceneBattle',
     return
 
   preLoad: ->
+    @mapName = 'map_' + "#{@mapId}".paddingLeft(3,'0')
+    for c,i in @characters when typeof c is 'number'
+      @characters[i] = 'character_' + "#{c}".paddingLeft(3,'0')
+
     json = {}
     json[@mapName] = "data/#{@mapName}.json"
-    for character in @characters when typeof character is 'string'
-      json[character] = "data/#{character}.json"
+    for c in @characters when typeof c is 'string'
+      json[c] = "data/#{c}.json"
 
-    @loadAsset {json:json}, ->
-      # マップ
-      @mapSprite = nz.SpriteBattleMap(@mapName).addChildTo @
+    @loadAsset {json:json}, @preLoaded
+    return
 
-      # キャラクター
-      for character,i in @characters when typeof character is 'string'
-        @characters[i] = new nz.Character @asset('json',character).data
+  preLoaded: ->
+    # マップ
+    @mapSprite = nz.SpriteBattleMap(@mapName).addChildTo @
 
-      # キャラクタースプライト
-      for character,i in @characters
-        sprite = nz.SpriteCharacter(i,character)
-          .setVisible(true)
-          .addChildTo(@mapSprite)
-        map = @mapSprite.getMapChip 0,0
-        sprite.x = map.x
-        sprite.y = map.y
-      @setupKeyboradHander()
-      @setupArrowKeyHandler (e) -> @mapSprite.cursor.fire e
+    # キャラクターデータ取得
+    for c,i in @characters when typeof c is 'string'
+      @characters[i] = new nz.Character @asset('json',c).data
+
+    # キャラクタースプライトの作成
+    for c,i in @characters
+      @mapSprite.addCharacter nz.SpriteCharacter(i,c)
+
+    @setupKeyboradHander()
+    @setupArrowKeyHandler (e) -> @mapSprite.cursor.fire e
+
+    @app.pushScene nz.SceneBattlePosition @
     return
 
   setup: ->

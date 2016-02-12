@@ -42,6 +42,12 @@ phina.define 'nz.SpriteBattleMap',
     @cursor.setMapPosition 0,0
     return
 
+  addCharacter: (sprite) ->
+    sprite.addChildTo(@).setVisible(false)
+    map = @getMapChip 0,0
+    sprite.x = map.x
+    sprite.y = map.y
+
   # 指定された座標のキャラクターを探す
   findCharacter: (mapx,mapy) ->
     res = []
@@ -55,17 +61,6 @@ phina.define 'nz.SpriteBattleMap',
       if character.ghost?.mapx == mapx and character.ghost?.mapy == mapy
         res.push character.ghost
     return res
-
-  _createCursor: ->
-    phina.display.RectangleShape
-      width:        MAP_CHIP_W
-      height:       MAP_CHIP_H
-      stroke:       'red'
-      strokeWidth:  3
-      visible:      true
-      cornerRadius: 5
-      fill:         null
-      backgroundColor: 'transparent'
 
   # MapChip用イベントハンドラ
   _dispatchMapChipEvent: (_e) ->

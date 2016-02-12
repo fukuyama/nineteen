@@ -15,7 +15,12 @@ phina.define 'nz.SceneBattlePosition',
       @mapSprite
       @controlTeam
     } = param
+    @on 'enter', ->
+      console.log 'SceneBattlePosition pushd'
+      @addChild @mapSprite
+    return
 
+  _init: ->
     @otherTeam = []
 
     @teamArea  = {}

@@ -21,6 +21,7 @@ mainScripts = [
   'nz/SceneBase'
   'nz/SceneTitleMenu'
   'nz/SceneBattle'
+  'nz/SceneBattlePosition'
   'MenuScene'
   'main'
 ]
