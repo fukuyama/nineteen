@@ -16,8 +16,11 @@ phina.define 'nz.SceneBattlePosition',
       @controlTeam
     } = param
     @on 'enter', ->
-      console.log 'SceneBattlePosition pushd'
       @addChild @mapSprite
+      @setupKeyboradHander()
+      @setupArrowKeyHandler (e) ->
+        @mapSprite.cursor.fire e
+        return
     return
 
   _init: ->
