@@ -79,6 +79,13 @@ phina.define 'nz.SceneBattle',
     for c,i in @characters
       @mapSprite.addCharacter nz.SpriteCharacter(i,c)
 
+    @teams = {}
+    for c,i in @characters
+      team = c.team
+      unless @teams[team]?
+        @teams[team]  = []
+      @teams[team].push c
+
     @setupKeyboradHander()
     @setupArrowKeyHandler (e) -> @mapSprite.cursor.fire e
 
