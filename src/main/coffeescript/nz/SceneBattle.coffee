@@ -23,6 +23,7 @@ phina.define 'nz.SceneBattle',
       @characters
       @controlTeam
       @endCondition
+      @teams
     } = param
     @superInit()
     @eventHandler = nz.EventHandlerBattle(@)
@@ -74,17 +75,21 @@ phina.define 'nz.SceneBattle',
     # キャラクターデータ取得
     for c,i in @characters when typeof c is 'string'
       @characters[i] = new nz.Character @asset('json',c).data
+    for c,i in @characters when not (c instanceof nz.Character) and typeof c is 'object'
+      @characters[i] = new nz.Character c
 
     # キャラクタースプライトの作成
     for c,i in @characters
       @mapSprite.addCharacter nz.SpriteCharacter(i,c)
 
-    @teams = {}
-    for c,i in @characters
-      team = c.team
-      unless @teams[team]?
-        @teams[team]  = []
-      @teams[team].push c
+    # チーム分け
+    if @teams?
+    else
+      @teams = {}
+      for c,i in @characters
+        team = c.team
+        @teams[team] = [] unless @teams[team]?
+        @teams[team].push c
 
     @setupKeyboradHander()
     @setupArrowKeyHandler (e) -> @mapSprite.cursor.fire e
