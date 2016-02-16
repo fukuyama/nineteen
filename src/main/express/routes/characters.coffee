@@ -1,8 +1,7 @@
-
 express = require('express')
-router = express.Router()
+app = express()
 
-router.get '/:id', (req, res, next) ->
-  res.send(req)
+app.get '/:id', (req, res, next) ->
+  res.send(req.params)
 
-module.exports = router
+module.exports = app

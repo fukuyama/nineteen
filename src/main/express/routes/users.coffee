@@ -1,8 +1,8 @@
 express = require('express')
-router = express.Router()
+app = express()
 
 # GET users listing.
-router.get '/', (req, res, next) ->
+app.get '/', (req, res, next) ->
   res.send('respond with a resource')
 
-module.exports = router
+module.exports = app
