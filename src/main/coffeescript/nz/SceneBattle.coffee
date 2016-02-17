@@ -57,13 +57,12 @@ phina.define 'nz.SceneBattle',
 
   preLoad: ->
     @mapName = 'map_' + "#{@mapId}".paddingLeft(3,'0')
-    for c,i in @characters when typeof c is 'number'
-      @characters[i] = 'character_' + "#{c}".paddingLeft(3,'0')
 
     json = {}
-    json[@mapName] = "data/#{@mapName}.json"
-    for c in @characters when typeof c is 'string'
-      json[c] = "data/#{c}.json"
+    json[@mapName] = "/maps/#{@mapId}"
+    for c,i in @characters when typeof c is 'number'
+      k = 'character_' + "#{c}".paddingLeft(3,'0')
+      json[k] = "/characters/#{c}"
 
     @loadAsset {json:json}, @preLoaded
     return
